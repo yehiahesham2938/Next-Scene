@@ -5,35 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile & Settings - Next-scene</title>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.add(theme);
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
     <!-- Navigation Header -->
-    <header class="hidden sm:flex bg-white py-4 border-b border-gray-200">
+    <header class="hidden sm:flex bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700 transition-colors">
         <div class="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
             <!-- Logo -->
             <div class="flex items-center gap-2">
-                <i class="fa-solid fa-film text-gray-800 text-3xl"></i>
-                <a href="index.html" id="logo-link" class="text-gray-900 text-lg font-bold">Next-scene</a>
+                <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-3xl transition-colors"></i>
+                <a href="index.html" id="logo-link" class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex gap-8 items-center" id="main-nav">
-                <a href="index.html" class="text-gray-700 hover:text-black">Home</a>
-                <a href="dashboard-page.html" class="text-gray-700 hover:text-black">dashboard</a>
-                <a href="Browse.html" class="text-gray-700 hover:text-black">Browse</a>
-                <a href="about-page.html" class="text-gray-700 hover:text-black">About us</a>
+                <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
+                <a href="dashboard-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">dashboard</a>
+                <a href="Browse.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
+                <a href="about-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About us</a>
             </nav>
 
             <!-- Search Bar (Desktop Only) -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-4">
                 <div class="relative max-w-xs w-full">
-                    <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
@@ -45,13 +51,13 @@
     <div class="max-w-4xl mx-auto px-4 py-8">
         <!-- Page Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Profile & Settings</h1>
-            <p class="text-gray-600 text-sm">Manage your account settings and preferences</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Profile & Settings</h1>
+            <p class="text-gray-600 dark:text-gray-400 text-sm transition-colors">Manage your account settings and preferences</p>
         </div>
 
         <!-- Profile Information Section -->
-        <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Profile Information</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 mb-8 transition-colors">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">Profile Information</h2>
 
             <div class="flex gap-8 mb-8">
                 <!-- Avatar -->
@@ -59,90 +65,98 @@
                     <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
                         <i class="fa-solid fa-user text-white text-3xl"></i>
                     </div>
-                    <button class="text-sm text-gray-700 border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">Change Avatar</button>
+                    <button class="text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded px-3 py-1 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Change Avatar</button>
                 </div>
 
                 <!-- Form Fields -->
                 <div class="flex-1">
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                            <input type="text" placeholder="your first name.." class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">First Name</label>
+                            <input type="text" placeholder="your first name.." class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                            <input type="text" placeholder="your last name.." class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Last Name</label>
+                            <input type="text" placeholder="your last name.." class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors">
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                        <input type="text" placeholder="Your unique username.." class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Username</label>
+                        <input type="text" placeholder="Your unique username.." class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors">
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" placeholder="Enter your email" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Email</label>
+                        <input type="email" placeholder="Enter your email" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors">
                     </div>
 
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                        <textarea placeholder="Tell us about yourself..." class="w-full border border-gray-300 rounded px-3 py-2 text-sm h-20 resize-none"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Bio</label>
+                        <textarea placeholder="Tell us about yourself..." class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm h-20 resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"></textarea>
                     </div>
 
                     <div class="flex justify-end">
-                        <button class="bg-gray-900 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800">Save Changes</button>
+                        <button class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors">Save Changes</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Theme Selection -->
-        <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Theme</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 mb-8 transition-colors">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">Theme</h2>
 
-            <div class="flex items-center gap-4">
-                <label class="text-sm font-medium text-gray-700">Select Theme:</label>
-                <select class="border border-gray-300 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900">
-                    <option value="light">Light Mode</option>
-                    <option value="dark">Dark Mode</option>
-                </select>
+            <div class="flex items-center justify-between">
+                <div>
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Appearance</label>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors">Choose your preferred theme mode</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-600 dark:text-gray-400 transition-colors">Light</span>
+                    <button data-theme-toggle class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700" title="Toggle theme">
+                        <span data-toggle-track class="inline-flex items-center justify-center h-6 w-6 transform rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out translate-x-1 dark:translate-x-7">
+                            <span data-toggle-icon></span>
+                        </span>
+                    </button>
+                    <span class="text-sm text-gray-600 dark:text-gray-400 transition-colors">Dark</span>
+                </div>
             </div>
         </div>
 
         <!-- Account Management Section -->
-        <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
-            <h2 class="text-xl font-bold text-gray-900 mb-6">Account Management</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 mb-8 transition-colors">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">Account Management</h2>
 
             <!-- Change Password -->
-            <div class="mb-8 pb-8 border-b border-gray-200">
-                <h3 class="text-sm font-semibold text-gray-900 mb-4">Change Password</h3>
+            <div class="mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Change Password</h3>
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-sm text-gray-700 mb-1">Current Password</label>
-                        <input type="password" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+                        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1 transition-colors">Current Password</label>
+                        <input type="password" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors">
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-700 mb-1">New Password</label>
-                        <input type="password" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+                        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1 transition-colors">New Password</label>
+                        <input type="password" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors">
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-700 mb-1">Confirm New Password</label>
-                        <input type="password" class="w-full border border-gray-300 rounded px-3 py-2 text-sm">
+                        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1 transition-colors">Confirm New Password</label>
+                        <input type="password" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors">
                     </div>
                 </div>
                 <div class="mt-4 flex justify-end">
-                    <button class="bg-gray-900 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800">Update Password</button>
+                    <button class="bg-gray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors">Update Password</button>
                 </div>
             </div>
 
             <!-- Sign Out -->
-            <div class="mb-6 pb-6 border-b border-gray-200 flex justify-between items-center">
+            <div class="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                 <div>
-                    <h3 class="text-sm font-medium text-gray-900">Sign Out</h3>
-                    <p class="text-xs text-gray-600">Sign out of your account on this device</p>
+                    <h3 class="text-sm font-medium text-gray-900 dark:text-white transition-colors">Sign Out</h3>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 transition-colors">Sign out of your account on this device</p>
                 </div>
-                <button id="signout-btn" class="border border-gray-300 text-gray-900 px-4 py-2 rounded text-sm hover:bg-gray-50">
+                <button id="signout-btn" class="border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white px-4 py-2 rounded text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <i class="fa-solid fa-right-from-bracket mr-2"></i>Sign Out
                 </button>
             </div>
@@ -150,15 +164,15 @@
             <!-- Delete Account -->
             <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="text-sm font-medium text-gray-900">Delete Account</h3>
-                    <p class="text-xs text-gray-600">Permanently delete your account and all data</p>
+                    <h3 class="text-sm font-medium text-gray-900 dark:text-white transition-colors">Delete Account</h3>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 transition-colors">Permanently delete your account and all data</p>
                 </div>
-                <button class="bg-gray-900 text-white px-4 py-2 rounded text-sm hover:bg-gray-800">Delete Account</button>
+                <button class="bg-gray-900 dark:bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-800 dark:hover:bg-red-700 transition-colors">Delete Account</button>
             </div>
         </div>
     </div>
     <!-- Mobile Footer Navigation (sm:hidden) -->
-    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50" id="mobile-nav">
+    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors" id="mobile-nav">
         <div class="flex justify-around items-center py-3">
             <!-- Home -->
             <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600">
@@ -327,6 +341,7 @@
             }
         });
     </script>
+    <script src="/theme.js"></script>
 </body>
 
 </html>

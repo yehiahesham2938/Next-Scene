@@ -1,7 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="transition-colors duration-200">
 
 <head>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Movies | Next-Scene</title>
@@ -21,35 +27,35 @@
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-gray-900 dark:text-white">
 
     <!-- Desktop Header / NAVBAR -->
-    <header class="hidden sm:flex bg-white py-4 border-b border-gray-200">
+    <header class="hidden sm:flex bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700">
         <div class="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
             <!-- Logo -->
             <div class="flex items-center gap-2">
-                <i class="fa-solid fa-film text-gray-800 text-3xl"></i>
-                <a href="index.html" id="logo-link" class="text-gray-900 text-lg font-bold">Next-scene</a>
+                <i class="fa-solid fa-film text-gray-800 dark:text-white text-3xl"></i>
+                <a href="index.html" id="logo-link" class="text-gray-900 dark:text-white text-lg font-bold">Next-scene</a>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex gap-8 items-center" id="main-nav">
-                <a href="index.html" class="text-gray-700 hover:text-black">Home</a>
-                <a href="dashboard-page.html" class="text-gray-700 hover:text-black">dashboard</a>
-                <a href="browse.html" class="text-black font-semibold">Browse</a>
-                <a href="about-page.html" class="text-gray-700 hover:text-black">About us</a>
+                <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">Home</a>
+                <a href="dashboard-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">dashboard</a>
+                <a href="browse.html" class="text-black dark:text-white font-semibold">Browse</a>
+                <a href="about-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">About us</a>
             </nav>
 
             <!-- Search Bar, Sign In Button, and Avatar (Desktop Only) - All in one line -->
             <div class="flex items-center gap-4 flex-shrink-0">
                 <div class="relative max-w-xs w-full">
-                    <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <a href="signin-page.html" id="signin-nav-btn" class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition whitespace-nowrap">Sign In</a>
-                <a href="profile-page.html" id="user-profile-btn" class="hidden w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition flex-shrink-0">
+                <a href="signin-page.html" id="signin-nav-btn" class="bg-black dark:bg-white dark:text-black text-white px-4 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 transition whitespace-nowrap">Sign In</a>
+                <a href="profile-page.html" id="user-profile-btn" class="hidden w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0">
                     <i class="fa-solid fa-user text-white text-sm"></i>
                 </a>
             </div>
@@ -57,14 +63,14 @@
     </header>
 
     <!-- Mobile Header (sm:hidden) -->
-    <header class="sm:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-sm z-50">
+    <header class="sm:hidden fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm z-50">
         <div class="flex justify-between items-center px-4 py-3">
 
-            <i class="fa-solid fa-film text-gray-800 text-2xl"></i>
-            <h1 class="text-lg font-semibold text-gray-900">Browse</h1>
+            <i class="fa-solid fa-film text-gray-800 dark:text-white text-2xl"></i>
+            <h1 class="text-lg font-semibold text-gray-900 dark:text-white">Browse</h1>
 
             <!-- Avatar (Link to Profile) -->
-            <a href="profile-page.html" class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+            <a href="profile-page.html" class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
                 <i class="fa-solid fa-user text-gray-600 text-xs"></i>
             </a>
         </div>
@@ -76,15 +82,15 @@
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-8">
 
         <div class="hidden md:block mb-8">
-            <h1 class="text-3xl font-bold mb-2">Browse Movies</h1>
-            <p class="text-gray-600">Discover and explore thousands of movies</p>
+            <h1 class="text-3xl font-bold mb-2 dark:text-white">Browse Movies</h1>
+            <p class="text-gray-600 dark:text-gray-300">Discover and explore thousands of movies</p>
         </div>
 
         <div class="md:hidden mb-6">
-            <h1 class="text-2xl font-bold mb-4">Browse</h1>
+            <h1 class="text-2xl font-bold mb-4 dark:text-white">Browse</h1>
             <div class="relative mb-4">
-                <input type="text" id="mobile-search" placeholder="Search movies..." class="w-full px-4 py-3 pr-10 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
-                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <input type="text" id="mobile-search" placeholder="Search movies..." class="w-full px-4 py-3 pr-10 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300">
                         <i class="fas fa-search"></i>
                     </button>
             </div>
@@ -92,19 +98,19 @@
 
         <div class="md:hidden mb-6 overflow-x-auto">
             <div class="flex gap-2 pb-2">
-                <button class="px-4 py-2 bg-black text-white rounded-full text-sm whitespace-nowrap font-medium">All</button>
-                <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">Action</button>
-                <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">Drama</button>
-                <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">2024</button>
-                <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-full text-sm whitespace-nowrap hover:bg-gray-50">5+ ⭐</button>
+                <button class="px-4 py-2 bg-black dark:bg-white dark:text-black text-white rounded-full text-sm whitespace-nowrap font-medium">All</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">Action</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">Drama</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">2024</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">5+ ⭐</button>
             </div>
         </div>
 
         <div class="hidden md:block mb-6">
             <div class="flex items-center gap-4 mb-4">
                 <div class="relative flex-1">
-                    <input type="text" placeholder="Search movies, actors, directors..." class="w-full px-9 py-3 pr-10 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
-                    <button class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <input type="text" placeholder="Search movies, actors, directors..." class="w-full px-9 py-3 pr-10 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <button class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300">
                             <i class="fas fa-search"></i>
                         </button>
                 </div>
@@ -112,34 +118,34 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex gap-3">
-                    <select class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <select class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
                             <option>Genre</option>
                             <option>Action</option>
                             <option>Drama</option>
                             <option>Comedy</option>
                             <option>Thriller</option>
                         </select>
-                    <select class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <select class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
                             <option>Year</option>
                             <option>2024</option>
                             <option>2023</option>
                             <option>2022</option>
                         </select>
-                    <select class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <select class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
                             <option>Rating</option>
                             <option>9+ Stars</option>
                             <option>8+ Stars</option>
                             <option>7+ Stars</option>
                         </select>
-                    <button class="px-4 py-2 text-gray-600 text-sm hover:text-black flex items-center gap-2">
+                    <button class="px-4 py-2 text-gray-600 dark:text-gray-300 text-sm hover:text-black dark:hover:text-white flex items-center gap-2">
                             <i class="fas fa-times"></i> Clear Filters
                         </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-sm text-gray-600">Showing 1-24 • 1080</span>
-                    <span class="text-gray-300">|</span>
-                    <span class="text-sm text-gray-600">Sort by:</span>
-                    <select class="px-3 py-1 bg-white border border-gray-200 rounded text-sm focus:outline-none">
+                    <span class="text-sm text-gray-600 dark:text-gray-300">Showing 1-24 • 1080</span>
+                    <span class="text-gray-300 dark:text-gray-600">|</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-300">Sort by:</span>
+                    <select class="px-3 py-1 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded text-sm focus:outline-none">
                             <option>Popularity</option>
                             <option>Rating</option>
                             <option>Year</option>
@@ -150,7 +156,7 @@
 
         <a href="MovieDetails.html">
             <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
+                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
                     <div class="relative">
                         <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
                             Movie Poster
@@ -161,19 +167,19 @@
                         </button>
                     </div>
                     <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate">Interstellar</h3>
-                        <p class="text-gray-500 text-xs mb-2">2014</p>
+                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
                         <div class="flex items-center gap-1">
                             <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 text-xs font-medium">8.6</span>
+                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                         </div>
-                        <p class="text-gray-500 text-xs mt-1">Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
+                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
                     <div class="relative">
                         <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
-                            
+
                             <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
                         </div>
                         <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
@@ -181,36 +187,16 @@
                         </button>
                     </div>
                     <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate">Interstellar</h3>
-                        <p class="text-gray-500 text-xs mb-2">2014</p>
+                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
                         <div class="flex items-center gap-1">
                             <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 text-xs font-medium">8.6</span>
+                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                         </div>
-                        <p class="text-gray-500 text-xs mt-1">Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
-                    <div class="relative">
-                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
-                            Movie Poster
-                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="far fa-bookmark text-white text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate">Interstellar</h3>
-                        <p class="text-gray-500 text-xs mb-2">2014</p>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 text-xs font-medium">8.6</span>
-                        </div>
-                        <p class="text-gray-500 text-xs mt-1">Sci-Fi, Adventure</p>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
+                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
                     <div class="relative">
                         <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
                             Movie Poster
@@ -221,16 +207,16 @@
                         </button>
                     </div>
                     <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate">Interstellar</h3>
-                        <p class="text-gray-500 text-xs mb-2">2014</p>
+                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
                         <div class="flex items-center gap-1">
                             <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 text-xs font-medium">8.6</span>
+                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                         </div>
-                        <p class="text-gray-500 text-xs mt-1">Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
+                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
                     <div class="relative">
                         <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
                             Movie Poster
@@ -241,16 +227,16 @@
                         </button>
                     </div>
                     <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate">Interstellar</h3>
-                        <p class="text-gray-500 text-xs mb-2">2014</p>
+                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
                         <div class="flex items-center gap-1">
                             <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 text-xs font-medium">8.6</span>
+                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                         </div>
-                        <p class="text-gray-500 text-xs mt-1">Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
+                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
                     <div class="relative">
                         <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
                             Movie Poster
@@ -261,13 +247,33 @@
                         </button>
                     </div>
                     <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate">Interstellar</h3>
-                        <p class="text-gray-500 text-xs mb-2">2014</p>
+                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
                         <div class="flex items-center gap-1">
                             <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 text-xs font-medium">8.6</span>
+                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                         </div>
-                        <p class="text-gray-500 text-xs mt-1">Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
+                    <div class="relative">
+                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
+                            Movie Poster
+                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
+                        </div>
+                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                            <i class="far fa-bookmark text-white text-sm"></i>
+                        </button>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-star text-yellow-500 text-xs"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
                     </div>
                 </div>
             </div>
@@ -275,7 +281,7 @@
 
         <a href="MovieDetails.html">
             <div class="md:hidden space-y-4">
-                <div class="bg-white rounded-lg p-4 flex gap-3 shadow-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
                     <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
                         <!-- Poster -->
                         <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
@@ -287,18 +293,18 @@
                                 <i class="far fa-bookmark text-gray-400"></i>
                             </button>
                         </div>
-                        <p class="text-gray-500 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
                         <div class="flex items-center gap-2 mb-2">
                             <div class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 text-xs font-medium">8.6</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                             </div>
                             <span class="text-gray-400 text-xs">2h 49m</span>
                         </div>
                         <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg p-4 flex gap-3 shadow-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
                     <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
                         <!-- Poster -->
                         <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
@@ -310,18 +316,18 @@
                                 <i class="far fa-bookmark text-gray-400"></i>
                             </button>
                         </div>
-                        <p class="text-gray-500 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
                         <div class="flex items-center gap-2 mb-2">
                             <div class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 text-xs font-medium">8.6</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                             </div>
                             <span class="text-gray-400 text-xs">2h 49m</span>
                         </div>
                         <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg p-4 flex gap-3 shadow-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
                     <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
                         <!-- Poster -->
                         <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
@@ -333,18 +339,18 @@
                                 <i class="far fa-bookmark text-gray-400"></i>
                             </button>
                         </div>
-                        <p class="text-gray-500 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
                         <div class="flex items-center gap-2 mb-2">
                             <div class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 text-xs font-medium">8.6</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                             </div>
                             <span class="text-gray-400 text-xs">2h 49m</span>
                         </div>
                         <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg p-4 flex gap-3 shadow-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
                     <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
                         <!-- Poster -->
                         <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
@@ -356,18 +362,18 @@
                                 <i class="far fa-bookmark text-gray-400"></i>
                             </button>
                         </div>
-                        <p class="text-gray-500 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
                         <div class="flex items-center gap-2 mb-2">
                             <div class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 text-xs font-medium">8.6</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                             </div>
                             <span class="text-gray-400 text-xs">2h 49m</span>
                         </div>
                         <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg p-4 flex gap-3 shadow-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
                     <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
                         <!-- Poster -->
                         <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
@@ -379,18 +385,18 @@
                                 <i class="far fa-bookmark text-gray-400"></i>
                             </button>
                         </div>
-                        <p class="text-gray-500 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
                         <div class="flex items-center gap-2 mb-2">
                             <div class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 text-xs font-medium">8.6</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                             </div>
                             <span class="text-gray-400 text-xs">2h 49m</span>
                         </div>
                         <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg p-4 flex gap-3 shadow-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
                     <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
                         <!-- Poster -->
                         <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
@@ -402,11 +408,11 @@
                                 <i class="far fa-bookmark text-gray-400"></i>
                             </button>
                         </div>
-                        <p class="text-gray-500 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
                         <div class="flex items-center gap-2 mb-2">
                             <div class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 text-xs font-medium">8.6</span>
+                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
                             </div>
                             <span class="text-gray-400 text-xs">2h 49m</span>
                         </div>
@@ -460,10 +466,10 @@
     </footer>
 
     <!-- Mobile Footer Navigation (sm:hidden) -->
-    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
         <div class="flex justify-around items-center py-3">
             <!-- Home -->
-            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600">
+            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
@@ -471,7 +477,7 @@
             </a>
 
             <!-- Browse -->
-            <a href="Browse.html" class="flex flex-col items-center gap-1 text-gray-900 font-bold">
+            <a href="Browse.html" class="flex flex-col items-center gap-1 text-gray-900 dark:text-white font-bold">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -479,7 +485,7 @@
             </a>
 
             <!-- Dashboard (Active) -->
-            <a href="dashboard-page.html" class="flex flex-col items-center gap-1 text-gray-600">
+            <a href="dashboard-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
@@ -487,7 +493,7 @@
             </a>
 
             <!-- Profile -->
-            <a href="profile-page.html" class="flex flex-col items-center gap-1 text-gray-600">
+            <a href="profile-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
@@ -497,6 +503,7 @@
     </nav>
 
     <script type="module" src="/src/main.jsx"></script>
+    <script src="theme.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const signinBtn = document.getElementById('signin-nav-btn');
