@@ -52,21 +52,21 @@
     // Insert overlay into DOM
     document.addEventListener('DOMContentLoaded', function() {
         document.body.insertAdjacentHTML('beforeend', loadingHTML);
-        
+
         const overlay = document.getElementById('page-transition-overlay');
         const dotsEl = document.getElementById('loading-dots');
-        
+
         // Animated dots
         let dots = 0;
         let dotsInterval;
-        
+
         function startDots() {
             dotsInterval = setInterval(() => {
                 dots = (dots + 1) % 4;
                 dotsEl.textContent = '.'.repeat(dots);
             }, 400);
         }
-        
+
         function stopDots() {
             clearInterval(dotsInterval);
             dotsEl.textContent = '';
@@ -91,20 +91,20 @@
         // Intercept all link clicks for smooth transitions
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
-            
+
             // Check if it's a valid internal link
-            if (link && 
-                link.href && 
-                link.href.indexOf(window.location.origin) === 0 && 
+            if (link &&
+                link.href &&
+                link.href.indexOf(window.location.origin) === 0 &&
                 !link.hasAttribute('target') &&
                 !link.hasAttribute('download') &&
                 !link.href.includes('#') &&
                 link.href !== window.location.href) {
-                
+
                 e.preventDefault();
-                
+
                 showOverlay();
-                
+
                 // Navigate after a brief delay to show the overlay
                 setTimeout(() => {
                     window.location.href = link.href;
