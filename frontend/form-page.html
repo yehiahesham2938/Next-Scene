@@ -32,14 +32,14 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-film text-gray-800 text-3xl"></i>
-                <a href="index.html" class="text-gray-900 text-lg font-bold">Next-scene</a>
+                <a href="admin-dashboard.html" class="text-gray-900 text-lg font-bold">Next-scene</a>
             </div>
 
             <nav class="hidden md:flex gap-8 items-center">
-                <a href="index.html" class="text-gray-700 hover:text-black">Home</a>
-                <a href="#" class="text-gray-700 hover:text-black">Dashboard</a>
-                <a href="#" class="text-gray-700 hover:text-black">Browse</a>
-                <a href="#" class="text-gray-700 hover:text-black">About us</a>
+                <a href="admin-dashboard.html" class="text-gray-700 hover:text-black">Admin Dashboard</a>
+                <a href="form-page.html" class="text-black font-semibold">Add Movie</a>
+                <a href="browse.html" class="text-gray-700 hover:text-black">Browse</a>
+                <a href="about-page.html" class="text-gray-700 hover:text-black">About us</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -57,7 +57,7 @@
         <div class="max-w-4xl mx-auto">
             <div class="bg-white rounded-lg shadow-lg p-8">
                 <div class="text-sm text-gray-500 mb-4">
-                    <a href="index.html" class="hover:text-gray-700">Home</a>
+                    <a href="admin-dashboard.html" class="hover:text-gray-700">Admin Dashboard</a>
                     <span class="mx-2">></span>
                     <span class="text-gray-700">Add Movie</span>
                 </div>
@@ -216,7 +216,7 @@
                 <div>
                     <div class="flex items-center gap-2 mb-3">
                         <i class="fa-solid fa-film text-white text-3xl"></i>
-                        <a href="index.html" class="text-white text-lg font-bold">Next-scene</a>
+                        <a href="admin-dashboard.html" class="text-white text-lg font-bold">Next-scene</a>
                     </div>
                     <p class="text-gray-400 text-sm">Your ultimate destination for movie discovery and management.</p>
                 </div>
@@ -262,6 +262,34 @@
     </footer>
 
     <script>
+        // Check authentication and admin role
+        window.onload = function() {
+            const user = localStorage.getItem('user');
+
+            // Redirect to sign-in page if user is not signed in
+            if (!user) {
+                window.location.href = 'signin-page.html';
+                return;
+            }
+
+            // Parse and check user data
+            try {
+                const userData = JSON.parse(user);
+                console.log('Current user:', userData);
+                
+                // Redirect non-admin users to index page
+                if (userData.role !== 'admin') {
+                    window.location.href = 'index.html';
+                    return;
+                }
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+                // If data is corrupted, redirect to sign-in
+                window.location.href = 'signin-page.html';
+                return;
+            }
+        };
+
         const fileInput = document.getElementById('movie-poster-input');
         const chooseFileBtn = document.getElementById('choose-file-btn');
         const uploadArea = document.getElementById('upload-area');

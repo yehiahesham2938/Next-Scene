@@ -22,6 +22,7 @@ router.post('/signup', async (req, res) => {
 			id: user._id.toString(),
 			fullName: user.fullName,
 			email: user.email,
+			role: user.role,
 			createdAt: user.createdAt,
 		});
 	} catch (err) {
@@ -50,6 +51,7 @@ router.post('/signin', async (req, res) => {
 			id: user._id.toString(),
 			fullName: user.fullName,
 			email: user.email,
+			role: user.role,
 			createdAt: user.createdAt,
 		});
 	} catch (err) {

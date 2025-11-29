@@ -343,6 +343,17 @@
             const user = localStorage.getItem('user');
 
             if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    // Redirect admin users to admin dashboard
+                    if (userData.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+                
                 // user is signed in and hide the sign-in button
                 if (signinBtn) {
                     signinBtn.style.display = 'none';
