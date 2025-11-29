@@ -3,9 +3,27 @@
 
 <head>
     <script>
+        // Initialize theme immediately to prevent flash - MUST run before Tailwind
         (function() {
-            const theme = localStorage.getItem('theme') || 'light';
-            document.documentElement.classList.toggle('dark', theme === 'dark');
+            let theme = localStorage.getItem('theme');
+            // Normalize theme value - ensure it's either 'light' or 'dark'
+            if (theme) {
+                theme = theme.trim().toLowerCase();
+                if (theme !== 'light' && theme !== 'dark') {
+                    theme = 'light';
+                }
+            } else {
+                theme = 'light';
+            }
+            // CRITICAL: Set the class on HTML element BEFORE Tailwind processes
+            const html = document.documentElement;
+            html.classList.remove('light', 'dark');
+            html.className = html.className.trim() + ' ' + theme;
+            html.className = html.className.trim();
+            // Ensure localStorage is set correctly
+            if (localStorage.getItem('theme') !== theme) {
+                localStorage.setItem('theme', theme);
+            }
         })();
     </script>
     <meta charset="UTF-8">
@@ -15,28 +33,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link to built Tailwind CSS -->
+    <link rel="stylesheet" href="/src/profile-page.css">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors">
     <div class="max-w-[1280px] mx-auto px-4 py-8 flex flex-col min-h-screen">
 
         <!-- el header beta3 el mobile (logo + esm el app) bas beyzher fi mobile w yekhfa fi desktop -->
-        <div class="flex md:hidden flex-col items-center mb-6">
-            <div class="bg-gray-800 rounded-xl p-4 mb-3">
+        <div class="flex md:hidden flex-col items-center mb-6 relative w-full">
+            <div class="bg-gray-800 dark:bg-gray-700 rounded-xl p-4 mb-3 transition-colors">
                 <i class="fa-solid fa-film text-white text-3xl"></i>
             </div>
-            <h1 class="text-gray-900 font-semibold text-xl">Next-scene</h1>
+            <h1 class="text-gray-900 dark:text-white font-semibold text-xl transition-colors">Next-scene</h1>
         </div>
 
         <!-- el header beta3 el desktop (logo + esm el app + subtitle) bas beyzher fi desktop w yekhfa fi mobile -->
-        <div class="hidden md:flex flex-col items-center mb-6">
+        <div class="hidden md:flex flex-col items-center mb-6 relative w-full">
             <div class="flex items-center gap-2 mb-2">
-                <div class="bg-gray-800 rounded-xl p-4">
+                <div class="bg-gray-800 dark:bg-gray-700 rounded-xl p-4 transition-colors">
                     <i class="fa-solid fa-film text-white text-3xl"></i>
                 </div>
-                <h1 class="text-gray-900 font-semibold text-xl">Next-scene</h1>
+                <h1 class="text-gray-900 dark:text-white font-semibold text-xl transition-colors">Next-scene</h1>
             </div>
-            <p class="text-gray-500 text-sm">Create your account to start exploring</p>
+            <p class="text-gray-500 dark:text-gray-400 text-sm transition-colors">Create your account to start exploring</p>
         </div>
 
         <!-- el main signup card-->
@@ -188,7 +208,7 @@
 
 
     <script type="module" src="/src/signup-page.js"></script>
-    <script src="theme.js"></script>
+    <script src="/public/theme.js"></script>
 </body>
 
 </html>

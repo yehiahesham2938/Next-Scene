@@ -2,19 +2,57 @@
 <html lang="en">
 
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile & Settings - Next-scene</title>
     <script>
+        // Initialize theme immediately to prevent flash - MUST run before Tailwind
         (function() {
-            const theme = localStorage.getItem('theme') || 'light';
-            document.documentElement.classList.add(theme);
+            let theme = localStorage.getItem('theme');
+            // Normalize theme value - ensure it's either 'light' or 'dark'
+            if (theme) {
+                theme = theme.trim().toLowerCase();
+                if (theme !== 'light' && theme !== 'dark') {
+                    theme = 'light';
+                }
+            } else {
+                theme = 'light';
+            }
+            // CRITICAL: Set the class on HTML element BEFORE Tailwind processes
+            const html = document.documentElement;
+            html.classList.remove('light', 'dark');
+            html.className = html.className.trim() + ' ' + theme;
+            html.className = html.className.trim();
+            // Ensure localStorage is set correctly
+            if (localStorage.getItem('theme') !== theme) {
+                localStorage.setItem('theme', theme);
+            }
+            // Store for debugging
+            window.__initialTheme = theme;
         })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link to built Tailwind CSS - use profile-page.css which includes Tailwind -->
+    <!-- Note: This requires Vite dev server (npm run dev) to process the CSS -->
+    <link rel="stylesheet" href="/src/profile-page.css">
+    <style>
+        /* Fallback: Ensure basic dark mode works even if Tailwind CSS doesn't load */
+        html.dark {
+            color-scheme: dark;
+        }
+        html.light {
+            color-scheme: light;
+        }
+        /* Test if CSS is loaded - this will help debug */
+        body::before {
+            content: '';
+            display: none;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
@@ -104,7 +142,7 @@
         </div>
 
         <!-- Theme Selection -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 mb-8 transition-colors">
+        <div id="theme-section" class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 mb-8 transition-colors">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">Theme</h2>
 
             <div class="flex items-center justify-between">
@@ -114,8 +152,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-gray-600 dark:text-gray-400 transition-colors">Light</span>
-                    <button data-theme-toggle class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700" title="Toggle theme">
-                        <span data-toggle-track class="inline-flex items-center justify-center h-6 w-6 transform rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out translate-x-1 dark:translate-x-7">
+                    <button data-theme-toggle class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700 overflow-hidden flex-shrink-0" title="Toggle theme">
+                        <span data-toggle-track class="absolute inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out left-1">
                             <span data-toggle-icon></span>
                         </span>
                     </button>
@@ -338,10 +376,18 @@
                         </div>
                     `;
                 }
+
+                // Hide Theme section for admin users
+                if (isAdmin) {
+                    const themeSection = document.getElementById('theme-section');
+                    if (themeSection) {
+                        themeSection.style.display = 'none';
+                    }
+                }
             }
         });
     </script>
-    <script src="/theme.js"></script>
+    <script src="/public/theme.js"></script>
 </body>
 
 </html>

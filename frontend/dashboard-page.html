@@ -3,9 +3,27 @@
 
 <head>
     <script>
+        // Initialize theme immediately to prevent flash - MUST run before Tailwind
         (function() {
-            const theme = localStorage.getItem('theme') || 'light';
-            document.documentElement.classList.toggle('dark', theme === 'dark');
+            let theme = localStorage.getItem('theme');
+            // Normalize theme value - ensure it's either 'light' or 'dark'
+            if (theme) {
+                theme = theme.trim().toLowerCase();
+                if (theme !== 'light' && theme !== 'dark') {
+                    theme = 'light';
+                }
+            } else {
+                theme = 'light';
+            }
+            // CRITICAL: Set the class on HTML element BEFORE Tailwind processes
+            const html = document.documentElement;
+            html.classList.remove('light', 'dark');
+            html.className = html.className.trim() + ' ' + theme;
+            html.className = html.className.trim();
+            // Ensure localStorage is set correctly
+            if (localStorage.getItem('theme') !== theme) {
+                localStorage.setItem('theme', theme);
+            }
         })();
     </script>
     <meta charset="UTF-8">
@@ -15,7 +33,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Link to built Tailwind CSS - use profile-page.css which includes Tailwind -->
+    <!-- Note: This requires Vite dev server (npm run dev) to process the CSS -->
+    <link rel="stylesheet" href="/src/profile-page.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -31,7 +51,7 @@
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
 
     <!-- Desktop Header (sm:flex) -->
     <header class="hidden sm:flex bg-white dark:bg-gray-800 py-4">
@@ -50,7 +70,7 @@
                 <a href="about-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">About us</a>
             </nav>
 
-            <!-- Search Bar and Avatar (Desktop Only) -->
+            <!-- Search Bar, Theme Toggle, and Avatar (Desktop Only) -->
             <div class="flex items-center gap-4">
                 <div class="relative max-w-xs w-full">
                     <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
@@ -58,7 +78,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <a href="profile-page.html" class="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0">
+                <!-- Theme Toggle Button -->
+                <button data-theme-toggle class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700 overflow-hidden flex-shrink-0" title="Toggle theme">
+                    <span data-toggle-track class="absolute inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out left-1">
+                        <span data-toggle-icon></span>
+                    </span>
+                </button>
+                <a href="profile-page.html" class="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0 ml-2">
                     <i class="fa-solid fa-user text-white text-sm"></i>
                 </a>
             </div>
@@ -579,7 +605,7 @@
             });
         };
     </script>
-    <script src="theme.js"></script>
+    <script src="/public/theme.js"></script>
 </body>
 
 </html>

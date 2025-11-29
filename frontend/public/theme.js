@@ -9,54 +9,157 @@
 
     // Initialize theme immediately (prevents flash)
     function initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        let savedTheme = localStorage.getItem('theme');
+        // Normalize theme value - ensure it's either 'light' or 'dark'
+        if (savedTheme) {
+            savedTheme = savedTheme.trim().toLowerCase();
+            if (savedTheme !== 'light' && savedTheme !== 'dark') {
+                savedTheme = 'light';
+            }
+        } else {
+            savedTheme = 'light';
+        }
+        // Remove any existing theme classes first
         document.documentElement.classList.remove('light', 'dark');
+        // Add the theme class
         document.documentElement.classList.add(savedTheme);
+        // Ensure localStorage is set correctly
+        if (localStorage.getItem('theme') !== savedTheme) {
+            localStorage.setItem('theme', savedTheme);
+        }
         return savedTheme;
     }
 
     // Set theme and persist
     function setTheme(newTheme) {
+        // Normalize theme value
+        if (newTheme) {
+            newTheme = newTheme.trim().toLowerCase();
+        }
         if (newTheme !== 'light' && newTheme !== 'dark') {
             newTheme = 'light';
         }
 
-        document.documentElement.classList.remove('light', 'dark');
-        document.documentElement.classList.add(newTheme);
+        // Remove any existing theme classes and add the new one
+        const html = document.documentElement;
+        
+        // Remove both classes first
+        html.classList.remove('light', 'dark');
+        
+        // Add the new theme class
+        html.classList.add(newTheme);
+        
+        // Also set as attribute for CSS targeting
+        html.setAttribute('data-theme', newTheme);
+        
+        // Save to localStorage
         localStorage.setItem('theme', newTheme);
+
+        // Force a reflow to ensure styles are recalculated
+        void html.offsetHeight;
+        
+        // Dispatch a custom event for any listeners
+        window.dispatchEvent(new CustomEvent('themeChanged', { 
+            detail: { theme: newTheme } 
+        }));
 
         // Update all toggle buttons on page
         updateToggleButtons(newTheme);
+
+        // Debug logging
+        console.log('✅ Theme changed to:', newTheme);
+        console.log('✅ HTML element classes:', html.className);
+        console.log('✅ localStorage theme:', localStorage.getItem('theme'));
+        console.log('✅ Has dark class:', html.classList.contains('dark'));
+        console.log('✅ Has light class:', html.classList.contains('light'));
+        
+        // Check if CSS is loaded
+        const stylesheets = Array.from(document.styleSheets);
+        const tailwindLoaded = stylesheets.some(sheet => {
+            try {
+                return sheet.href && (sheet.href.includes('profile-page.css') || sheet.href.includes('index.css') || sheet.href.includes('tailwind'));
+            } catch {
+                return false;
+            }
+        });
+        console.log('✅ Tailwind CSS loaded:', tailwindLoaded);
+        console.log('✅ Stylesheets count:', stylesheets.length);
 
         return newTheme;
     }
 
     // Toggle between light and dark
     function toggleTheme() {
-        const currentTheme = localStorage.getItem('theme') || 'light';
+        console.log('🔄 toggleTheme() called');
+        
+        // Get current theme from localStorage (source of truth)
+        let currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            currentTheme = currentTheme.trim().toLowerCase();
+        }
+        if (currentTheme !== 'light' && currentTheme !== 'dark') {
+            currentTheme = 'light';
+        }
+        
+        // If no theme in localStorage, check DOM
+        if (!currentTheme) {
+            const htmlElement = document.documentElement;
+            const hasDark = htmlElement.classList.contains('dark');
+            const hasLight = htmlElement.classList.contains('light');
+            
+            if (hasDark) {
+                currentTheme = 'dark';
+            } else if (hasLight) {
+                currentTheme = 'light';
+            } else {
+                currentTheme = 'light';
+            }
+        }
+        
+        console.log('📊 Current theme:', currentTheme);
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        console.log('📊 Switching to:', newTheme);
+        
         return setTheme(newTheme);
     }
 
     // Update all toggle buttons
     function updateToggleButtons(theme) {
         const toggles = document.querySelectorAll('[data-theme-toggle]');
-        toggles.forEach(toggle => {
+        console.log('🎨 updateToggleButtons called with theme:', theme, 'Found', toggles.length, 'toggles');
+        
+        toggles.forEach((toggle, index) => {
             const track = toggle.querySelector('[data-toggle-track]');
             const icon = toggle.querySelector('[data-toggle-icon]');
 
             if (track) {
+                // Remove all possible left/right positioning classes
+                const allLeftClasses = ['left-0', 'left-1', 'left-2', 'left-3', 'left-4', 'left-5', 'left-6', 'left-7', 'left-8', 'left-auto'];
+                const allRightClasses = ['right-0', 'right-1', 'right-2', 'right-3', 'right-4', 'right-5', 'right-6', 'right-7', 'right-8', 'right-auto'];
+                track.classList.remove(...allLeftClasses, ...allRightClasses);
+                
                 if (theme === 'dark') {
-                    track.classList.add('translate-x-7');
-                    track.classList.remove('translate-x-1');
+                    // Move to rightmost: w-14 (56px) - w-6 (24px) = 32px = left-8 (2rem)
+                    // This positions the track at the right edge
+                    track.classList.add('left-8');
+                    console.log('🌙 Toggle', index, '- Set to dark mode (left-8 = 32px)');
                 } else {
-                    track.classList.add('translate-x-1');
-                    track.classList.remove('translate-x-7');
+                    // Move to leftmost: left-1 (4px padding = 0.25rem)
+                    track.classList.add('left-1');
+                    console.log('☀️ Toggle', index, '- Set to light mode (left-1 = 4px)');
                 }
+                
+                // Force a reflow to ensure the class change is applied
+                void track.offsetWidth;
+            } else {
+                console.warn('⚠️ Toggle', index, '- No track element found');
             }
 
             if (icon) {
                 icon.innerHTML = theme === 'dark' ? getMoonIcon() : getSunIcon();
+                console.log('🎯 Toggle', index, '- Icon updated');
+            } else {
+                console.warn('⚠️ Toggle', index, '- No icon element found');
             }
         });
     }
@@ -81,33 +184,105 @@
         }
     });
 
-    // Listen for theme changes from React
+    // Listen for theme changes from React or other sources
     window.addEventListener('themeChange', function(e) {
         if (e.detail && e.detail.theme) {
-            updateToggleButtons(e.detail.theme);
+            setTheme(e.detail.theme);
         }
     });
 
     // Initialize on load
-    const currentTheme = initTheme();
+    initTheme();
 
     // Setup toggle buttons when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             setupToggleButtons();
+            // Final check to ensure theme matches localStorage
+            enforceTheme();
         });
     } else {
         setupToggleButtons();
+        // Final check to ensure theme matches localStorage
+        enforceTheme();
+    }
+
+    // Enforce theme from localStorage (ensures consistency)
+    function enforceTheme() {
+        let savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            savedTheme = savedTheme.trim().toLowerCase();
+            if (savedTheme !== 'light' && savedTheme !== 'dark') {
+                savedTheme = 'light';
+            }
+        } else {
+            savedTheme = 'light';
+        }
+        
+        const htmlElement = document.documentElement;
+        const hasDark = htmlElement.classList.contains('dark');
+        const hasLight = htmlElement.classList.contains('light');
+        
+        // If theme doesn't match localStorage, fix it
+        if (savedTheme === 'light' && hasDark) {
+            htmlElement.classList.remove('dark');
+            htmlElement.classList.add('light');
+            updateToggleButtons('light');
+        } else if (savedTheme === 'dark' && hasLight) {
+            htmlElement.classList.remove('light');
+            htmlElement.classList.add('dark');
+            updateToggleButtons('dark');
+        } else if (!hasDark && !hasLight) {
+            // No theme class, add the correct one
+            htmlElement.classList.add(savedTheme);
+            updateToggleButtons(savedTheme);
+        } else {
+            // Theme matches, but ensure toggles are updated
+            updateToggleButtons(savedTheme);
+        }
     }
 
     function setupToggleButtons() {
-        const theme = localStorage.getItem('theme') || 'light';
+        // Get current theme
+        let theme = localStorage.getItem('theme');
+        if (theme) {
+            theme = theme.trim().toLowerCase();
+            if (theme !== 'light' && theme !== 'dark') {
+                theme = 'light';
+            }
+        } else {
+            theme = 'light';
+        }
+        
+        // Update toggle buttons immediately
         updateToggleButtons(theme);
+        
+        // Also update after a small delay to ensure DOM is fully ready
+        setTimeout(() => {
+            updateToggleButtons(theme);
+        }, 100);
 
-        // Add click handlers
+        // Add click handlers - use event delegation to avoid issues with cloning
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('[data-theme-toggle]');
+            if (toggle) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔄 Toggle button clicked!');
+                toggleTheme();
+            }
+        });
+        
+        // Also add direct listeners as backup
         const toggles = document.querySelectorAll('[data-theme-toggle]');
-        toggles.forEach(toggle => {
-            toggle.addEventListener('click', toggleTheme);
+        console.log('🔘 Found', toggles.length, 'toggle button(s)');
+        toggles.forEach((toggle, index) => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🔄 Toggle button', index, 'clicked (direct listener)!');
+                toggleTheme();
+            });
         });
     }
 

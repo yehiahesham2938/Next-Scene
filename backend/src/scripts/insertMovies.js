@@ -72,7 +72,7 @@ async function run() {
     console.log("❌ Please set your OMDB API key first.");
     process.exit(1);
   }
-
+  
   try {
     await client.connect();
     console.log("✅ Connected to MongoDB");

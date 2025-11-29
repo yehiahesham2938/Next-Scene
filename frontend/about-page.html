@@ -35,7 +35,7 @@
                 <a href="#" class="text-black dark:text-white font-semibold">About us</a>
             </nav>
 
-            <!-- Search Bar and Avatar (Desktop Only) -->
+            <!-- Search Bar, Theme Toggle, and Avatar (Desktop Only) -->
             <div class="flex items-center gap-4">
                 <div class="relative max-w-xs w-full">
                     <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors">
@@ -43,7 +43,13 @@
                       <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <a href="profile-page.html" class="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0">
+                <!-- Theme Toggle Button -->
+                <button data-theme-toggle class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700 overflow-hidden flex-shrink-0" title="Toggle theme">
+                    <span data-toggle-track class="absolute inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out left-1">
+                        <span data-toggle-icon></span>
+                    </span>
+                </button>
+                <a href="profile-page.html" class="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0 ml-2">
                     <i class="fa-solid fa-user text-white text-sm"></i>
                 </a>
             </div>
@@ -321,7 +327,7 @@
             }
         });
     </script>
-    <script src="theme.js"></script>
+    <script src="/public/theme.js"></script>
 </body>
 
 </html>

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="transition-colors duration-200">
+<html lang="en">
 
 <head>
     <script>
+        // Force light theme for admin pages - no theme switching allowed
         (function() {
-            const theme = localStorage.getItem('theme') || 'light';
-            document.documentElement.classList.toggle('dark', theme === 'dark');
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
         })();
     </script>
     <meta charset="UTF-8">
@@ -32,28 +33,28 @@
     </style>
 </head>
 
-<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+<body class="bg-white text-gray-900">
     <!-- Desktop Header / NAVBAR -->
-    <header class="hidden sm:flex bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700 transition-colors">
+    <header class="hidden sm:flex bg-white py-4 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
             <!-- Logo -->
             <div class="flex items-center gap-2">
-                <i class="fa-solid fa-film text-gray-800 dark:text-white text-3xl"></i>
-                <a href="admin-dashboard.html" class="text-gray-900 dark:text-white text-lg font-bold">Next-scene</a>
+                <i class="fa-solid fa-film text-gray-800 text-3xl"></i>
+                <a href="admin-dashboard.html" class="text-gray-900 text-lg font-bold">Next-scene</a>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex gap-8 items-center">
-                <a href="admin-dashboard.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Admin Dashboard</a>
-                <a href="form-page.html" class="text-black dark:text-white font-semibold">Add Movie</a>
-                <a href="browse.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
+                <a href="admin-dashboard.html" class="text-gray-700 hover:text-black">Admin Dashboard</a>
+                <a href="form-page.html" class="text-black font-semibold">Add Movie</a>
+                <a href="browse.html" class="text-gray-700 hover:text-black">Browse</a>
             </nav>
 
             <!-- Search Bar and Avatar (Desktop Only) -->
             <div class="flex items-center gap-4 flex-shrink-0">
                 <div class="relative max-w-xs w-full">
-                    <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
@@ -65,11 +66,11 @@
     </header>
 
     <!-- Mobile Header (sm:hidden) -->
-    <header class="sm:hidden fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm z-50 transition-colors">
+    <header class="sm:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-sm z-50">
         <div class="flex justify-between items-center px-4 py-3">
-            <i class="fa-solid fa-film text-gray-800 dark:text-white text-2xl"></i>
-            <h1 class="text-lg font-semibold text-gray-900 dark:text-white">Add Movie</h1>
-            <a href="profile-page.html" class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-film text-gray-800 text-2xl"></i>
+            <h1 class="text-lg font-semibold text-gray-900">Add Movie</h1>
+            <a href="profile-page.html" class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <i class="fa-solid fa-user text-gray-600 text-xs"></i>
             </a>
         </div>
@@ -351,7 +352,6 @@
             }
         });
     </script>
-    <script src="theme.js"></script>
 </body>
 
 </html>

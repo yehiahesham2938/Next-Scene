@@ -46,7 +46,7 @@
                 <a href="about-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">About us</a>
             </nav>
 
-            <!-- Search Bar, Sign In Button, and Avatar (Desktop Only) - All in one line -->
+            <!-- Search Bar, Theme Toggle, Sign In Button, and Avatar (Desktop Only) - All in one line -->
             <div class="flex items-center gap-4 flex-shrink-0">
                 <div class="relative max-w-xs w-full">
                     <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
@@ -54,8 +54,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle-btn" data-theme-toggle class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700 overflow-hidden flex-shrink-0" title="Toggle theme">
+                    <span data-toggle-track class="absolute inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out left-1">
+                        <span data-toggle-icon></span>
+                    </span>
+                </button>
                 <a href="signin-page.html" id="signin-nav-btn" class="bg-black dark:bg-white dark:text-black text-white px-4 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-200 transition whitespace-nowrap">Sign In</a>
-                <a href="profile-page.html" id="user-profile-btn" class="hidden w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0">
+                <a href="profile-page.html" id="user-profile-btn" class="hidden w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0 ml-2">
                     <i class="fa-solid fa-user text-white text-sm"></i>
                 </a>
             </div>
@@ -503,7 +509,7 @@
     </nav>
 
     <script type="module" src="/src/main.jsx"></script>
-    <script src="theme.js"></script>
+    <script src="/public/theme.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const signinBtn = document.getElementById('signin-nav-btn');
@@ -551,6 +557,14 @@
                 // Update logo link for admin
                 if (isAdmin && logoLink) {
                     logoLink.href = 'admin-dashboard.html';
+                }
+
+                // Hide theme toggle for admin users
+                if (isAdmin) {
+                    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+                    if (themeToggleBtn) {
+                        themeToggleBtn.style.display = 'none';
+                    }
                 }
 
                 // Update mobile navigation for admin
