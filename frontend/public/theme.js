@@ -66,32 +66,11 @@
         // Update all toggle buttons on page
         updateToggleButtons(newTheme);
 
-        // Debug logging
-        console.log('✅ Theme changed to:', newTheme);
-        console.log('✅ HTML element classes:', html.className);
-        console.log('✅ localStorage theme:', localStorage.getItem('theme'));
-        console.log('✅ Has dark class:', html.classList.contains('dark'));
-        console.log('✅ Has light class:', html.classList.contains('light'));
-        
-        // Check if CSS is loaded
-        const stylesheets = Array.from(document.styleSheets);
-        const tailwindLoaded = stylesheets.some(sheet => {
-            try {
-                return sheet.href && (sheet.href.includes('profile-page.css') || sheet.href.includes('index.css') || sheet.href.includes('tailwind'));
-            } catch {
-                return false;
-            }
-        });
-        console.log('✅ Tailwind CSS loaded:', tailwindLoaded);
-        console.log('✅ Stylesheets count:', stylesheets.length);
-
         return newTheme;
     }
 
     // Toggle between light and dark
     function toggleTheme() {
-        console.log('🔄 toggleTheme() called');
-        
         // Get current theme from localStorage (source of truth)
         let currentTheme = localStorage.getItem('theme');
         if (currentTheme) {
@@ -116,9 +95,7 @@
             }
         }
         
-        console.log('📊 Current theme:', currentTheme);
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        console.log('📊 Switching to:', newTheme);
         
         return setTheme(newTheme);
     }
@@ -126,9 +103,8 @@
     // Update all toggle buttons
     function updateToggleButtons(theme) {
         const toggles = document.querySelectorAll('[data-theme-toggle]');
-        console.log('🎨 updateToggleButtons called with theme:', theme, 'Found', toggles.length, 'toggles');
         
-        toggles.forEach((toggle, index) => {
+        toggles.forEach((toggle) => {
             const track = toggle.querySelector('[data-toggle-track]');
             const icon = toggle.querySelector('[data-toggle-icon]');
 
@@ -142,24 +118,17 @@
                     // Move to rightmost: w-14 (56px) - w-6 (24px) = 32px = left-8 (2rem)
                     // This positions the track at the right edge
                     track.classList.add('left-8');
-                    console.log('🌙 Toggle', index, '- Set to dark mode (left-8 = 32px)');
                 } else {
                     // Move to leftmost: left-1 (4px padding = 0.25rem)
                     track.classList.add('left-1');
-                    console.log('☀️ Toggle', index, '- Set to light mode (left-1 = 4px)');
                 }
                 
                 // Force a reflow to ensure the class change is applied
                 void track.offsetWidth;
-            } else {
-                console.warn('⚠️ Toggle', index, '- No track element found');
             }
 
             if (icon) {
                 icon.innerHTML = theme === 'dark' ? getMoonIcon() : getSunIcon();
-                console.log('🎯 Toggle', index, '- Icon updated');
-            } else {
-                console.warn('⚠️ Toggle', index, '- No icon element found');
             }
         });
     }
@@ -268,19 +237,16 @@
             if (toggle) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🔄 Toggle button clicked!');
                 toggleTheme();
             }
         });
         
         // Also add direct listeners as backup
         const toggles = document.querySelectorAll('[data-theme-toggle]');
-        console.log('🔘 Found', toggles.length, 'toggle button(s)');
-        toggles.forEach((toggle, index) => {
+        toggles.forEach((toggle) => {
             toggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('🔄 Toggle button', index, 'clicked (direct listener)!');
                 toggleTheme();
             });
         });
