@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist | Next-Scene</title>
+    <script>
+        // Initialize theme immediately to prevent flash
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.add(theme);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Mobile footer padding to prevent content overlap */
+        @media (max-width: 640px) {
+            body {
+                padding-bottom: 80px;
+                padding-top: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors min-h-screen flex flex-col">
+
+    <!-- Desktop Header / NAVBAR -->
+    <header
+        class="hidden sm:flex bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-3xl transition-colors"></i>
+                <a href="index.html" id="logo-link"
+                    class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex gap-8 items-center" id="main-nav">
+                <a href="index.html"
+                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
+                <a href="dashboard-page.html"
+                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Dashboard</a>
+                <a href="watchlist-page.html" class="text-black dark:text-white font-semibold transition-colors">My
+                    Watchlist</a>
+                <a href="browse.html"
+                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
+                <a href="about-page.html"
+                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About
+                    us</a>
+            </nav>
+
+            <!-- Search Bar, Theme Toggle, Sign In Button -->
+            <div class="flex items-center gap-4 flex-shrink-0">
+                <div class="relative max-w-xs w-full">
+                    <input type="text" placeholder="Search movies..."
+                        class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <!-- Theme Toggle Button -->
+                <button data-theme-toggle
+                    class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700 overflow-hidden flex-shrink-0"
+                    title="Toggle theme">
+                    <span data-toggle-track
+                        class="absolute inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out left-1">
+                        <span data-toggle-icon></span>
+                    </span>
+                </button>
+                <a href="signin-page.html" id="signin-nav-btn"
+                    class="bg-black dark:bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-600 transition whitespace-nowrap">Sign
+                    In</a>
+                <a href="profile-page.html" id="user-profile-btn"
+                    class="hidden w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0 ml-2">
+                    <i class="fa-solid fa-user text-white text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Header (sm:hidden) -->
+    <header
+        class="sm:hidden fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm z-50 transition-colors">
+        <div class="flex justify-between items-center px-4 py-3">
+            <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-2xl transition-colors"></i>
+            <h1 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors">My Watchlist</h1>
+            <a href="profile-page.html"
+                class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-user text-gray-600 text-xs"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full mt-16 sm:mt-0">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Watchlist</h1>
+                <p class="text-gray-600 dark:text-gray-400">Keep track of movies you want to watch.</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                <button
+                    class="filter-btn active px-4 py-2 rounded-md text-sm font-medium transition-colors bg-black text-white shadow-sm"
+                    data-sort="newest-added">
+                    Recently Added
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                    data-sort="oldest-added">
+                    Oldest Added
+                </button>
+                <button
+                    class="filter-btn px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                    data-sort="release-date">
+                    Release Date
+                </button>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+            <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                <i class="far fa-bookmark text-4xl text-gray-400"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Your watchlist is empty</h3>
+            <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md">
+                Looks like you haven't added any movies yet. Explore our collection to find something to watch!
+            </p>
+            <a href="browse.html"
+                class="bg-black dark:bg-gray-700 text-white px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors font-medium">
+                Browse Movies
+            </a>
+        </div>
+
+        <!-- Movie Grid -->
+        <div id="watchlist-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <!-- Movies will be injected here by JS -->
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-white py-12 transition-colors mt-auto">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-film text-white text-2xl"></i>
+                        <span class="text-xl font-bold">Next-scene</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Your ultimate destination for discovering movies, creating watchlists, and tracking your
+                        favorite films.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="text-gray-400 text-sm space-y-2">
+                        <li><a href="index.html" class="hover:text-white">Home</a></li>
+                        <li><a href="browse.html" class="hover:text-white">Browse</a></li>
+                        <li><a href="watchlist-page.html" class="hover:text-white">Watchlist</a></li>
+                        <li><a href="dashboard-page.html" class="hover:text-white">Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="font-semibold mb-4">Company</h4>
+                    <ul class="text-gray-400 text-sm space-y-2">
+                        <li><a href="about-page.html" class="hover:text-white">About</a></li>
+                        <li><a href="#" class="hover:text-white">Blog</a></li>
+                        <li><a href="#" class="hover:text-white">Careers</a></li>
+                    </ul>
+                </div>
+
+                <!-- Connect -->
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-150"><i
+                                class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-150"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-150"><i
+                                class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                <p>© 2025 Next-scene. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Footer Navigation (sm:hidden) -->
+    <nav
+        class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors">
+        <div class="flex justify-around items-center py-3">
+            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
+                <i class="fas fa-home text-lg"></i>
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="browse.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
+                <i class="fas fa-search text-lg"></i>
+                <span class="text-xs">Browse</span>
+            </a>
+            <a href="dashboard-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
+                <i class="fas fa-chart-line text-lg"></i>
+                <span class="text-xs">Dashboard</span>
+            </a>
+            <a href="profile-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
+                <i class="fas fa-user text-lg"></i>
+                <span class="text-xs">Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <script src="/public/theme.js"></script>
+    <script src="src/watchlist.js"></script>
+</body>
+
+</html>
