@@ -18,11 +18,11 @@
             <!-- Logo -->
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-film text-gray-800 text-3xl"></i>
-                <a href="index.html" class="text-gray-900 text-lg font-bold">Next-scene</a>
+                <a href="index.html" id="logo-link" class="text-gray-900 text-lg font-bold">Next-scene</a>
             </div>
 
             <!-- Navigation Links -->
-            <nav class="flex gap-8 items-center">
+            <nav class="flex gap-8 items-center" id="main-nav">
                 <a href="index.html" class="text-gray-700 hover:text-black">Home</a>
                 <a href="dashboard-page.html" class="text-gray-700 hover:text-black">dashboard</a>
                 <a href="Browse.html" class="text-gray-700 hover:text-black">Browse</a>
@@ -281,6 +281,40 @@
     </footer>
 
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainNav = document.getElementById('main-nav');
+            const logoLink = document.getElementById('logo-link');
+            const footerLogoLink = document.querySelector('footer a[href="index.html"]');
+            const user = localStorage.getItem('user');
+
+            let isAdmin = false;
+
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    isAdmin = userData.role === 'admin';
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+
+                // Update navigation for admin (remove About us)
+                if (isAdmin && mainNav) {
+                    mainNav.innerHTML = `
+                        <a href="admin-dashboard.html" class="text-gray-700 hover:text-black">Admin Dashboard</a>
+                        <a href="form-page.html" class="text-gray-700 hover:text-black">Add Movie</a>
+                        <a href="Browse.html" class="text-gray-700 hover:text-black">Browse</a>
+                    `;
+                }
+            }
+
+            // Update logo links for admin (if they somehow get here)
+            if (isAdmin) {
+                if (logoLink) logoLink.href = 'admin-dashboard.html';
+                if (footerLogoLink) footerLogoLink.href = 'admin-dashboard.html';
+            }
+        });
+    </script>
 </body>
 
 </html>
