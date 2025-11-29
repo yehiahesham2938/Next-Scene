@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" class="transition-colors duration-200">
+
+<head>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading - Next-Scene</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            overflow: hidden;
+        }
+        /* Film strip animation */
+        
+        @keyframes slideFilm {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%);
+            }
+        }
+        
+        .film-strip {
+            animation: slideFilm 2s linear infinite;
+        }
+        /* Film reel rotation */
+        
+        @keyframes rotateReel {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .film-reel {
+            animation: rotateReel 3s linear infinite;
+        }
+        /* Spotlight effect */
+        
+        @keyframes spotlight {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        .spotlight {
+            animation: spotlight 2s ease-in-out infinite;
+        }
+        /* Curtain opening effect */
+        
+        @keyframes curtainLeft {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        @keyframes curtainRight {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        .curtain-left {
+            animation: curtainLeft 1s ease-in-out forwards;
+            animation-delay: 2.5s;
+        }
+        
+        .curtain-right {
+            animation: curtainRight 1s ease-in-out forwards;
+            animation-delay: 2.5s;
+        }
+        /* Fade out loading screen */
+        
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+            animation-delay: 3.5s;
+        }
+        /* Countdown animation */
+        
+        @keyframes countdown {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        .countdown-number {
+            animation: countdown 1s ease-out;
+        }
+        /* Progress bar */
+        
+        @keyframes progress {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        
+        .progress-bar {
+            animation: progress 3s ease-in-out forwards;
+        }
+        /* Film grain effect */
+        
+        @keyframes grain {
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+            10% {
+                transform: translate(-5%, -10%);
+            }
+            20% {
+                transform: translate(-15%, 5%);
+            }
+            30% {
+                transform: translate(7%, -25%);
+            }
+            40% {
+                transform: translate(-5%, 25%);
+            }
+            50% {
+                transform: translate(-15%, 10%);
+            }
+            60% {
+                transform: translate(15%, 0%);
+            }
+            70% {
+                transform: translate(0%, 15%);
+            }
+            80% {
+                transform: translate(3%, 35%);
+            }
+            90% {
+                transform: translate(-10%, 10%);
+            }
+        }
+        
+        .film-grain {
+            animation: grain 8s steps(10) infinite;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=');
+        }
+        /* Projector light beam */
+        
+        @keyframes beam {
+            0%,
+            100% {
+                opacity: 0.1;
+                transform: scaleY(0.8);
+            }
+            50% {
+                opacity: 0.2;
+                transform: scaleY(1);
+            }
+        }
+        
+        .projector-beam {
+            animation: beam 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 dark:bg-black transition-colors relative">
+
+    <!-- Film grain overlay -->
+    <div class="film-grain fixed inset-0 pointer-events-none z-50 opacity-30"></div>
+
+    <!-- Loading Screen Container -->
+    <div id="loading-screen" class="fade-out fixed inset-0 bg-gradient-to-b from-gray-900 via-black to-gray-900 dark:from-black dark:via-gray-900 dark:to-black z-40 flex items-center justify-center overflow-hidden">
+
+        <!-- Projector beam effect -->
+        <div class="projector-beam absolute top-0 left-1/2 -translate-x-1/2 w-96 h-full bg-gradient-to-b from-yellow-500/10 via-yellow-300/5 to-transparent blur-3xl"></div>
+
+        <!-- Red curtains -->
+        <div class="curtain-left absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-red-900 via-red-800 to-red-900 dark:from-red-950 dark:via-red-900 dark:to-red-950 z-30 shadow-2xl">
+            <div class="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-black/50 to-transparent"></div>
+            <!-- Curtain texture lines -->
+            <div class="absolute inset-0 opacity-20">
+                <div class="h-full flex flex-col justify-around">
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="curtain-right absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-red-900 via-red-800 to-red-900 dark:from-red-950 dark:via-red-900 dark:to-red-950 z-30 shadow-2xl">
+            <div class="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-black/50 to-transparent"></div>
+            <!-- Curtain texture lines -->
+            <div class="absolute inset-0 opacity-20">
+                <div class="h-full flex flex-col justify-around">
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                    <div class="h-1 bg-gradient-to-r from-transparent via-red-950 to-transparent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="relative z-20 flex flex-col items-center gap-8">
+
+            <!-- Spotlight effect -->
+            <div class="spotlight absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 bg-yellow-400/20 dark:bg-yellow-300/10 rounded-full blur-3xl"></div>
+
+            <!-- Film reel icon with rotation -->
+            <div class="relative">
+                <div class="film-reel w-32 h-32 relative">
+                    <i class="fa-solid fa-film text-yellow-500 dark:text-yellow-400 text-8xl drop-shadow-2xl"></i>
+                </div>
+                <!-- Spotlight on icon -->
+                <div class="absolute inset-0 bg-gradient-radial from-yellow-400/30 to-transparent blur-xl"></div>
+            </div>
+
+            <!-- Brand name with cinematic styling -->
+            <div class="text-center space-y-2">
+                <h1 class="text-6xl font-bold text-white drop-shadow-2xl tracking-wider">
+                    Next-Scene
+                </h1>
+                <p class="text-xl text-gray-300 dark:text-gray-400 tracking-widest uppercase">
+                    Movie Discovery Platform
+                </p>
+            </div>
+
+            <!-- Countdown numbers (3, 2, 1) -->
+            <div id="countdown" class="text-8xl font-bold text-yellow-500 dark:text-yellow-400 drop-shadow-2xl countdown-number">
+                <!-- Dynamic countdown will appear here -->
+            </div>
+
+            <!-- Loading text with film strip -->
+            <div class="flex items-center gap-4">
+                <div class="flex gap-1">
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.6s;"></div>
+                </div>
+                <p class="text-2xl text-gray-300 dark:text-gray-400 tracking-wide" id="loading-text">Loading</p>
+                <div class="flex gap-1">
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.6s;"></div>
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                    <div class="w-2 h-8 bg-yellow-500 dark:bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+                </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="w-80 h-2 bg-gray-700 dark:bg-gray-800 rounded-full overflow-hidden shadow-inner">
+                <div class="progress-bar h-full bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 dark:from-yellow-400 dark:via-yellow-300 dark:to-yellow-400 rounded-full shadow-lg"></div>
+            </div>
+
+            <!-- Film strip decorative element -->
+            <div class="absolute bottom-0 left-0 right-0 h-32 overflow-hidden opacity-20">
+                <div class="film-strip flex gap-4">
+                    <div class="flex gap-4 min-w-full">
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                    </div>
+                    <!-- Duplicate for seamless loop -->
+                    <div class="flex gap-4 min-w-full">
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                        <div class="w-20 h-24 bg-gray-600 dark:bg-gray-700 border-2 border-gray-500 dark:border-gray-600 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Countdown animation
+        const countdownEl = document.getElementById('countdown');
+        const loadingText = document.getElementById('loading-text');
+
+        let count = 3;
+        const countdownInterval = setInterval(() => {
+            if (count > 0) {
+                countdownEl.textContent = count;
+                countdownEl.classList.remove('countdown-number');
+                void countdownEl.offsetWidth; // Trigger reflow
+                countdownEl.classList.add('countdown-number');
+                count--;
+            } else {
+                clearInterval(countdownInterval);
+                countdownEl.textContent = '';
+            }
+        }, 1000);
+
+        // Loading text dots animation
+        let dots = 0;
+        setInterval(() => {
+            dots = (dots + 1) % 4;
+            loadingText.textContent = 'Loading' + '.'.repeat(dots);
+        }, 500);
+
+        // Redirect to index after loading (4 seconds total)
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 4000);
+    </script>
+    <script src="theme.js"></script>
+</body>
+
+</html>

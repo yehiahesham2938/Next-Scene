@@ -1,30 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="transition-colors duration-200">
+<html lang="en">
 
 <head>
-    <script>
-        // Initialize theme immediately to prevent flash - MUST run before Tailwind
-        (function() {
-            let theme = localStorage.getItem('theme');
-            // Normalize theme value - ensure it's either 'light' or 'dark'
-            if (theme) {
-                theme = theme.trim().toLowerCase();
-                if (theme !== 'light' && theme !== 'dark') {
-                    theme = 'light';
-                }
-            } else {
-                theme = 'light';
-            }
-            // CRITICAL: Set the class on HTML element BEFORE Tailwind processes
-            const html = document.documentElement;
-            html.classList.remove('light', 'dark');
-            html.className = html.className.trim() + ' ' + theme;
-            html.className = html.className.trim();
-            // Ensure localStorage is set correctly
-            if (localStorage.getItem('theme') !== theme) {
-                localStorage.setItem('theme', theme);
-            }
-        })();
+    html.className = html.className.trim(); // Ensure localStorage is set correctly if (localStorage.getItem('theme') !== theme) { localStorage.setItem('theme', theme); } })();
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -208,7 +186,7 @@
 
 
     <script type="module" src="/src/signup-page.js"></script>
-    <script src="/public/theme.js"></script>
+    <script src="page-transition.js"></script>
 </body>
 
 </html>
