@@ -215,8 +215,8 @@
         </div>
     </section>
 
-    <!-- CTA SECTION -->
-    <section class="py-16 bg-gray-50 text-center">
+    <!-- hidden for logged in users -->
+    <section id="cta-section" class="py-16 bg-gray-50 text-center ">
         <div class="max-w-2xl mx-auto px-4">
             <h2 class="text-2xl font-bold mb-4">Ready to Start Your Movie Journey?</h2>
             <p class="text-gray-600 mb-8">
@@ -339,6 +339,7 @@
             const profileBtn = document.getElementById('user-profile-btn');
             const signinBtnMobile = document.getElementById('signin-nav-btn-mobile');
             const profileBtnMobile = document.getElementById('user-profile-btn-mobile');
+            const ctaSection = document.getElementById('cta-section');
             const user = localStorage.getItem('user');
 
             if (user) {
@@ -355,6 +356,10 @@
                 if (profileBtnMobile) {
                     profileBtnMobile.classList.remove('hidden');
                 }
+                // Hide the CTA section for logged in users
+                if (ctaSection) {
+                    ctaSection.style.display = 'none';
+                }
             } else {
                 // user is not signed in and display the sign-in button
                 if (signinBtn) {
@@ -368,6 +373,10 @@
                 }
                 if (profileBtnMobile) {
                     profileBtnMobile.classList.add('hidden');
+                }
+                // Show the CTA section for non-logged in users
+                if (ctaSection) {
+                    ctaSection.style.display = 'block';
                 }
             }
         });
