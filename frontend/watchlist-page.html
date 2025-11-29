@@ -7,7 +7,7 @@
     <title>My Watchlist | Next-Scene</title>
     <script>
         // Initialize theme immediately to prevent flash
-        (function () {
+        (function() {
             const theme = localStorage.getItem('theme') || 'light';
             document.documentElement.classList.add(theme);
         })();
@@ -31,6 +31,7 @@
     </script>
     <style>
         /* Mobile footer padding to prevent content overlap */
+        
         @media (max-width: 640px) {
             body {
                 padding-bottom: 80px;
@@ -43,75 +44,59 @@
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors min-h-screen flex flex-col">
 
     <!-- Desktop Header / NAVBAR -->
-    <header
-        class="hidden sm:flex bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700 transition-colors">
+    <header class="hidden sm:flex bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700 transition-colors">
         <div class="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
             <!-- Logo -->
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-3xl transition-colors"></i>
-                <a href="index.html" id="logo-link"
-                    class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
+                <a href="index.html" id="logo-link" class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex gap-8 items-center" id="main-nav">
-                <a href="index.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
-                <a href="dashboard-page.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Dashboard</a>
+                <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
+                <a href="dashboard-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Dashboard</a>
                 <a href="watchlist-page.html" class="text-black dark:text-white font-semibold transition-colors">My
                     Watchlist</a>
-                <a href="browse.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
-                <a href="about-page.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About
+                <a href="browse.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
+                <a href="about-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About
                     us</a>
             </nav>
 
             <!-- Search Bar, Theme Toggle, Sign In Button -->
             <div class="flex items-center gap-4 flex-shrink-0">
                 <div class="relative max-w-xs w-full">
-                    <input type="text" placeholder="Search movies..."
-                        class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <input type="text" placeholder="Search movies..." class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
                 <!-- Theme Toggle Button -->
-                <button data-theme-toggle
-                    class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700 overflow-hidden flex-shrink-0"
+                <a href="profile-page.html" id="user-profile-btn" class=" w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0 ml-2">
+                    <i class="fa-solid fa-user text-white text-sm"></i>
+                </a>
+                <button id="theme-toggle-btn" data-theme-toggle class="relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700 overflow-hidden flex-shrink-0"
                     title="Toggle theme">
-                    <span data-toggle-track
-                        class="absolute inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out left-1">
+                    <span data-toggle-track class="absolute inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out left-1">
                         <span data-toggle-icon></span>
                     </span>
                 </button>
-                <a href="signin-page.html" id="signin-nav-btn"
-                    class="bg-black dark:bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-600 transition whitespace-nowrap">Sign
-                    In</a>
-                <a href="profile-page.html" id="user-profile-btn"
-                    class="hidden w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0 ml-2">
-                    <i class="fa-solid fa-user text-white text-sm"></i>
-                </a>
             </div>
         </div>
     </header>
 
     <!-- Mobile Header (sm:hidden) -->
-    <header
-        class="sm:hidden fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm z-50 transition-colors">
+    <header class="sm:hidden fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm z-50 transition-colors">
         <div class="flex justify-between items-center px-4 py-3">
             <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-2xl transition-colors"></i>
             <h1 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors">My Watchlist</h1>
-            <a href="profile-page.html"
-                class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center transition-colors">
+            <a href="profile-page.html" class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center transition-colors">
                 <i class="fa-solid fa-user text-gray-600 text-xs"></i>
             </a>
         </div>
     </header>
+
+
 
     <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full mt-16 sm:mt-0">
@@ -124,19 +109,13 @@
 
             <!-- Filter Buttons -->
             <div class="flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
-                <button
-                    class="filter-btn active px-4 py-2 rounded-md text-sm font-medium transition-colors bg-black text-white shadow-sm"
-                    data-sort="newest-added">
+                <button class="filter-btn active px-4 py-2 rounded-md text-sm font-medium transition-colors bg-black text-white shadow-sm" data-sort="newest-added">
                     Recently Added
                 </button>
-                <button
-                    class="filter-btn px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                    data-sort="oldest-added">
+                <button class="filter-btn px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" data-sort="oldest-added">
                     Oldest Added
                 </button>
-                <button
-                    class="filter-btn px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-                    data-sort="release-date">
+                <button class="filter-btn px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" data-sort="release-date">
                     Release Date
                 </button>
             </div>
@@ -151,8 +130,7 @@
             <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md">
                 Looks like you haven't added any movies yet. Explore our collection to find something to watch!
             </p>
-            <a href="browse.html"
-                class="bg-black dark:bg-gray-700 text-white px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors font-medium">
+            <a href="browse.html" class="bg-black dark:bg-gray-700 text-white px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors font-medium">
                 Browse Movies
             </a>
         </div>
@@ -175,8 +153,7 @@
                         <span class="text-xl font-bold">Next-scene</span>
                     </div>
                     <p class="text-gray-400 text-sm">
-                        Your ultimate destination for discovering movies, creating watchlists, and tracking your
-                        favorite films.
+                        Your ultimate destination for discovering movies, creating watchlists, and tracking your favorite films.
                     </p>
                 </div>
 
@@ -222,8 +199,7 @@
     </footer>
 
     <!-- Mobile Footer Navigation (sm:hidden) -->
-    <nav
-        class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors">
+    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors">
         <div class="flex justify-around items-center py-3">
             <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
                 <i class="fas fa-home text-lg"></i>
