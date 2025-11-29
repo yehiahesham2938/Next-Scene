@@ -6,6 +6,10 @@ export default {
     "./signin-page.html",
     "./dashboard-page.html",
     "./form-page.html",
+    "./Browse.html",
+    "./MovieDetails.html",
+    "./about-page.html",
+    "./profile-page.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
