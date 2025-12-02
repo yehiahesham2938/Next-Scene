@@ -258,66 +258,7 @@
         <section class="mt-12 mb-12">
             <h2 class="text-xl font-bold mb-6">More Like This</h2>
             <div class="grid grid-cols-3 md:grid-cols-4 gap-4" id="similar-movies">
-                <div class="cursor-pointer">
-                    <div class="w-full aspect-[2/3] bg-gray-300 rounded-lg mb-2 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class=" w-full w-full aspect-[2/3] object-cover rounded-lg">
-                    </div>
-                    <h3 class="font-semibold text-sm mb-1">Interstellar</h3>
-                    <div class="flex items-center gap-2 text-xs text-gray-600">
-                        <span>2014</span>
-                        <span>•</span>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span>8.7</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="cursor-pointer">
-                    <div class="w-full aspect-[2/3] bg-gray-300 rounded-lg mb-2 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class=" w-full w-full aspect-[2/3] object-cover rounded-lg">
-                    </div>
-                    <h3 class="font-semibold text-sm mb-1">Interstellar</h3>
-                    <div class="flex items-center gap-2 text-xs text-gray-600">
-                        <span>2014</span>
-                        <span>•</span>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span>8.7</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="cursor-pointer">
-                    <div class="w-full aspect-[2/3] bg-gray-300 rounded-lg mb-2 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class=" w-full w-full aspect-[2/3] object-cover rounded-lg">
-                    </div>
-                    <h3 class="font-semibold text-sm mb-1">Interstellar</h3>
-                    <div class="flex items-center gap-2 text-xs text-gray-600">
-                        <span>2014</span>
-                        <span>•</span>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span>8.7</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="cursor-pointer">
-                    <div class="w-full aspect-[2/3] bg-gray-300 rounded-lg mb-2 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class=" w-full w-full aspect-[2/3] object-cover rounded-lg">
-                    </div>
-                    <h3 class="font-semibold text-sm mb-1">Interstellar</h3>
-                    <div class="flex items-center gap-2 text-xs text-gray-600">
-                        <span>2014</span>
-                        <span>•</span>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span>8.7</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Similar movies will be populated dynamically -->
             </div>
         </section>
 
@@ -510,8 +451,76 @@
                         trailerIframe.src = trailerUrl;
                     }
                 }
+
+                // Load similar movies (same genre)
+                await loadSimilarMovies(movie.genre, id);
             } catch (error) {
                 console.error(error);
+            }
+        }
+
+        async function loadSimilarMovies(genre, excludeId) {
+            const similarContainer = document.getElementById('similar-movies');
+            if (!similarContainer) return;
+
+            try {
+                // Fetch all movies
+                const res = await fetch(`${API_BASE_URL}/api/movies`);
+                if (!res.ok) {
+                    throw new Error('Failed to fetch movies');
+                }
+
+                const allMovies = await res.json();
+                
+                // Filter movies with the same genre (excluding current movie)
+                const primaryGenre = genre ? genre.split(',')[0].trim().toLowerCase() : '';
+                const similarMovies = allMovies
+                    .filter(m => {
+                        if (m._id === excludeId) return false;
+                        if (!m.genre) return false;
+                        const movieGenres = m.genre.split(',').map(g => g.trim().toLowerCase());
+                        return movieGenres.includes(primaryGenre);
+                    })
+                    .slice(0, 4); // Limit to 4 movies
+
+                // Clear container
+                similarContainer.innerHTML = '';
+
+                if (similarMovies.length === 0) {
+                    similarContainer.innerHTML = '<p class="col-span-full text-gray-600 text-sm">No similar movies found.</p>';
+                    return;
+                }
+
+                // Render similar movies
+                similarMovies.forEach((movie) => {
+                    const title = movie.title || 'Untitled';
+                    const year = movie.releaseYear || '';
+                    const rating = movie.rating != null ? movie.rating : '';
+                    const poster = movie.poster || 'img/image1tst.png';
+                    const movieId = movie._id;
+
+                    const card = document.createElement('a');
+                    card.href = `MovieDetails.html?id=${movieId}`;
+                    card.className = 'cursor-pointer';
+                    card.innerHTML = `
+                        <div class="w-full aspect-[2/3] bg-gray-300 rounded-lg mb-2 flex items-center justify-center text-white text-xs overflow-hidden">
+                            <img src="${poster}" alt="Movie Poster" class="w-full h-full aspect-[2/3] object-cover rounded-lg">
+                        </div>
+                        <h3 class="font-semibold text-sm mb-1 dark:text-white">${title}</h3>
+                        <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                            <span>${year}</span>
+                            <span>•</span>
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-star text-yellow-500 text-xs"></i>
+                                <span>${rating}</span>
+                            </div>
+                        </div>
+                    `;
+                    similarContainer.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading similar movies:', error);
+                similarContainer.innerHTML = '<p class="col-span-full text-gray-600 text-sm">Failed to load similar movies.</p>';
             }
         }
 

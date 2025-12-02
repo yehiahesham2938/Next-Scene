@@ -121,67 +121,11 @@
     <!-- TRENDING NOW SECTION -->
     <section class="py-16 bg-gray-50 dark:bg-gray-800 transition-colors">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-2xl font-bold mb-8 text-gray-900 dark:text-white transition-colors">Trending Now</h2>
+            <h2 class="text-2xl font-bold mb-8 text-gray-900 dark:text-white transition-colors">Latest Movies</h2>
 
             <!-- Movie Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                <!-- Movie Card 1 -->
-                <div class="bg-white dark:bg-gray-700 rounded overflow-hidden shadow-sm hover:shadow-lg transition">
-                    <div class="w-full h-48 bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white transition-colors">
-                        Movie Poster
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-semibold mb-1 text-gray-900 dark:text-white transition-colors">Movie Title</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-2 transition-colors">2025</p>
-                        <div class="flex items-center gap-1 text-yellow-500">
-                            ⭐ <span class="text-gray-700 dark:text-gray-300 text-sm transition-colors">8.3</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Movie Card 2 -->
-                <div class="bg-white dark:bg-gray-700 rounded overflow-hidden shadow-sm hover:shadow-lg transition">
-                    <div class="w-full h-48 bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white transition-colors">
-                        Movie Poster
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-semibold mb-1 text-gray-900 dark:text-white transition-colors">Movie Title</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-2 transition-colors">2025</p>
-                        <div class="flex items-center gap-1 text-yellow-500">
-                            ⭐ <span class="text-gray-700 dark:text-gray-300 text-sm transition-colors">7.8</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Movie Card 3 -->
-                <div class="bg-white dark:bg-gray-700 rounded overflow-hidden shadow-sm hover:shadow-lg transition">
-                    <div class="w-full h-48 bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white transition-colors">
-                        Movie Poster
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-semibold mb-1 text-gray-900 dark:text-white transition-colors">Movie Title</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-2 transition-colors">2024</p>
-                        <div class="flex items-center gap-1 text-yellow-500">
-                            ⭐ <span class="text-gray-700 dark:text-gray-300 text-sm transition-colors">9.1</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Movie Card 4 -->
-                <div class="bg-white dark:bg-gray-700 rounded overflow-hidden shadow-sm hover:shadow-lg transition">
-                    <div class="w-full h-48 bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white transition-colors">
-                        Movie Poster
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-semibold mb-1 text-gray-900 dark:text-white transition-colors">Movie Title</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-2 transition-colors">2024</p>
-                        <div class="flex items-center gap-1 text-yellow-500">
-                            ⭐ <span class="text-gray-700 dark:text-gray-300 text-sm transition-colors">8.3</span>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="latest-movies-grid">
+                <!-- Latest movies will be populated dynamically -->
             </div>
         </div>
     </section>
@@ -356,7 +300,52 @@
     <script type="module" src="/src/main.jsx"></script>
     <script src="/public/theme.js"></script>
     <script>
+        // Load latest 4 movies from database
+        async function loadLatestMovies() {
+            const grid = document.getElementById('latest-movies-grid');
+            if (!grid) return;
+
+            try {
+                const res = await fetch('http://localhost:4000/api/movies?limit=4');
+                if (!res.ok) {
+                    throw new Error('Failed to fetch movies');
+                }
+
+                const movies = await res.json();
+                grid.innerHTML = '';
+
+                movies.forEach((movie) => {
+                    const title = movie.title || 'Untitled';
+                    const year = movie.releaseYear || '';
+                    const rating = movie.rating != null ? movie.rating : '';
+                    const poster = movie.poster || 'img/image1tst.png';
+                    const movieId = movie._id;
+
+                    const card = document.createElement('a');
+                    card.href = `MovieDetails.html?id=${movieId}`;
+                    card.className = 'bg-white dark:bg-gray-700 rounded overflow-hidden shadow-sm hover:shadow-lg transition block';
+                    card.innerHTML = `
+                        <div class="w-full h-48 bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white transition-colors overflow-hidden">
+                            <img src="${poster}" alt="${title}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold mb-1 text-gray-900 dark:text-white transition-colors">${title}</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-2 transition-colors">${year}</p>
+                            <div class="flex items-center gap-1 text-yellow-500">
+                                ⭐ <span class="text-gray-700 dark:text-gray-300 text-sm transition-colors">${rating}</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading latest movies:', error);
+                grid.innerHTML = '<p class="col-span-full text-center text-gray-500 dark:text-gray-400">Failed to load movies.</p>';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            loadLatestMovies();
             const signinBtn = document.getElementById('signin-nav-btn');
             const profileBtn = document.getElementById('user-profile-btn');
             const signinBtnMobile = document.getElementById('signin-nav-btn-mobile');
