@@ -37,6 +37,15 @@
                 padding-bottom: 80px;
                 padding-top: 60px;
             }
+
+            /* Center empty state vertically on small screens */
+            #empty-state {
+                min-height: calc(100vh - 200px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -121,7 +130,7 @@
         </div>
 
         <!-- Empty State -->
-        <div id="empty-state" class="hidden flex-col items-center justify-center py-20 text-center">
+        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center">
             <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
                 <i class="far fa-bookmark text-4xl text-gray-400"></i>
             </div>
@@ -135,7 +144,7 @@
         </div>
 
         <!-- Movie Grid -->
-        <div id="watchlist-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div id="watchlist-grid" class="hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <!-- Movies will be injected here by JS -->
         </div>
 

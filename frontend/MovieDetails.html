@@ -121,7 +121,7 @@
                     <!-- <span class="text-lg">Movie Poster</span> -->
                     <img src="img/image1tst.png" alt="Movie Poster" class="w-full h-full aspect-[2/3] object-cover rounded-lg">
                 </div>
-                <button class="w-full bg-black text-white py-3 rounded-lg mb-3 hover:bg-gray-800 transition flex items-center justify-center gap-2">
+                <button id="addToWatchlistBtn" onclick="addToWatchlistFromDetails()" class="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg mb-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition flex items-center justify-center gap-2">
                         <i class="far fa-heart"></i>
                         Add to Watchlist
                     </button>
@@ -246,12 +246,12 @@
         </div>
 
         <div class="md:hidden fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-3">
-            <button onclick="switchTab('trailer')" href="trailer-tab" class="flex-1 bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition flex items-center justify-center gap-2">
-                    <i class="fas fa-play"></i>
-                    Watch Trailer
+            <button onclick="addToWatchlistFromDetails()" id="addToWatchlistBtnMobile" class="flex-1 bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition flex items-center justify-center gap-2">
+                    <i class="far fa-heart"></i>
+                    Add to Watchlist
                 </button>
-            <button class="w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">
-                    <i class="far fa-bookmark text-xl"></i>
+            <button onclick="switchTab('trailer')" href="trailer-tab" class="w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">
+                    <i class="fas fa-play text-xl"></i>
                 </button>
         </div>
 
@@ -364,6 +364,9 @@
     <script>
         // Load movie details from API based on ?id= in the URL
         const API_BASE_URL = 'http://localhost:4000';
+        
+        // Store current movie data globally for watchlist functionality
+        let currentMovieData = null;
 
         async function loadMovieDetails() {
             const params = new URLSearchParams(window.location.search);
@@ -381,6 +384,16 @@
                 }
 
                 const movie = await res.json();
+                
+                // Store movie data globally for watchlist
+                currentMovieData = {
+                    id: movie._id,
+                    title: movie.title || 'Untitled',
+                    poster: movie.poster || 'img/image1tst.png',
+                    year: movie.releaseYear || '',
+                    rating: movie.rating || null,
+                    addedAt: new Date().toISOString()
+                };
 
                 // Map API fields
                 const title = movie.title || 'Untitled';
@@ -454,8 +467,73 @@
 
                 // Load similar movies (same genre)
                 await loadSimilarMovies(movie.genre, id);
+                
+                // Check if movie is already in watchlist and update button state
+                if (typeof checkMovieInWatchlist === 'function') {
+                    checkMovieInWatchlist(currentMovieData.title);
+                }
             } catch (error) {
                 console.error(error);
+            }
+        }
+        
+        // Override addToWatchlist to use the loaded movie data
+        function addToWatchlistFromDetails() {
+            if (!currentMovieData) {
+                console.error('Movie data not loaded yet');
+                return;
+            }
+            
+            let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+            
+            // Check if already exists
+            const existingIndex = watchlist.findIndex(m => m.id === currentMovieData.id || m.title === currentMovieData.title);
+            
+            if (existingIndex >= 0) {
+                // Remove if exists (toggle behavior)
+                watchlist.splice(existingIndex, 1);
+                if (typeof showNotification === 'function') {
+                    showNotification('Removed from Watchlist', 'error');
+                }
+                updateWatchlistButtonState(false);
+            } else {
+                // Add new
+                watchlist.push(currentMovieData);
+                if (typeof showNotification === 'function') {
+                    showNotification('Added to Watchlist', 'success');
+                }
+                updateWatchlistButtonState(true);
+            }
+            
+            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+        }
+        
+        function updateWatchlistButtonState(exists) {
+            const btn = document.getElementById('addToWatchlistBtn');
+            const btnMobile = document.getElementById('addToWatchlistBtnMobile');
+            
+            if (btn) {
+                if (exists) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
+                    btn.classList.remove('bg-black', 'dark:bg-white', 'text-white', 'dark:text-black');
+                    btn.classList.add('bg-green-600', 'text-white');
+                } else {
+                    btn.innerHTML = '<i class="far fa-heart"></i> Add to Watchlist';
+                    btn.classList.remove('bg-green-600');
+                    btn.classList.add('bg-black', 'dark:bg-white', 'text-white', 'dark:text-black');
+                }
+            }
+            
+            if (btnMobile) {
+                if (exists) {
+                    btnMobile.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
+                    btnMobile.classList.remove('bg-black', 'text-white');
+                    btnMobile.classList.add('bg-green-600', 'text-white');
+                } else {
+                    btnMobile.innerHTML = '<i class="far fa-heart"></i> Add to Watchlist';
+                    btnMobile.classList.remove('bg-green-600');
+                    btnMobile.classList.add('bg-black', 'text-white');
+                }
             }
         }
 
@@ -619,6 +697,7 @@
         });
     </script>
     <script src="/public/theme.js"></script>
+    <script src="src/watchlist.js"></script>
     <script src="page-transition.js"></script>
 
 </body>

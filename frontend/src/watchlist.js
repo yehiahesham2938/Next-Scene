@@ -78,6 +78,19 @@ function removeFromWatchlist(title) {
     showNotification('Movie removed', 'success');
 }
 
+function removeFromWatchlistById(id) {
+    let watchlist = getWatchlist();
+    watchlist = watchlist.filter(m => m.id !== id);
+    saveWatchlist(watchlist);
+
+    // Re-render if on watchlist page
+    if (document.getElementById('watchlist-grid')) {
+        const activeFilter = document.querySelector('.filter-btn.active')?.dataset.sort || 'newest-added';
+        renderWatchlist(activeFilter);
+    }
+    showNotification('Movie removed', 'success');
+}
+
 function getWatchlist() {
     return JSON.parse(localStorage.getItem('watchlist')) || [];
 }
@@ -136,15 +149,25 @@ function renderWatchlist(sortBy) {
     const emptyState = document.getElementById('empty-state');
     let movies = getWatchlist();
 
+    if (!grid || !emptyState) return;
+
     if (movies.length === 0) {
+        // Show empty state, hide grid
         grid.innerHTML = '';
-        grid.classList.add('hidden');
+        grid.style.display = 'none';
+        emptyState.style.display = 'flex';
         emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        grid.classList.add('hidden');
         return;
     }
 
+    // Show grid, hide empty state
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
     grid.classList.remove('hidden');
     emptyState.classList.add('hidden');
+    emptyState.classList.remove('flex');
 
     // Sorting Logic
     movies.sort((a, b) => {
@@ -158,12 +181,18 @@ function renderWatchlist(sortBy) {
         return 0;
     });
 
-    grid.innerHTML = movies.map(movie => `
-        <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group relative">
+    grid.innerHTML = movies.map(movie => {
+        const movieLink = movie.id ? `MovieDetails.html?id=${movie.id}` : '#';
+        const removeHandler = movie.id 
+            ? `removeFromWatchlistById('${movie.id}')` 
+            : `removeFromWatchlist('${movie.title.replace(/'/g, "\\'")}')`;
+        
+        return `
+        <a href="${movieLink}" class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group relative block">
             <div class="relative aspect-[2/3] overflow-hidden">
                 <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <button onclick="removeFromWatchlist('${movie.title.replace(/'/g, "\\'")}')" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2">
+                    <button onclick="event.preventDefault(); ${removeHandler}" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2">
                         <i class="fas fa-trash-alt"></i> Remove
                     </button>
                 </div>
@@ -175,8 +204,9 @@ function renderWatchlist(sortBy) {
                     <span class="text-xs text-gray-400 dark:text-gray-500">Added ${new Date(movie.addedAt).toLocaleDateString()}</span>
                 </div>
             </div>
-        </div>
-    `).join('');
+        </a>
+    `;
+    }).join('');
 }
 
 // --- Notification ---
