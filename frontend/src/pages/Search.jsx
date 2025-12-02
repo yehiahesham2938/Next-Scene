@@ -9,7 +9,6 @@ import {
   SelectDropdown,
   PrimaryButton,
 } from '../components';
-import { movies } from '../utils/movieData';
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -17,6 +16,52 @@ const Search = () => {
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [genre, setGenre] = useState('');
   const [year, setYear] = useState('');
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await fetch(`${API_BASE_URL}/api/movies`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch movies');
+        }
+
+        const data = await response.json();
+
+        const mapped = data.map((movie) => ({
+          id: movie._id,
+          title: movie.title,
+          year: movie.releaseYear ? parseInt(movie.releaseYear, 10) : null,
+          rating: movie.rating,
+          duration: movie.runtime ? `${movie.runtime} min` : null,
+          genres: movie.genre
+            ? movie.genre.split(',').map((g) => g.trim())
+            : [],
+          director: movie.director,
+          cast: movie.mainCast
+            ? movie.mainCast.split(',').map((a) => a.trim())
+            : [],
+          plot: movie.description,
+          poster: movie.poster,
+        }));
+
+        setMovies(mapped);
+      } catch (err) {
+        setError(err.message || 'Something went wrong while loading movies.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMovies();
+  }, []);
 
   const genreOptions = [
     { value: 'action', label: 'Action' },
@@ -59,7 +104,7 @@ const Search = () => {
     }
 
     return filtered;
-  }, [searchQuery, genre, year]);
+  }, [movies, searchQuery, genre, year]);
 
   useEffect(() => {
     setSearchQuery(searchParams.get('q') || '');
@@ -120,6 +165,15 @@ const Search = () => {
       </div>
 
       {/* Search Results */}
+      {isLoading && (
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          Loading movies...
+        </p>
+      )}
+
+      {error && !isLoading && (
+        <p className="text-red-500 text-sm mb-4">{error}</p>
+      )}
       {searchQuery && (
         <div className="mb-4">
           <p className="text-gray-600 dark:text-gray-400">
@@ -128,17 +182,20 @@ const Search = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {searchResults.map((movie) => (
-          <MovieCard
-            key={movie.id}
-            title={movie.title}
-            year={movie.year}
-            rating={movie.rating}
-            onClick={() => handleMovieClick(movie.id)}
-          />
-        ))}
-      </div>
+      {!isLoading && !error && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {searchResults.map((movie) => (
+            <MovieCard
+              key={movie.id}
+              title={movie.title}
+              year={movie.year}
+              rating={movie.rating}
+              poster={movie.poster}
+              onClick={() => handleMovieClick(movie.id)}
+            />
+          ))}
+        </div>
+      )}
 
       {searchResults.length === 0 && searchQuery && (
         <div className="text-center py-12">

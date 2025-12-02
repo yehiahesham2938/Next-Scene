@@ -2,8 +2,9 @@
  const cors = require('cors');
  require('dotenv').config();
  
- const { connectToDatabase } = require('./setup/db');
- const authRouter = require('./routes/auth');
+const { connectToDatabase } = require('./setup/db');
+const authRouter = require('./routes/auth');
+const moviesRouter = require('./routes/movies');
  
  const app = express();
  
@@ -15,6 +16,7 @@
  });
  
  app.use('/api/auth', authRouter);
+app.use('/api/movies', moviesRouter);
  
  const port = process.env.PORT || 4000;
  

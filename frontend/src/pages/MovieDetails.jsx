@@ -5,7 +5,6 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from '../components';
-import { getMovieById } from '../utils/movieData';
 import { useLocalStorage } from '../hooks';
 
 const MovieDetails = () => {
@@ -13,9 +12,55 @@ const MovieDetails = () => {
   const navigate = useNavigate();
   const [watchlist, setWatchlist] = useLocalStorage('watchlist', []);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [movie, setMovie] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Get movie data
-  const movie = getMovieById(id);
+  useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
+    async function fetchMovie() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await fetch(`${API_BASE_URL}/api/movies/${id}`);
+        if (!response.ok) {
+          if (response.status === 404) {
+            setMovie(null);
+            setError('Movie not found');
+            return;
+          }
+          throw new Error('Failed to fetch movie');
+        }
+
+        const data = await response.json();
+
+        const mapped = {
+          id: data._id,
+          title: data.title,
+          year: data.releaseYear ? parseInt(data.releaseYear, 10) : null,
+          rating: data.rating,
+          duration: data.runtime ? `${data.runtime} min` : null,
+          genres: data.genre ? data.genre.split(',').map((g) => g.trim()) : [],
+          director: data.director,
+          cast: data.mainCast
+            ? data.mainCast.split(',').map((a) => a.trim())
+            : [],
+          plot: data.description,
+          poster: data.poster,
+        };
+
+        setMovie(mapped);
+      } catch (err) {
+        setError(err.message || 'Something went wrong while loading movie.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMovie();
+  }, [id]);
 
   // Check if movie is in watchlist
   useEffect(() => {
@@ -37,8 +82,8 @@ const MovieDetails = () => {
     }
   };
 
-  // If movie not found, show error
-  if (!movie) {
+  // If movie not found or there was an error, show error
+  if (!isLoading && (!movie || error)) {
     return (
       <PageContainer className="pb-20 md:pb-8">
         <div className="text-center py-16">

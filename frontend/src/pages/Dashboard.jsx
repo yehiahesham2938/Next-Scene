@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   PageContainer,
@@ -7,14 +7,47 @@ import {
   InputField,
   PrimaryButton,
 } from '../components';
-import { getTrendingMovies, getPopularMovies } from '../utils/movieData';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [latestMovies, setLatestMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const trendingMovies = getTrendingMovies(4);
-  const popularMovies = getPopularMovies(4);
+  useEffect(() => {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
+    async function fetchLatestMovies() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await fetch(`${API_BASE_URL}/api/movies?limit=4`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch movies');
+        }
+
+        const data = await response.json();
+
+        const mapped = data.map((movie) => ({
+          id: movie._id,
+          title: movie.title,
+          year: movie.releaseYear ? parseInt(movie.releaseYear, 10) : null,
+          rating: movie.rating,
+          poster: movie.poster,
+        }));
+
+        setLatestMovies(mapped);
+      } catch (err) {
+        setError(err.message || 'Something went wrong while loading movies.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchLatestMovies();
+  }, []);
 
   const handleMovieClick = (movieId) => {
     navigate(`/movie/${movieId}`);
@@ -62,42 +95,35 @@ const Dashboard = () => {
         </form>
       </div>
 
-      {/* Trending Section */}
+      {/* Latest Movies Section */}
       <div className="mb-12">
         <SectionHeader
-          title="Trending Now"
-          subtitle="Popular movies this week"
+          title="Latest Movies"
+          subtitle="Newest additions to the catalog"
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trendingMovies.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              title={movie.title}
-              year={movie.year}
-              rating={movie.rating}
-              onClick={() => handleMovieClick(movie.id)}
-            />
-          ))}
-        </div>
-      </div>
 
-      {/* Popular Section */}
-      <div className="mb-12">
-        <SectionHeader
-          title="Popular Movies"
-          subtitle="All-time favorites"
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {popularMovies.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              title={movie.title}
-              year={movie.year}
-              rating={movie.rating}
-              onClick={() => handleMovieClick(movie.id)}
-            />
-          ))}
-        </div>
+        {isLoading && (
+          <p className="text-gray-600 dark:text-gray-400">Loading movies...</p>
+        )}
+
+        {error && !isLoading && (
+          <p className="text-red-500 text-sm">{error}</p>
+        )}
+
+        {!isLoading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {latestMovies.map((movie) => (
+              <MovieCard
+                key={movie.id}
+                title={movie.title}
+                year={movie.year}
+                rating={movie.rating}
+                poster={movie.poster}
+                onClick={() => handleMovieClick(movie.id)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </PageContainer>
   );

@@ -163,273 +163,11 @@
             </div>
         </div>
 
-        <a href="MovieDetails.html">
-            <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
-                    <div class="relative">
-                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
-                            Movie Poster
-                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="far fa-bookmark text-white text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
-                    <div class="relative">
-                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
+        <!-- Desktop movies grid (populated dynamically from API) -->
+        <div id="browse-grid-desktop" class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4"></div>
 
-                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="far fa-bookmark text-white text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
-                    <div class="relative">
-                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
-                            Movie Poster
-                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="far fa-bookmark text-white text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
-                    <div class="relative">
-                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
-                            Movie Poster
-                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="far fa-bookmark text-white text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
-                    <div class="relative">
-                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
-                            Movie Poster
-                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="far fa-bookmark text-white text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
-                    <div class="relative">
-                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
-                            Movie Poster
-                            <img src="img/image1tst.png" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
-                        </div>
-                        <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <i class="far fa-bookmark text-white text-sm"></i>
-                        </button>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">Interstellar</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014</p>
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-500 text-xs"></i>
-                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Sci-Fi, Adventure</p>
-                    </div>
-                </div>
-            </div>
-        </a>
-
-        <a href="MovieDetails.html">
-            <div class="md:hidden space-y-4">
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
-                    <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between mb-1">
-                            <h3 class="font-semibold text-sm">Interstellar</h3>
-                            <button class="flex-shrink-0 ml-2">
-                                <i class="far fa-bookmark text-gray-400"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                            </div>
-                            <span class="text-gray-400 text-xs">2h 49m</span>
-                        </div>
-                        <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
-                    <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between mb-1">
-                            <h3 class="font-semibold text-sm">Interstellar</h3>
-                            <button class="flex-shrink-0 ml-2">
-                                <i class="far fa-bookmark text-gray-400"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                            </div>
-                            <span class="text-gray-400 text-xs">2h 49m</span>
-                        </div>
-                        <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
-                    <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between mb-1">
-                            <h3 class="font-semibold text-sm">Interstellar</h3>
-                            <button class="flex-shrink-0 ml-2">
-                                <i class="far fa-bookmark text-gray-400"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                            </div>
-                            <span class="text-gray-400 text-xs">2h 49m</span>
-                        </div>
-                        <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
-                    <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between mb-1">
-                            <h3 class="font-semibold text-sm">Interstellar</h3>
-                            <button class="flex-shrink-0 ml-2">
-                                <i class="far fa-bookmark text-gray-400"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                            </div>
-                            <span class="text-gray-400 text-xs">2h 49m</span>
-                        </div>
-                        <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
-                    <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between mb-1">
-                            <h3 class="font-semibold text-sm">Interstellar</h3>
-                            <button class="flex-shrink-0 ml-2">
-                                <i class="far fa-bookmark text-gray-400"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                            </div>
-                            <span class="text-gray-400 text-xs">2h 49m</span>
-                        </div>
-                        <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
-                    <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
-                        <!-- Poster -->
-                        <img src="img/image1tst.png" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between mb-1">
-                            <h3 class="font-semibold text-sm">Interstellar</h3>
-                            <button class="flex-shrink-0 ml-2">
-                                <i class="far fa-bookmark text-gray-400"></i>
-                            </button>
-                        </div>
-                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">2014 • Sci-Fi, Adventure</p>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">8.6</span>
-                            </div>
-                            <span class="text-gray-400 text-xs">2h 49m</span>
-                        </div>
-                        <p class="text-gray-600 text-xs line-clamp-2">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</p>
-                    </div>
-                </div>
-            </div>
-        </a>
+        <!-- Mobile movies list (populated dynamically from API) -->
+        <div id="browse-list-mobile" class="md:hidden space-y-4"></div>
 
     </main>
 
@@ -617,6 +355,111 @@
                 }
             }
         });
+    </script>
+    <script>
+        // Simple client-side integration with the movies API
+        // Adjust API_BASE_URL if your backend is hosted elsewhere.
+        const API_BASE_URL = 'http://localhost:4000';
+
+        async function loadMovies() {
+            const desktopGrid = document.getElementById('browse-grid-desktop');
+            const mobileList = document.getElementById('browse-list-mobile');
+
+            if (!desktopGrid && !mobileList) return;
+
+            try {
+                const res = await fetch(API_BASE_URL + '/api/movies');
+                if (!res.ok) {
+                    throw new Error('Failed to fetch movies');
+                }
+
+                const movies = await res.json();
+
+                // Clear existing content
+                desktopGrid.innerHTML = '';
+                mobileList.innerHTML = '';
+
+                movies.forEach((movie) => {
+                    const title = movie.title || 'Untitled';
+                    const year = movie.releaseYear || '';
+                    const rating = movie.rating != null ? movie.rating : '';
+                    const poster = movie.poster || 'img/image1tst.png';
+                    const genres = movie.genre || '';
+                    const runtime = movie.runtime ? movie.runtime + ' min' : '';
+                    const description = movie.description || '';
+                    const shortDescription = description.length > 140 ? description.slice(0, 137) + '...' : description;
+
+                    // Desktop card
+                    if (desktopGrid) {
+                        const card = document.createElement('a');
+                        card.href = 'MovieDetails.html?id=' + encodeURIComponent(movie._id);
+                        card.innerHTML = `
+                            <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
+                                <div class="relative">
+                                    <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
+                                        <img src="${poster}" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
+                                    </div>
+                                    <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="far fa-bookmark text-white text-sm"></i>
+                                    </button>
+                                </div>
+                                <div class="p-3">
+                                    <h3 class="font-semibold text-sm mb-1 truncate dark:text-white">${title}</h3>
+                                    <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">${year}</p>
+                                    <div class="flex items-center gap-1">
+                                        <i class="fas fa-star text-yellow-500 text-xs"></i>
+                                        <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">${rating}</span>
+                                    </div>
+                                    <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">${genres}</p>
+                                </div>
+                            </div>
+                        `;
+                        desktopGrid.appendChild(card);
+                    }
+
+                    // Mobile list item
+                    if (mobileList) {
+                        const item = document.createElement('a');
+                        item.href = 'MovieDetails.html?id=' + encodeURIComponent(movie._id);
+                        item.innerHTML = `
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
+                                <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
+                                    <img src="${poster}" alt="Movie Poster" class="inset-0 w-16 h-24 object-cover rounded flex-shrink-0 flex items-center justify-center" />
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between mb-1">
+                                        <h3 class="font-semibold text-sm">${title}</h3>
+                                        <button class="flex-shrink-0 ml-2">
+                                            <i class="far fa-bookmark text-gray-400"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">${year} • ${genres}</p>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-500 text-xs"></i>
+                                            <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">${rating}</span>
+                                        </div>
+                                        <span class="text-gray-400 text-xs">${runtime}</span>
+                                    </div>
+                                    <p class="text-gray-600 text-xs line-clamp-2">${shortDescription}</p>
+                                </div>
+                            </div>
+                        `;
+                        mobileList.appendChild(item);
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                if (desktopGrid) {
+                    desktopGrid.innerHTML = '<p class="col-span-full text-center text-gray-500 dark:text-gray-400 text-sm">Failed to load movies.</p>';
+                }
+                if (mobileList) {
+                    mobileList.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 text-sm">Failed to load movies.</p>';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMovies);
     </script>
     <script src="page-transition.js"></script>
 
