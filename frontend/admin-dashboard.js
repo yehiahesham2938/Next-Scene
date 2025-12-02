@@ -33,58 +33,7 @@ window.onload = async function () {
     await loadMostWatchlistedMovies();
     await loadUsers();
     await loadGenreStats();
-
-    // Initialize chart colors
-    const chartColors = {
-        primary: '#1f2937',
-        background: 'rgba(31, 41, 55, 0.1)',
-        gridColor: '#e5e7eb',
-        textColor: '#6b7280'
-    };
-
-    // Initialize Users Growth Chart (placeholder data for now)
-    const usersGrowthCtx = document.getElementById('usersGrowthChart').getContext('2d');
-    const usersGrowthChart = new Chart(usersGrowthCtx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'New Users',
-                data: [12, 19, 15, 25, 22, 30],
-                borderColor: chartColors.primary,
-                backgroundColor: chartColors.background,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: chartColors.gridColor
-                    },
-                    ticks: {
-                        color: chartColors.textColor
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        color: chartColors.textColor
-                    }
-                }
-            }
-        }
-    });
+    await loadUserGrowthStats();
 };
 
 // Load admin statistics from API
@@ -206,7 +155,28 @@ async function loadUsers() {
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.watchlistCount || 0}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <button onclick="toggleRoleMenu(event, '${user.id}')" class="text-gray-500 hover:text-indigo-600 transition-colors focus:outline-none p-2 rounded-full hover:bg-indigo-50" title="Change Role">
+                                <i class="fa-solid fa-user-gear text-lg"></i>
+                            </button>
+                            <div id="role-menu-${user.id}" class="role-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
+                                <div class="px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Change Role
+                                </div>
+                                <button onclick="updateUserRole('${user.id}', 'admin')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-halved text-xs w-4"></i> Admin
+                                </button>
+                                <button onclick="updateUserRole('${user.id}', 'user')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-user text-xs w-4"></i> User
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="deleteUser('${user.id}')" class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-full hover:bg-red-50 group relative" title="Delete User">
+                            <i class="fa-solid fa-trash-can text-lg"></i>
+                            <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg pointer-events-none">Delete Account</span>
+                        </button>
+                    </div>
                 </td>
             `;
             tableBody.appendChild(row);
@@ -217,6 +187,80 @@ async function loadUsers() {
         if (tableBody) {
             tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Failed to load users</td></tr>';
         }
+    }
+}
+
+// Toggle role menu
+function toggleRoleMenu(event, userId) {
+    event.stopPropagation();
+    const menu = document.getElementById(`role-menu-${userId}`);
+
+    // Close all other menus
+    document.querySelectorAll('.role-menu').forEach(m => {
+        if (m.id !== `role-menu-${userId}`) {
+            m.classList.add('hidden');
+        }
+    });
+
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+// Close menus when clicking outside
+window.addEventListener('click', () => {
+    document.querySelectorAll('.role-menu').forEach(menu => {
+        menu.classList.add('hidden');
+    });
+});
+
+// Delete user
+async function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete user');
+        }
+
+        // Reload users and stats
+        await loadUsers();
+        await loadAdminStats();
+        alert('User deleted successfully');
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Failed to delete user');
+    }
+}
+
+// Update user role
+async function updateUserRole(userId, newRole) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/role`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ role: newRole })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update user role');
+        }
+
+        // Reload users and stats
+        await loadUsers();
+        await loadAdminStats();
+        alert(`User role updated to ${newRole}`);
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        alert('Failed to update user role');
     }
 }
 
@@ -242,7 +286,13 @@ async function loadGenreStats() {
 
         // Initialize Genre Chart
         const genreCtx = document.getElementById('genreChart').getContext('2d');
-        new Chart(genreCtx, {
+
+        // Destroy existing chart if it exists
+        if (window.genreChartInstance) {
+            window.genreChartInstance.destroy();
+        }
+
+        window.genreChartInstance = new Chart(genreCtx, {
             type: 'bar',
             data: {
                 labels: labels,
@@ -285,5 +335,82 @@ async function loadGenreStats() {
         });
     } catch (error) {
         console.error('Error loading genre stats:', error);
+    }
+}
+
+// Load user growth statistics and update chart
+async function loadUserGrowthStats() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/user-growth`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch user growth stats');
+        }
+        const userGrowth = await response.json();
+        console.log('User growth stats loaded:', userGrowth);
+
+        const chartColors = {
+            primary: '#1f2937',
+            background: 'rgba(31, 41, 55, 0.1)',
+            gridColor: '#e5e7eb',
+            textColor: '#6b7280'
+        };
+
+        // Extract labels and data
+        const labels = userGrowth.map(item => item.label);
+        const data = userGrowth.map(item => item.count);
+
+        // Initialize Users Growth Chart
+        const usersGrowthCtx = document.getElementById('usersGrowthChart').getContext('2d');
+
+        // Destroy existing chart if it exists
+        if (window.usersGrowthChartInstance) {
+            window.usersGrowthChartInstance.destroy();
+        }
+
+        window.usersGrowthChartInstance = new Chart(usersGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'New Users',
+                    data: data,
+                    borderColor: chartColors.primary,
+                    backgroundColor: chartColors.background,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: chartColors.gridColor
+                        },
+                        ticks: {
+                            color: chartColors.textColor,
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: chartColors.textColor
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error loading user growth stats:', error);
     }
 }

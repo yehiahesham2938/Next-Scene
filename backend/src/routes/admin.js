@@ -141,4 +141,79 @@ router.get('/genre-stats', async (req, res) => {
     }
 });
 
+// DELETE /api/admin/users/:id - Delete a user
+router.delete('/users/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        await User.findByIdAndDelete(userId);
+        // Also delete associated watchlists
+        await Watchlist.deleteMany({ userId: userId });
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Failed to delete user' });
+    }
+});
+
+// PATCH /api/admin/users/:id/role - Update user role
+router.patch('/users/:id/role', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { role } = req.body;
+
+        if (!['user', 'admin'].includes(role)) {
+            return res.status(400).json({ message: 'Invalid role' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { role },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        res.status(500).json({ message: 'Failed to update user role' });
+    }
+});
+
+// GET /api/admin/user-growth - Get user growth statistics (users per month)
+router.get('/user-growth', async (req, res) => {
+    try {
+        const userGrowth = await User.aggregate([
+            {
+                $group: {
+                    _id: {
+                        month: { $month: "$createdAt" },
+                        year: { $year: "$createdAt" }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1 }
+            }
+        ]);
+
+        // Format data for chart (e.g., "Jan 2023")
+        const formattedGrowth = userGrowth.map(item => {
+            const date = new Date(item._id.year, item._id.month - 1);
+            return {
+                label: date.toLocaleString('default', { month: 'short', year: 'numeric' }),
+                count: item.count
+            };
+        });
+
+        res.json(formattedGrowth);
+    } catch (error) {
+        console.error('Error fetching user growth stats:', error);
+        res.status(500).json({ message: 'Failed to fetch user growth statistics' });
+    }
+});
+
 module.exports = router;

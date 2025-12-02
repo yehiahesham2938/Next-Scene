@@ -255,13 +255,11 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-2xl font-bold">User Management</h2>
-                <button class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 text-sm">
-                    View All Users
-                </button>
+
             </div>
 
             <!-- Users Table -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
@@ -425,132 +423,6 @@
         </div>
     </footer>
 
-    <script>
-        // Check authentication and admin role
-        window.onload = function () {
-            const user = localStorage.getItem('user');
-
-            // Redirect to sign-in page if user is not signed in
-    r) {
-                window.location.href = 'signin-page.html';
-                return;
-            }
-
-            // Parse and check user data
-            try {
-                const userData = JSON.parse(user);
-                console.log('Current user:', userData);
-
-                // Redirect non-admin users to regular index page
-                if (userData.role !== 'admin') {
-                    window.location.href = 'index.html';
-                    return;
-                }
-            } catch (e) {
-                console.error('Error parsing user data:', e);
-                // If data is corrupted, redirect to sign-in
-                window.location.href = 'signin-page.html';
-                return;
-            }
-
-            // Initialize Users Growth Chart
-            const chartColors = {
-                primary: '#1f2937',
-                background: 'rgba(31, 41, 55, 0.1)',
-                gridColor: '#e5e7eb',
-                textColor: '#6b7280'
-            };
-
-            const usersGrowthCtx = document.getElementById('usersGrowthChart').getContext('2d');
-            const usersGrowthChart = new Chart(usersGrowthCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'New Users',
-                        data: [12, 19, 15, 25, 22, 30],
-                        borderColor: chartColors.primary,
-                        backgroundColor: chartColors.background,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: chartColors.gridColor
-                            },
-                            ticks: {
-                                color: chartColors.textColor
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: chartColors.textColor
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Initialize Genre Chart
-            const genreCtx = document.getElementById('genreChart').getContext('2d');
-            const genreChart = new Chart(genreCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi'],
-                    datasets: [{
-                        label: 'Movies',
-                        data: [45, 38, 32, 28, 25],
-                        backgroundColor: chartColors.primary,
-                        borderColor: chartColors.primary,
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: chartColors.gridColor
-                            },
-                            ticks: {
-                                color: chartColors.textColor
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: chartColors.textColor
-                            }
-                        }
-                    }
-                }
-            });
-
-
-        };
-    </script>
     <script src="admin-dashboard.js"></script>
     <script src="page-transition.js"></script>
 </body>
