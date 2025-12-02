@@ -91,6 +91,44 @@ function removeFromWatchlistById(id) {
     showNotification('Movie removed', 'success');
 }
 
+function markAsWatched(id) {
+    let watchlist = getWatchlist();
+    const movieIndex = watchlist.findIndex(m => m.id === id);
+    
+    if (movieIndex >= 0) {
+        watchlist[movieIndex].watched = !watchlist[movieIndex].watched; // Toggle watched status
+        saveWatchlist(watchlist);
+        
+        // Re-render if on watchlist page
+        if (document.getElementById('watchlist-grid')) {
+            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.sort || 'newest-added';
+            renderWatchlist(activeFilter);
+        }
+        
+        const status = watchlist[movieIndex].watched ? 'marked as watched' : 'marked as unwatched';
+        showNotification(`Movie ${status}`, 'success');
+    }
+}
+
+function markAsWatchedByTitle(title) {
+    let watchlist = getWatchlist();
+    const movieIndex = watchlist.findIndex(m => m.title === title);
+    
+    if (movieIndex >= 0) {
+        watchlist[movieIndex].watched = !watchlist[movieIndex].watched; // Toggle watched status
+        saveWatchlist(watchlist);
+        
+        // Re-render if on watchlist page
+        if (document.getElementById('watchlist-grid')) {
+            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.sort || 'newest-added';
+            renderWatchlist(activeFilter);
+        }
+        
+        const status = watchlist[movieIndex].watched ? 'marked as watched' : 'marked as unwatched';
+        showNotification(`Movie ${status}`, 'success');
+    }
+}
+
 function getWatchlist() {
     return JSON.parse(localStorage.getItem('watchlist')) || [];
 }
@@ -186,13 +224,22 @@ function renderWatchlist(sortBy) {
         const removeHandler = movie.id 
             ? `removeFromWatchlistById('${movie.id}')` 
             : `removeFromWatchlist('${movie.title.replace(/'/g, "\\'")}')`;
+        const watchedHandler = movie.id 
+            ? `markAsWatched('${movie.id}')` 
+            : `markAsWatchedByTitle('${movie.title.replace(/'/g, "\\'")}')`;
+        const isWatched = movie.watched || false;
+        const watchedBadge = isWatched ? '<span class="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1"><i class="fas fa-check"></i> Watched</span>' : '';
         
         return `
         <a href="${movieLink}" class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group relative block">
             <div class="relative aspect-[2/3] overflow-hidden">
                 <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <button onclick="event.preventDefault(); ${removeHandler}" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2">
+                ${watchedBadge}
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                    <button onclick="event.preventDefault(); ${watchedHandler}" class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg">
+                        <i class="fas fa-check-circle"></i> ${isWatched ? 'Watched' : 'Mark as Watched'}
+                    </button>
+                    <button onclick="event.preventDefault(); ${removeHandler}" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg">
                         <i class="fas fa-trash-alt"></i> Remove
                     </button>
                 </div>

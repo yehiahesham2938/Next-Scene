@@ -251,6 +251,7 @@
 
     <script type="module" src="/src/main.jsx"></script>
     <script src="/public/theme.js"></script>
+    <script src="src/watchlist.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const signinBtn = document.getElementById('signin-nav-btn');
@@ -388,19 +389,25 @@
                     const runtime = movie.runtime ? movie.runtime + ' min' : '';
                     const description = movie.description || '';
                     const shortDescription = description.length > 140 ? description.slice(0, 137) + '...' : description;
+                    const movieId = movie._id;
+
+                    // Check if movie is already in watchlist
+                    const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+                    const isInWatchlist = watchlist.some(m => m.id === movieId || m.title === title);
+                    const bookmarkIcon = isInWatchlist ? 'fas fa-bookmark' : 'far fa-bookmark';
 
                     // Desktop card
                     if (desktopGrid) {
                         const card = document.createElement('a');
-                        card.href = 'MovieDetails.html?id=' + encodeURIComponent(movie._id);
+                        card.href = 'MovieDetails.html?id=' + encodeURIComponent(movieId);
                         card.innerHTML = `
                             <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
                                 <div class="relative">
                                     <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
                                         <img src="${poster}" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
                                     </div>
-                                    <button class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                        <i class="far fa-bookmark text-white text-sm"></i>
+                                    <button onclick="event.preventDefault(); event.stopPropagation(); addToWatchlistFromBrowse('${movieId}', '${title.replace(/'/g, "\\'")}', '${poster.replace(/'/g, "\\'")}', '${year}', this);" class="absolute top-2 right-2 w-8 h-8 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-opacity-90 z-10">
+                                        <i class="${bookmarkIcon} text-white text-sm"></i>
                                     </button>
                                 </div>
                                 <div class="p-3">
@@ -420,7 +427,7 @@
                     // Mobile list item
                     if (mobileList) {
                         const item = document.createElement('a');
-                        item.href = 'MovieDetails.html?id=' + encodeURIComponent(movie._id);
+                        item.href = 'MovieDetails.html?id=' + encodeURIComponent(movieId);
                         item.innerHTML = `
                             <div class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
                                 <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs">
@@ -429,8 +436,8 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-start justify-between mb-1">
                                         <h3 class="font-semibold text-sm">${title}</h3>
-                                        <button class="flex-shrink-0 ml-2">
-                                            <i class="far fa-bookmark text-gray-400"></i>
+                                        <button onclick="event.preventDefault(); event.stopPropagation(); addToWatchlistFromBrowseMobile('${movieId}', '${title.replace(/'/g, "\\'")}', '${poster.replace(/'/g, "\\'")}', '${year}', this);" class="flex-shrink-0 ml-2 hover:text-gray-600 transition-colors z-10">
+                                            <i class="${bookmarkIcon} text-gray-400"></i>
                                         </button>
                                     </div>
                                     <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">${year} • ${genres}</p>
@@ -457,6 +464,98 @@
                     mobileList.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 text-sm">Failed to load movies.</p>';
                 }
             }
+        }
+
+        // Function to add movie to watchlist from browse page
+        function addToWatchlistFromBrowse(movieId, title, poster, year, buttonElement) {
+            const movie = {
+                id: movieId,
+                title: title,
+                poster: poster,
+                year: year,
+                addedAt: new Date().toISOString()
+            };
+
+            let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+            const existingIndex = watchlist.findIndex(m => m.id === movieId || m.title === title);
+
+            if (existingIndex >= 0) {
+                // Remove if exists (toggle behavior)
+                watchlist.splice(existingIndex, 1);
+                if (typeof showNotification === 'function') {
+                    showNotification('Removed from Watchlist', 'error');
+                } else {
+                    console.log('Removed from Watchlist');
+                }
+                // Update icon to empty bookmark
+                if (buttonElement) {
+                    const icon = buttonElement.querySelector('i');
+                    if (icon) {
+                        icon.className = 'far fa-bookmark text-white text-sm';
+                    }
+                }
+            } else {
+                // Add new
+                watchlist.push(movie);
+                if (typeof showNotification === 'function') {
+                    showNotification('Added to Watchlist', 'success');
+                } else {
+                    console.log('Added to Watchlist');
+                }
+                // Update icon to filled bookmark
+                if (buttonElement) {
+                    const icon = buttonElement.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fas fa-bookmark text-white text-sm';
+                    }
+                }
+            }
+
+            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+        }
+        
+        // Function for mobile bookmark button
+        function addToWatchlistFromBrowseMobile(movieId, title, poster, year, buttonElement) {
+            const movie = {
+                id: movieId,
+                title: title,
+                poster: poster,
+                year: year,
+                addedAt: new Date().toISOString()
+            };
+
+            let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+            const existingIndex = watchlist.findIndex(m => m.id === movieId || m.title === title);
+
+            if (existingIndex >= 0) {
+                // Remove if exists (toggle behavior)
+                watchlist.splice(existingIndex, 1);
+                if (typeof showNotification === 'function') {
+                    showNotification('Removed from Watchlist', 'error');
+                }
+                // Update icon to empty bookmark
+                if (buttonElement) {
+                    const icon = buttonElement.querySelector('i');
+                    if (icon) {
+                        icon.className = 'far fa-bookmark text-gray-400';
+                    }
+                }
+            } else {
+                // Add new
+                watchlist.push(movie);
+                if (typeof showNotification === 'function') {
+                    showNotification('Added to Watchlist', 'success');
+                }
+                // Update icon to filled bookmark
+                if (buttonElement) {
+                    const icon = buttonElement.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fas fa-bookmark text-gray-400';
+                    }
+                }
+            }
+
+            localStorage.setItem('watchlist', JSON.stringify(watchlist));
         }
 
         document.addEventListener('DOMContentLoaded', loadMovies);
