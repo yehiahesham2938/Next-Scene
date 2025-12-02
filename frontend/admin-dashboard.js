@@ -120,66 +120,129 @@ async function loadUsers() {
         const users = await response.json();
         console.log('Users loaded:', users);
 
-        // Find the table body
+        // Find the table body and mobile cards container
         const tableBody = document.getElementById('users-table-body');
-        if (!tableBody) return;
+        const mobileCards = document.getElementById('users-cards-mobile');
 
-        // Clear existing rows
-        tableBody.innerHTML = '';
+        // Clear existing content
+        if (tableBody) tableBody.innerHTML = '';
+        if (mobileCards) mobileCards.innerHTML = '';
 
         // If no users, show a message
         if (users.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No users found</td></tr>';
+            if (tableBody) {
+                tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No users found</td></tr>';
+            }
+            if (mobileCards) {
+                mobileCards.innerHTML = '<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center text-gray-500">No users found</div>';
+            }
             return;
         }
 
-        // Create rows for each user
+        // Create rows for each user (desktop table)
         users.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-                            <i class="fa-solid fa-user text-gray-600"></i>
+            // Desktop table row
+            if (tableBody) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                <i class="fa-solid fa-user text-gray-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${user.fullName}</div>
+                            </div>
                         </div>
-                        <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900">${user.fullName}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${user.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">${user.role}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.watchlistCount || 0}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <button onclick="toggleRoleMenu(event, '${user.id}')" class="text-gray-500 hover:text-indigo-600 transition-colors focus:outline-none p-2 rounded-full hover:bg-indigo-50" title="Change Role">
+                                    <i class="fa-solid fa-user-gear text-lg"></i>
+                                </button>
+                                <div id="role-menu-${user.id}" class="role-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
+                                    <div class="px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        Change Role
+                                    </div>
+                                    <button onclick="updateUserRole('${user.id}', 'admin')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
+                                        <i class="fa-solid fa-shield-halved text-xs w-4"></i> Admin
+                                    </button>
+                                    <button onclick="updateUserRole('${user.id}', 'user')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
+                                        <i class="fa-solid fa-user text-xs w-4"></i> User
+                                    </button>
+                                </div>
+                            </div>
+                            <button onclick="deleteUser('${user.id}')" class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-full hover:bg-red-50 group relative" title="Delete User">
+                                <i class="fa-solid fa-trash-can text-lg"></i>
+                                <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg pointer-events-none">Delete Account</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+
+            // Mobile card
+            if (mobileCards) {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow-sm border border-gray-200 p-4';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-user text-gray-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${user.fullName}</div>
+                                <div class="text-xs text-gray-500 mt-1">${user.email}</div>
+                            </div>
                         </div>
                     </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-500">${user.email}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">${user.role}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.watchlistCount || 0}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div class="flex items-center gap-3">
-                        <div class="relative">
-                            <button onclick="toggleRoleMenu(event, '${user.id}')" class="text-gray-500 hover:text-indigo-600 transition-colors focus:outline-none p-2 rounded-full hover:bg-indigo-50" title="Change Role">
-                                <i class="fa-solid fa-user-gear text-lg"></i>
-                            </button>
-                            <div id="role-menu-${user.id}" class="role-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
-                                <div class="px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Change Role
+                    <div class="space-y-3 border-t border-gray-200 pt-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">Role</span>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">${user.role}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">Watchlists</span>
+                            <span class="text-sm text-gray-900 font-medium">${user.watchlistCount || 0}</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <span class="text-xs text-gray-500">Actions</span>
+                            <div class="flex items-center gap-3">
+                                <div class="relative">
+                                    <button onclick="toggleRoleMenuMobile(event, '${user.id}')" class="text-gray-500 hover:text-indigo-600 transition-colors focus:outline-none p-2 rounded-full hover:bg-indigo-50" title="Change Role">
+                                        <i class="fa-solid fa-user-gear text-lg"></i>
+                                    </button>
+                                    <div id="role-menu-mobile-${user.id}" class="role-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 z-50 overflow-hidden">
+                                        <div class="px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            Change Role
+                                        </div>
+                                        <button onclick="updateUserRole('${user.id}', 'admin')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
+                                            <i class="fa-solid fa-shield-halved text-xs w-4"></i> Admin
+                                        </button>
+                                        <button onclick="updateUserRole('${user.id}', 'user')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
+                                            <i class="fa-solid fa-user text-xs w-4"></i> User
+                                        </button>
+                                    </div>
                                 </div>
-                                <button onclick="updateUserRole('${user.id}', 'admin')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-shield-halved text-xs w-4"></i> Admin
-                                </button>
-                                <button onclick="updateUserRole('${user.id}', 'user')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-user text-xs w-4"></i> User
+                                <button onclick="deleteUser('${user.id}')" class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-full hover:bg-red-50" title="Delete User">
+                                    <i class="fa-solid fa-trash-can text-lg"></i>
                                 </button>
                             </div>
                         </div>
-                        <button onclick="deleteUser('${user.id}')" class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-full hover:bg-red-50 group relative" title="Delete User">
-                            <i class="fa-solid fa-trash-can text-lg"></i>
-                            <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg pointer-events-none">Delete Account</span>
-                        </button>
                     </div>
-                </td>
-            `;
-            tableBody.appendChild(row);
+                `;
+                mobileCards.appendChild(card);
+            }
         });
     } catch (error) {
         console.error('Error loading users:', error);
@@ -187,10 +250,14 @@ async function loadUsers() {
         if (tableBody) {
             tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Failed to load users</td></tr>';
         }
+        const mobileCards = document.getElementById('users-cards-mobile');
+        if (mobileCards) {
+            mobileCards.innerHTML = '<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center text-red-500">Failed to load users</div>';
+        }
     }
 }
 
-// Toggle role menu
+// Toggle role menu (desktop)
 function toggleRoleMenu(event, userId) {
     event.stopPropagation();
     const menu = document.getElementById(`role-menu-${userId}`);
@@ -198,6 +265,23 @@ function toggleRoleMenu(event, userId) {
     // Close all other menus
     document.querySelectorAll('.role-menu').forEach(m => {
         if (m.id !== `role-menu-${userId}`) {
+            m.classList.add('hidden');
+        }
+    });
+
+    if (menu) {
+        menu.classList.toggle('hidden');
+    }
+}
+
+// Toggle role menu (mobile)
+function toggleRoleMenuMobile(event, userId) {
+    event.stopPropagation();
+    const menu = document.getElementById(`role-menu-mobile-${userId}`);
+
+    // Close all other menus
+    document.querySelectorAll('.role-menu').forEach(m => {
+        if (m.id !== `role-menu-mobile-${userId}`) {
             m.classList.add('hidden');
         }
     });

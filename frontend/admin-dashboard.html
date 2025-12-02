@@ -258,8 +258,8 @@
 
             </div>
 
-            <!-- Users Table -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <!-- Users Table (Desktop) -->
+            <div class="hidden md:block bg-white rounded-lg shadow-sm border border-gray-200">
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
@@ -302,6 +302,11 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Users Cards (Mobile) -->
+            <div class="md:hidden space-y-4" id="users-cards-mobile">
+                <!-- Users will be populated here as cards -->
             </div>
         </div>
     </section>

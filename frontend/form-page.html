@@ -30,6 +30,14 @@
         .star-rating label:hover~label {
             color: #fbbf24;
         }
+        
+        /* Mobile footer padding to prevent content overlap */
+        @media (max-width: 640px) {
+            body {
+                padding-bottom: 80px;
+                padding-top: 60px;
+            }
+        }
     </style>
 </head>
 
@@ -88,7 +96,7 @@
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">Add New Movie</h1>
                 <p class="text-gray-600 mb-8">Fill in the details below to add a new movie to the database.</p>
 
-                <form class="space-y-8">
+                <form id="add-movie-form" class="space-y-8">
                     <section>
                         <h2 class="text-xl font-bold text-gray-900 mb-6">Basic Information</h2>
                         <div class="space-y-6">
@@ -96,7 +104,7 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Movie Title <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" placeholder="Enter movie title" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                <input type="text" id="movie-title" placeholder="Enter movie title" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent" required>
                                 <p class="text-red-500 text-xs mt-1">This field is required</p>
                             </div>
 
@@ -104,7 +112,7 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Director <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" placeholder="Enter director name" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                <input type="text" id="movie-director" placeholder="Enter director name" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent" required>
                                 <p class="text-red-500 text-xs mt-1">Director name is required</p>
                             </div>
 
@@ -113,13 +121,13 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         Release Year <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" value="2025" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                    <input type="text" id="movie-year" value="2025" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent" required>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         Runtime (minutes)
                                     </label>
-                                    <input type="text" value="120" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                    <input type="text" id="movie-runtime" value="120" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                                 </div>
                             </div>
 
@@ -128,7 +136,7 @@
                                     Genre <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded appearance-none focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white">
+                                    <select id="movie-genre" class="w-full px-4 py-2 border border-gray-300 rounded appearance-none focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white" required>
                                         <option value="">Select a genre</option>
                                         <option value="action">Action</option>
                                         <option value="comedy">Comedy</option>
@@ -180,7 +188,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Trailer URL</label>
-                                <input type="url" placeholder="https://youtube.com/watch?v=..." class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                <input type="url" id="movie-trailer" placeholder="https://youtube.com/watch?v=..." class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                                 <p class="text-gray-500 text-xs mt-1">YouTube or Vimeo URL preferred</p>
                             </div>
                         </div>
@@ -196,24 +204,21 @@
                                     </label>
                                     <span class="text-xs text-gray-500"><span id="charCount">0</span>/500</span>
                                 </div>
-                                <textarea rows="4" placeholder="Enter movie summary..." class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent resize-none" maxlength="500" oninput="document.getElementById('charCount').textContent = this.value.length"></textarea>
+                                <textarea id="movie-description" rows="4" placeholder="Enter movie summary..." class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent resize-none" maxlength="500" oninput="document.getElementById('charCount').textContent = this.value.length" required></textarea>
                                 <p class="text-gray-500 text-xs mt-1">Minimum 50 characters required</p>
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Main Cast</label>
-                                <input type="text" placeholder="Actor 1, Actor 2, Actor 3..." class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+                                <input type="text" id="movie-cast" placeholder="Actor 1, Actor 2, Actor 3..." class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                                 <p class="text-gray-500 text-xs mt-1">Separate multiple actors with commas</p>
                             </div>
                         </div>
                     </section>
 
                     <div class="flex gap-4 pt-6 border-t border-gray-200">
-                        <button type="button" class="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition">
+                        <button type="button" onclick="window.location.href='admin-dashboard.html'" class="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition">
                             Cancel
-                        </button>
-                        <button type="button" class="px-6 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition">
-                            Save as Draft
                         </button>
                         <button type="submit" class="ml-auto px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition flex items-center gap-2">
                             <i class="fa-solid fa-plus"></i>
@@ -225,7 +230,52 @@
         </div>
     </main>
 
-    <footer class="bg-gray-800 text-white mt-12">
+    <!-- Mobile Footer Navigation (sm:hidden) -->
+    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div class="flex justify-around items-center py-3">
+            <!-- Admin Dashboard -->
+            <a href="admin-dashboard.html" class="flex flex-col items-center gap-1 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span class="text-xs">Dashboard</span>
+            </a>
+
+            <!-- Add Movie (Active) -->
+            <a href="form-page.html" class="flex flex-col items-center gap-1 text-gray-900 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs">Add Movie</span>
+            </a>
+
+            <!-- Browse -->
+            <a href="browse.html" class="flex flex-col items-center gap-1 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span class="text-xs">Browse</span>
+            </a>
+
+            <!-- Profile -->
+            <a href="profile-page.html" class="flex flex-col items-center gap-1 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span class="text-xs">Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- FOOTER (Desktop Only) -->
+    <footer class="hidden sm:block bg-gray-800 text-white mt-12">
         <div class="max-w-7xl mx-auto px-4 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
@@ -351,6 +401,100 @@
                 fileName.classList.remove('hidden');
             }
         });
+
+        // Form submission handler
+        const API_BASE_URL = 'http://localhost:4000';
+        
+        document.getElementById('add-movie-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form data using IDs
+            const title = document.getElementById('movie-title').value.trim();
+            const director = document.getElementById('movie-director').value.trim();
+            const releaseYear = document.getElementById('movie-year').value.trim();
+            const runtimeInput = document.getElementById('movie-runtime').value.trim();
+            const runtime = runtimeInput ? parseInt(runtimeInput) : null;
+            const genre = document.getElementById('movie-genre').value;
+            const ratingInput = document.querySelector('input[name="rating"]:checked');
+            const rating = ratingInput ? ratingInput.value : null;
+            const trailerUrl = document.getElementById('movie-trailer').value.trim();
+            const description = document.getElementById('movie-description').value.trim();
+            const mainCast = document.getElementById('movie-cast').value.trim();
+            
+            // Validate required fields
+            if (!title || !director || !releaseYear || !genre || !description) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Handle poster upload (convert to base64)
+            const posterFile = document.getElementById('movie-poster-input').files[0];
+            let poster = '';
+            
+            if (posterFile) {
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    poster = reader.result;
+                    await submitMovie({ title, director, releaseYear, runtime, genre, rating, poster, trailerUrl, description, mainCast });
+                };
+                reader.readAsDataURL(posterFile);
+            } else {
+                await submitMovie({ title, director, releaseYear, runtime, genre, rating, poster, trailerUrl, description, mainCast });
+            }
+        });
+        
+        async function submitMovie(movieData) {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user || user.role !== 'admin') {
+                    alert('Only admins can add movies');
+                    return;
+                }
+                
+                // Convert rating to number if it's a string
+                if (movieData.rating) {
+                    movieData.rating = parseFloat(movieData.rating);
+                }
+                
+                // Convert releaseYear to string if needed
+                if (movieData.releaseYear) {
+                    movieData.releaseYear = String(movieData.releaseYear);
+                }
+                
+                const response = await fetch(`${API_BASE_URL}/api/movies`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(movieData)
+                });
+                
+                if (!response.ok) {
+                    // Try to parse error as JSON, fallback to text
+                    let errorMessage = 'Failed to add movie';
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.message || errorMessage;
+                    } catch (e) {
+                        // If response is not JSON, try to get text
+                        try {
+                            const text = await response.text();
+                            errorMessage = text || errorMessage;
+                        } catch (textError) {
+                            errorMessage = `Server error: ${response.status} ${response.statusText}`;
+                        }
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                const newMovie = await response.json();
+                alert('Movie added successfully!');
+                window.location.href = 'admin-dashboard.html';
+            } catch (error) {
+                console.error('Error adding movie:', error);
+                alert('Failed to add movie: ' + error.message);
+            }
+        }
     </script>
     <script src="page-transition.js"></script>
 </body>

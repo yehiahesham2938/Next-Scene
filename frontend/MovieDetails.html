@@ -367,6 +367,18 @@
         
         // Store current movie data globally for watchlist functionality
         let currentMovieData = null;
+        
+        // Check if user is admin
+        function isAdmin() {
+            try {
+                const user = localStorage.getItem('user');
+                if (!user) return false;
+                const userData = JSON.parse(user);
+                return userData.role === 'admin';
+            } catch (e) {
+                return false;
+            }
+        }
 
         async function loadMovieDetails() {
             const params = new URLSearchParams(window.location.search);
@@ -468,9 +480,12 @@
                 // Load similar movies (same genre)
                 await loadSimilarMovies(movie.genre, id);
                 
-                // Check if movie is already in watchlist and update button state
-                if (typeof checkMovieInWatchlist === 'function') {
-                    checkMovieInWatchlist(currentMovieData.title);
+                // Update button based on admin status
+                if (isAdmin()) {
+                    updateDeleteButtonState();
+                } else {
+                    // Check if movie is already in watchlist and update button state
+                    checkMovieInWatchlistDB();
                 }
             } catch (error) {
                 console.error(error);
@@ -478,37 +493,120 @@
         }
         
         // Override addToWatchlist to use the loaded movie data
-        function addToWatchlistFromDetails() {
+        async function addToWatchlistFromDetails() {
             if (!currentMovieData) {
                 console.error('Movie data not loaded yet');
                 return;
             }
             
-            let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-            
-            // Check if already exists
-            const existingIndex = watchlist.findIndex(m => m.id === currentMovieData.id || m.title === currentMovieData.title);
-            
-            if (existingIndex >= 0) {
-                // Remove if exists (toggle behavior)
-                watchlist.splice(existingIndex, 1);
-                if (typeof showNotification === 'function') {
-                    showNotification('Removed from Watchlist', 'error');
-                }
-                updateWatchlistButtonState(false);
-            } else {
-                // Add new
-                watchlist.push(currentMovieData);
-                if (typeof showNotification === 'function') {
-                    showNotification('Added to Watchlist', 'success');
-                }
-                updateWatchlistButtonState(true);
+            // If admin, show delete functionality instead
+            if (isAdmin()) {
+                await deleteMovieFromDetails();
+                return;
             }
             
-            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user || !user._id) {
+                    alert('Please sign in to add to watchlist');
+                    return;
+                }
+                
+                const response = await fetch(`${API_BASE_URL}/api/watchlist`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: user._id,
+                        movieId: currentMovieData.id
+                    })
+                });
+                
+                if (response.ok) {
+                    if (typeof showNotification === 'function') {
+                        showNotification('Added to Watchlist', 'success');
+                    }
+                    updateWatchlistButtonState(true);
+                } else if (response.status === 400) {
+                    // Already in watchlist, remove it
+                    await removeFromWatchlistDB(currentMovieData.id);
+                    if (typeof showNotification === 'function') {
+                        showNotification('Removed from Watchlist', 'error');
+                    }
+                    updateWatchlistButtonState(false);
+                } else {
+                    throw new Error('Failed to update watchlist');
+                }
+            } catch (error) {
+                console.error('Error updating watchlist:', error);
+                // Fallback to localStorage
+                let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+                const existingIndex = watchlist.findIndex(m => m.id === currentMovieData.id);
+                
+                if (existingIndex >= 0) {
+                    watchlist.splice(existingIndex, 1);
+                    if (typeof showNotification === 'function') {
+                        showNotification('Removed from Watchlist', 'error');
+                    }
+                    updateWatchlistButtonState(false);
+                } else {
+                    watchlist.push(currentMovieData);
+                    if (typeof showNotification === 'function') {
+                        showNotification('Added to Watchlist', 'success');
+                    }
+                    updateWatchlistButtonState(true);
+                }
+                localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            }
+        }
+        
+        async function removeFromWatchlistDB(movieId) {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user || !user._id) return;
+                
+                // Find watchlist item
+                const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${user._id}`);
+                if (!response.ok) return;
+                
+                const items = await response.json();
+                const item = items.find(i => (i.movieId?._id || i.movieId) === movieId);
+                if (!item) return;
+                
+                await fetch(`${API_BASE_URL}/api/watchlist/${item._id}?userId=${user._id}`, {
+                    method: 'DELETE'
+                });
+            } catch (error) {
+                console.error('Error removing from watchlist DB:', error);
+            }
+        }
+        
+        async function checkMovieInWatchlistDB() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user || !user._id || !currentMovieData) return false;
+                
+                const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${user._id}`);
+                if (!response.ok) return false;
+                
+                const items = await response.json();
+                const exists = items.some(i => (i.movieId?._id || i.movieId) === currentMovieData.id);
+                updateWatchlistButtonState(exists);
+                return exists;
+            } catch (error) {
+                console.error('Error checking watchlist:', error);
+                return false;
+            }
         }
         
         function updateWatchlistButtonState(exists) {
+            // If admin, show delete button instead
+            if (isAdmin()) {
+                updateDeleteButtonState();
+                return;
+            }
+            
             const btn = document.getElementById('addToWatchlistBtn');
             const btnMobile = document.getElementById('addToWatchlistBtnMobile');
             
@@ -533,6 +631,71 @@
                     btnMobile.innerHTML = '<i class="far fa-heart"></i> Add to Watchlist';
                     btnMobile.classList.remove('bg-green-600');
                     btnMobile.classList.add('bg-black', 'text-white');
+                }
+            }
+        }
+        
+        // Update delete button state for admin
+        function updateDeleteButtonState() {
+            const btn = document.getElementById('addToWatchlistBtn');
+            const btnMobile = document.getElementById('addToWatchlistBtnMobile');
+            
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-trash"></i> Delete Movie';
+                btn.classList.remove('bg-black', 'dark:bg-white', 'text-white', 'dark:text-black', 'bg-green-600');
+                btn.classList.add('bg-red-600', 'text-white', 'hover:bg-red-700');
+            }
+            
+            if (btnMobile) {
+                btnMobile.innerHTML = '<i class="fas fa-trash"></i> Delete Movie';
+                btnMobile.classList.remove('bg-black', 'text-white', 'bg-green-600');
+                btnMobile.classList.add('bg-red-600', 'text-white', 'hover:bg-red-700');
+            }
+        }
+        
+        // Delete movie function for admin
+        async function deleteMovieFromDetails() {
+            if (!currentMovieData) {
+                console.error('Movie data not loaded yet');
+                return;
+            }
+            
+            if (!isAdmin()) {
+                alert('Only admins can delete movies');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to delete "${currentMovieData.title}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/movies/${currentMovieData.id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to delete movie');
+                }
+                
+                // Show success message
+                if (typeof showNotification === 'function') {
+                    showNotification('Movie deleted successfully', 'success');
+                } else {
+                    alert('Movie deleted successfully');
+                }
+                
+                // Redirect to browse page after a short delay
+                setTimeout(() => {
+                    window.location.href = 'Browse.html';
+                }, 1500);
+            } catch (error) {
+                console.error('Error deleting movie:', error);
+                if (typeof showNotification === 'function') {
+                    showNotification('Failed to delete movie: ' + error.message, 'error');
+                } else {
+                    alert('Failed to delete movie: ' + error.message);
                 }
             }
         }
@@ -602,7 +765,13 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadMovieDetails);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if admin and update button state immediately
+            if (isAdmin()) {
+                updateDeleteButtonState();
+            }
+            loadMovieDetails();
+        });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
