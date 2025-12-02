@@ -122,7 +122,7 @@
             <h2 class="sm:hidden text-xl font-bold mb-4 dark:text-white">Your Stats</h2>
 
             <!-- Stats Cards Grid -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Total Movies Card (Order: 1 on mobile, 1 on desktop) -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 order-1">
                     <div class="flex items-center justify-between mb-2">
@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Movies</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">247</p>
+                    <p id="total-movies-count" class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
                 </div>
 
                 <!-- Watchlist Card (Order: 2 on mobile, 2 on desktop) -->
@@ -146,33 +146,20 @@
                         </div>
                     </div>
                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Watchlist</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">58</p>
+                    <p id="watchlist-count" class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
                 </div>
 
-                <!-- Avg Rating Card (Order: 3 on mobile, 3 on desktop) -->
+                <!-- Watched Card (Order: 3 on mobile, 3 on desktop) -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 order-3">
                     <div class="flex items-center justify-between mb-2">
                         <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Avg Rating</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">8.2</p>
-                </div>
-
-                <!-- Watched Card (Order: 4 on mobile, 4 on desktop) -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 order-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="bg-gray-200 rounded-full p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                     </div>
                     <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Watched</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">189</p>
+                    <p id="watched-count" class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
                 </div>
             </div>
         </div>
@@ -184,7 +171,7 @@
                 <div class="flex justify-center mb-4">
                     <canvas id="watchedPieChart" width="300" height="300"></canvas>
                 </div>
-                <p class="text-center text-sm text-gray-600 dark:text-gray-300">76% Watched | 24% Unwatched</p>
+                <p id="watched-percentage-text" class="text-center text-sm text-gray-600 dark:text-gray-300">0% Watched | 0% Unwatched</p>
             </div>
 
             <!-- Movies per Genre Bar Chart bmock data -->
@@ -193,7 +180,7 @@
                 <div class="flex justify-center mb-4">
                     <canvas id="genreBarChart" width="400" height="300"></canvas>
                 </div>
-                <p class="text-center text-sm text-gray-600 dark:text-gray-300">Action: 45 | Comedy: 38 | Drama: 32</p>
+                <p id="genre-summary-text" class="text-center text-sm text-gray-600 dark:text-gray-300">Loading...</p>
             </div>
         </div>
 
@@ -211,107 +198,8 @@
             </div>
 
             <!-- Horizontal Scroll Movie Cards -->
-            <div class="flex overflow-x-auto space-x-4 pb-4 -mx-4 px-4">
-                <!-- Movie Card 1 -->
-                <div class="flex-shrink-0 w-32 bg-gray-300 dark:bg-gray-600 rounded-lg overflow-hidden relative">
-                    <div class="w-full h-40 flex items-center justify-center text-gray-600 dark:text-gray-300 text-xs">
-                        Movie Poster
-                    </div>
-                    <div class="p-2 bg-white dark:bg-gray-700">
-                        <h4 class="font-semibold text-sm mb-1 dark:text-white">The Batman</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">2022</p>
-                        <div class="flex items-center gap-1">
-                            <span class="text-yellow-500 text-xs">⭐</span>
-                            <span class="text-xs text-gray-700 dark:text-gray-300">8.5</span>
-                        </div>
-                    </div>
-                    <!-- Mobile Heart Icon (Bottom Right) -->
-                    <div class="sm:hidden absolute bottom-2 right-2">
-                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Movie Card 2 -->
-                <div class="flex-shrink-0 w-32 bg-gray-300 dark:bg-gray-600 rounded-lg overflow-hidden relative">
-                    <div class="w-full h-40 flex items-center justify-center text-gray-600 dark:text-gray-300 text-xs">
-                        Movie Poster
-                    </div>
-                    <div class="p-2 bg-white dark:bg-gray-700">
-                        <h4 class="font-semibold text-sm mb-1 dark:text-white">Dune</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">2021</p>
-                        <div class="flex items-center gap-1">
-                            <span class="text-yellow-500 text-xs">⭐</span>
-                            <span class="text-xs text-gray-700 dark:text-gray-300">8.0</span>
-                        </div>
-                    </div>
-                    <div class="sm:hidden absolute bottom-2 right-2">
-                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Movie Card 3 -->
-                <div class="flex-shrink-0 w-32 bg-gray-300 dark:bg-gray-600 rounded-lg overflow-hidden relative">
-                    <div class="w-full h-40 flex items-center justify-center text-gray-600 dark:text-gray-300 text-xs">
-                        Movie Poster
-                    </div>
-                    <div class="p-2 bg-white dark:bg-gray-700">
-                        <h4 class="font-semibold text-sm mb-1 dark:text-white">Top Gun</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">2022</p>
-                        <div class="flex items-center gap-1">
-                            <span class="text-yellow-500 text-xs">⭐</span>
-                            <span class="text-xs text-gray-700 dark:text-gray-300">8.3</span>
-                        </div>
-                    </div>
-                    <div class="sm:hidden absolute bottom-2 right-2">
-                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Movie Card 4 -->
-                <div class="flex-shrink-0 w-32 bg-gray-300 dark:bg-gray-600 rounded-lg overflow-hidden relative">
-                    <div class="w-full h-40 flex items-center justify-center text-gray-600 dark:text-gray-300 text-xs">
-                        Movie Poster
-                    </div>
-                    <div class="p-2 bg-white dark:bg-gray-700">
-                        <h4 class="font-semibold text-sm mb-1 dark:text-white">Spider-Man</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">2021</p>
-                        <div class="flex items-center gap-1">
-                            <span class="text-yellow-500 text-xs">⭐</span>
-                            <span class="text-xs text-gray-700 dark:text-gray-300">8.4</span>
-                        </div>
-                    </div>
-                    <div class="sm:hidden absolute bottom-2 right-2">
-                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Movie Card 5 -->
-                <div class="flex-shrink-0 w-32 bg-gray-300 dark:bg-gray-600 rounded-lg overflow-hidden relative">
-                    <div class="w-full h-40 flex items-center justify-center text-gray-600 dark:text-gray-300 text-xs">
-                        Movie Poster
-                    </div>
-                    <div class="p-2 bg-white dark:bg-gray-700">
-                        <h4 class="font-semibold text-sm mb-1 dark:text-white">Inception</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">2010</p>
-                        <div class="flex items-center gap-1">
-                            <span class="text-yellow-500 text-xs">⭐</span>
-                            <span class="text-xs text-gray-700 dark:text-gray-300">8.8</span>
-                        </div>
-                    </div>
-                    <div class="sm:hidden absolute bottom-2 right-2">
-                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                </div>
+            <div id="suggested-movies-container" class="flex overflow-x-auto space-x-4 pb-4 -mx-4 px-4">
+                <!-- Movies will be loaded dynamically -->
             </div>
         </div>
     </main>
@@ -419,8 +307,15 @@
     </footer>
 
     <script>
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:4000';
+
+        // Global chart instances
+        let pieChart = null;
+        let barChart = null;
+
         // Check authentication and redirect if not signed in
-        window.onload = function() {
+        window.onload = async function() {
             const user = localStorage.getItem('user');
 
             // Redirect to sign-in page if user is not signed in
@@ -487,116 +382,8 @@
                 `;
             }
 
-            // Get current theme for chart colors
-            const isDarkMode = document.documentElement.classList.contains('dark');
-
-            // Define theme-aware colors
-            const chartColors = {
-                primary: isDarkMode ? '#60a5fa' : '#1f2937', // Blue in dark, dark gray in light
-                secondary: isDarkMode ? '#374151' : '#d1d5db', // Dark gray in dark, light gray in light
-                gridColor: isDarkMode ? '#374151' : '#e5e7eb', // Darker grid in dark mode
-                textColor: isDarkMode ? '#d1d5db' : '#6b7280' // Lighter text in dark mode
-            };
-
-            // Initialize Pie Chart (Watched vs Unwatched)
-            const pieCtx = document.getElementById('watchedPieChart').getContext('2d');
-            const pieChart = new Chart(pieCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Watched', 'Unwatched'],
-                    datasets: [{
-                        data: [76, 24],
-                        backgroundColor: [
-                            chartColors.primary,
-                            chartColors.secondary
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-
-            // Initialize Bar Chart (Movies per Genre)
-            const barCtx = document.getElementById('genreBarChart').getContext('2d');
-            const barChart = new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Action', 'Comedy', 'Drama'],
-                    datasets: [{
-                        label: 'Movies',
-                        data: [45, 38, 32],
-                        backgroundColor: chartColors.primary,
-                        borderColor: chartColors.primary,
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: chartColors.gridColor
-                            },
-                            ticks: {
-                                color: chartColors.textColor
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: chartColors.textColor
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Update charts when theme changes
-            function updateChartColors() {
-                const isDark = document.documentElement.classList.contains('dark');
-                const newColors = {
-                    primary: isDark ? '#60a5fa' : '#1f2937',
-                    secondary: isDark ? '#374151' : '#d1d5db',
-                    gridColor: isDark ? '#374151' : '#e5e7eb',
-                    textColor: isDark ? '#d1d5db' : '#6b7280'
-                };
-
-                // Update pie chart
-                pieChart.data.datasets[0].backgroundColor = [newColors.primary, newColors.secondary];
-                pieChart.update();
-
-                // Update bar chart
-                barChart.data.datasets[0].backgroundColor = newColors.primary;
-                barChart.data.datasets[0].borderColor = newColors.primary;
-                barChart.options.scales.y.grid.color = newColors.gridColor;
-                barChart.options.scales.y.ticks.color = newColors.textColor;
-                barChart.options.scales.x.ticks.color = newColors.textColor;
-                barChart.update();
-            }
-
-            // Listen for storage events (theme changes from other tabs/pages)
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'theme') {
-                    updateChartColors();
-                }
-            });
+            // Load dashboard data
+            await loadDashboardData();
 
             // Listen for theme changes on this page
             const observer = new MutationObserver((mutations) => {
@@ -612,6 +399,312 @@
                 attributeFilter: ['class']
             });
         };
+
+        // Load dashboard data from backend and local storage
+        async function loadDashboardData() {
+            try {
+                // Fetch all movies from backend
+                const res = await fetch(API_BASE_URL + '/api/movies');
+                if (!res.ok) {
+                    throw new Error('Failed to fetch movies');
+                }
+                const allMovies = await res.json();
+
+                // Get watchlist from local storage
+                const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+                
+                // Get watched movies from local storage
+                const watchedMovies = JSON.parse(localStorage.getItem('watchedMovies')) || [];
+
+                // Update stats
+                updateStats(allMovies, watchlist, watchedMovies);
+
+                // Update charts
+                updateCharts(allMovies, watchedMovies);
+
+                // Load suggested movies (limit to 10)
+                await loadSuggestedMovies();
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Update stats cards
+        function updateStats(allMovies, watchlist, watchedMovies) {
+            // Total movies from backend
+            document.getElementById('total-movies-count').textContent = allMovies.length;
+
+            // Watchlist count
+            document.getElementById('watchlist-count').textContent = watchlist.length;
+
+            // Watched count - count movies in watchlist with watched property set to true
+            const watchedCount = watchlist.filter(movie => movie.watched === true).length;
+            document.getElementById('watched-count').textContent = watchedCount;
+        }
+
+        // Update charts with real data
+        function updateCharts(allMovies, watchedMovies) {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+
+            // Define theme-aware colors
+            const chartColors = {
+                primary: isDarkMode ? '#60a5fa' : '#1f2937',
+                secondary: isDarkMode ? '#374151' : '#d1d5db',
+                gridColor: isDarkMode ? '#374151' : '#e5e7eb',
+                textColor: isDarkMode ? '#d1d5db' : '#6b7280'
+            };
+
+            // Get watchlist for watched/unwatched calculation
+            const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+            
+            // Watched vs Unwatched data - from watchlist
+            const watchedCount = watchlist.filter(movie => movie.watched === true).length;
+            const unwatchedCount = watchlist.length - watchedCount;
+            const watchedPercentage = watchlist.length > 0 ? Math.round((watchedCount / watchlist.length) * 100) : 0;
+            const unwatchedPercentage = 100 - watchedPercentage;
+
+            // Update percentage text
+            document.getElementById('watched-percentage-text').textContent = 
+                `${watchedPercentage}% Watched | ${unwatchedPercentage}% Unwatched`;
+
+            // Initialize or update Pie Chart
+            const pieCtx = document.getElementById('watchedPieChart').getContext('2d');
+            if (pieChart) {
+                pieChart.data.datasets[0].data = [watchedCount, unwatchedCount];
+                pieChart.update();
+            } else {
+                pieChart = new Chart(pieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Watched', 'Unwatched'],
+                        datasets: [{
+                            data: [watchedCount, unwatchedCount],
+                            backgroundColor: [
+                                chartColors.primary,
+                                chartColors.secondary
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Count movies per genre from WATCHLIST (not all movies)
+            const genreCounts = {};
+            
+            // For each movie in watchlist, fetch its genre from allMovies
+            watchlist.forEach(watchlistMovie => {
+                // Find the movie in allMovies by ID or title
+                const movie = allMovies.find(m => 
+                    m._id === watchlistMovie.id || m.title === watchlistMovie.title
+                );
+                
+                if (movie && movie.genre) {
+                    const genres = Array.isArray(movie.genre) ? movie.genre : movie.genre.split(',').map(g => g.trim());
+                    genres.forEach(genre => {
+                        if (genre) {
+                            genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+                        }
+                    });
+                }
+            });
+
+            // Sort genres by count and take top 5
+            const sortedGenres = Object.entries(genreCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const genreLabels = sortedGenres.map(g => g[0]);
+            const genreData = sortedGenres.map(g => g[1]);
+
+            // Update genre summary text
+            const genreSummary = sortedGenres.slice(0, 3).map(g => `${g[0]}: ${g[1]}`).join(' | ');
+            document.getElementById('genre-summary-text').textContent = genreSummary || 'No genre data';
+
+            // Initialize or update Bar Chart
+            const barCtx = document.getElementById('genreBarChart').getContext('2d');
+            if (barChart) {
+                barChart.data.labels = genreLabels;
+                barChart.data.datasets[0].data = genreData;
+                barChart.update();
+            } else {
+                barChart = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: genreLabels,
+                        datasets: [{
+                            label: 'Movies',
+                            data: genreData,
+                            backgroundColor: chartColors.primary,
+                            borderColor: chartColors.primary,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: chartColors.gridColor
+                                },
+                                ticks: {
+                                    color: chartColors.textColor
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: chartColors.textColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Update chart colors when theme changes
+        function updateChartColors() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const newColors = {
+                primary: isDark ? '#60a5fa' : '#1f2937',
+                secondary: isDark ? '#374151' : '#d1d5db',
+                gridColor: isDark ? '#374151' : '#e5e7eb',
+                textColor: isDark ? '#d1d5db' : '#6b7280'
+            };
+
+            if (pieChart) {
+                pieChart.data.datasets[0].backgroundColor = [newColors.primary, newColors.secondary];
+                pieChart.update();
+            }
+
+            if (barChart) {
+                barChart.data.datasets[0].backgroundColor = newColors.primary;
+                barChart.data.datasets[0].borderColor = newColors.primary;
+                barChart.options.scales.y.grid.color = newColors.gridColor;
+                barChart.options.scales.y.ticks.color = newColors.textColor;
+                barChart.options.scales.x.ticks.color = newColors.textColor;
+                barChart.update();
+            }
+        }
+
+        // Load suggested movies from backend
+        async function loadSuggestedMovies() {
+            try {
+                const res = await fetch(API_BASE_URL + '/api/movies?limit=10');
+                if (!res.ok) {
+                    throw new Error('Failed to fetch suggested movies');
+                }
+                const movies = await res.json();
+
+                const container = document.getElementById('suggested-movies-container');
+                container.innerHTML = '';
+
+                // Get watchlist for checking if movie is already in watchlist
+                const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+
+                movies.forEach(movie => {
+                    const title = movie.title || 'Untitled';
+                    const year = movie.releaseYear || '';
+                    const rating = movie.rating != null ? movie.rating : 'N/A';
+                    const poster = movie.poster || 'img/image1tst.png';
+                    const movieId = movie._id;
+
+                    // Check if in watchlist
+                    const isInWatchlist = watchlist.some(m => m.id === movieId || m.title === title);
+                    const bookmarkIcon = isInWatchlist ? 'fas fa-bookmark' : 'far fa-bookmark';
+
+                    const card = document.createElement('a');
+                    card.href = 'MovieDetails.html?id=' + encodeURIComponent(movieId);
+                    card.className = 'flex-shrink-0 w-32 bg-white dark:bg-gray-700 rounded-lg overflow-hidden relative group';
+                    card.innerHTML = `
+                        <div class="w-full h-40 flex items-center justify-center text-gray-600 dark:text-gray-300 text-xs bg-gray-300 dark:bg-gray-600 relative">
+                            <img src="${poster}" alt="${title}" class="absolute inset-0 w-full h-full object-cover" />
+                        </div>
+                        <div class="p-2 bg-white dark:bg-gray-700">
+                            <h4 class="font-semibold text-sm mb-1 dark:text-white truncate">${title}</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mb-1">${year}</p>
+                            <div class="flex items-center gap-1">
+                                <span class="text-yellow-500 text-xs">⭐</span>
+                                <span class="text-xs text-gray-700 dark:text-gray-300">${rating}</span>
+                            </div>
+                        </div>
+                        <button onclick="event.preventDefault(); event.stopPropagation(); addToWatchlistFromDashboard('${movieId}', '${title.replace(/'/g, "\\'")}', '${poster.replace(/'/g, "\\'")}', '${year}', this);" 
+                                class="sm:hidden absolute bottom-2 right-2 w-6 h-6 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center opacity-100 transition hover:bg-opacity-90 z-10">
+                            <i class="${bookmarkIcon} text-white text-xs"></i>
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Error loading suggested movies:', error);
+                const container = document.getElementById('suggested-movies-container');
+                container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-sm">Failed to load movies</p>';
+            }
+        }
+
+        // Add to watchlist from dashboard
+        function addToWatchlistFromDashboard(movieId, title, poster, year, buttonElement) {
+            const movie = {
+                id: movieId,
+                title: title,
+                poster: poster,
+                year: year,
+                addedAt: new Date().toISOString()
+            };
+
+            let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+            const existingIndex = watchlist.findIndex(m => m.id === movieId || m.title === title);
+
+            if (existingIndex >= 0) {
+                // Remove if exists (toggle behavior)
+                watchlist.splice(existingIndex, 1);
+                console.log('Removed from Watchlist');
+                // Update icon to empty bookmark
+                if (buttonElement) {
+                    const icon = buttonElement.querySelector('i');
+                    if (icon) {
+                        icon.className = 'far fa-bookmark text-white text-xs';
+                    }
+                }
+            } else {
+                // Add new
+                watchlist.push(movie);
+                console.log('Added to Watchlist');
+                // Update icon to filled bookmark
+                if (buttonElement) {
+                    const icon = buttonElement.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fas fa-bookmark text-white text-xs';
+                    }
+                }
+            }
+
+            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            
+            // Update watchlist count in stats
+            document.getElementById('watchlist-count').textContent = watchlist.length;
+        }
     </script>
     <script src="theme.js"></script>
     <script src="page-transition.js"></script>
