@@ -127,37 +127,64 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex gap-3">
-                    <select class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
-                            <option>Genre</option>
-                            <option>Action</option>
-                            <option>Drama</option>
-                            <option>Comedy</option>
-                            <option>Thriller</option>
+                    <select id="genre-filter" class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                            <option value="">All Genres</option>
+                            <option value="Action">Action</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Animation">Animation</option>
+                            <option value="Comedy">Comedy</option>
+                            <option value="Crime">Crime</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Thriller">Thriller</option>
                         </select>
-                    <select class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
-                            <option>Year</option>
-                            <option>2024</option>
-                            <option>2023</option>
-                            <option>2022</option>
+                    <select id="year-filter" class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                            <option value="">All Years</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
                         </select>
-                    <select class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
-                            <option>Rating</option>
-                            <option>9+ Stars</option>
-                            <option>8+ Stars</option>
-                            <option>7+ Stars</option>
+                    <select id="rating-filter" class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                            <option value="">All Ratings</option>
+                            <option value="9">9+ Stars</option>
+                            <option value="8">8+ Stars</option>
+                            <option value="7">7+ Stars</option>
+                            <option value="6">6+ Stars</option>
+                            <option value="5">5+ Stars</option>
                         </select>
-                    <button class="px-4 py-2 text-gray-600 dark:text-gray-300 text-sm hover:text-black dark:hover:text-white flex items-center gap-2">
+                    <button id="clear-filters" class="px-4 py-2 text-gray-600 dark:text-gray-300 text-sm hover:text-black dark:hover:text-white flex items-center gap-2">
                             <i class="fas fa-times"></i> Clear Filters
                         </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-sm text-gray-600 dark:text-gray-300">Showing 1-24 • 1080</span>
+                    <span id="results-count" class="text-sm text-gray-600 dark:text-gray-300">Showing 0 movies</span>
                     <span class="text-gray-300 dark:text-gray-600">|</span>
                     <span class="text-sm text-gray-600 dark:text-gray-300">Sort by:</span>
-                    <select class="px-3 py-1 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded text-sm focus:outline-none">
-                            <option>Popularity</option>
-                            <option>Rating</option>
-                            <option>Year</option>
+                    <select id="sort-by" class="px-3 py-1 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded text-sm focus:outline-none">
+                            <option value="popularity">Popularity</option>
+                            <option value="rating">Rating (High to Low)</option>
+                            <option value="rating-asc">Rating (Low to High)</option>
+                            <option value="year">Year (Newest)</option>
+                            <option value="year-asc">Year (Oldest)</option>
+                            <option value="title">Title (A-Z)</option>
                         </select>
                 </div>
             </div>
@@ -365,8 +392,16 @@
 
         // Store all movies globally for filtering
         let allMovies = [];
+        let currentFilters = {
+            search: '',
+            genre: '',
+            year: '',
+            rating: '',
+            sort: 'popularity'
+        };
 
         async function loadMovies(searchQuery = '') {
+            currentFilters.search = searchQuery;
             const desktopGrid = document.getElementById('browse-grid-desktop');
             const mobileList = document.getElementById('browse-list-mobile');
 
@@ -382,24 +417,56 @@
                     allMovies = await res.json();
                 }
 
-                // Filter movies based on search query
+                // Apply all filters
                 let filteredMovies = allMovies;
-                if (searchQuery && searchQuery.trim() !== '') {
-                    const query = searchQuery.toLowerCase().trim();
-                    filteredMovies = allMovies.filter(movie => {
+
+                // Filter by search query
+                if (currentFilters.search && currentFilters.search.trim() !== '') {
+                    const query = currentFilters.search.toLowerCase().trim();
+                    filteredMovies = filteredMovies.filter(movie => {
                         const title = (movie.title || '').toLowerCase();
                         const genre = (movie.genre || '').toLowerCase();
                         const description = (movie.description || '').toLowerCase();
                         const director = (movie.director || '').toLowerCase();
                         const cast = (movie.cast || []).join(' ').toLowerCase();
-                        
-                        return title.includes(query) || 
-                               genre.includes(query) || 
-                               description.includes(query) ||
-                               director.includes(query) ||
-                               cast.includes(query);
+
+                        return title.includes(query) ||
+                            genre.includes(query) ||
+                            description.includes(query) ||
+                            director.includes(query) ||
+                            cast.includes(query);
                     });
                 }
+
+                // Filter by genre
+                if (currentFilters.genre) {
+                    filteredMovies = filteredMovies.filter(movie => {
+                        const genres = (movie.genre || '').toLowerCase();
+                        return genres.includes(currentFilters.genre.toLowerCase());
+                    });
+                }
+
+                // Filter by year
+                if (currentFilters.year) {
+                    filteredMovies = filteredMovies.filter(movie => {
+                        const releaseYear = movie.releaseYear || '';
+                        return releaseYear.toString() === currentFilters.year;
+                    });
+                }
+
+                // Filter by rating
+                if (currentFilters.rating) {
+                    const minRating = parseFloat(currentFilters.rating);
+                    filteredMovies = filteredMovies.filter(movie => {
+                        return (movie.rating || 0) >= minRating;
+                    });
+                }
+
+                // Sort movies
+                filteredMovies = sortMovies(filteredMovies, currentFilters.sort);
+
+                // Update results count
+                updateResultsCount(filteredMovies.length);
 
                 // Clear existing content
                 desktopGrid.innerHTML = '';
@@ -407,10 +474,10 @@
 
                 // Show message if no results
                 if (filteredMovies.length === 0) {
-                    const noResultsMsg = searchQuery 
-                        ? `No movies found for "${searchQuery}"`
-                        : 'No movies available';
-                    
+                    const noResultsMsg = currentFilters.search ?
+                        `No movies found for "${currentFilters.search}"` :
+                        'No movies match your filters';
+
                     if (desktopGrid) {
                         desktopGrid.innerHTML = `<p class="col-span-full text-center text-gray-500 dark:text-gray-400 text-sm py-8">${noResultsMsg}</p>`;
                     }
@@ -506,6 +573,87 @@
             }
         }
 
+        // Function to sort movies
+        function sortMovies(movies, sortBy) {
+            const sorted = [...movies];
+
+            switch (sortBy) {
+                case 'rating':
+                    return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                case 'rating-asc':
+                    return sorted.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+                case 'year':
+                    return sorted.sort((a, b) => {
+                        const yearA = parseInt(a.releaseYear) || 0;
+                        const yearB = parseInt(b.releaseYear) || 0;
+                        return yearB - yearA;
+                    });
+                case 'year-asc':
+                    return sorted.sort((a, b) => {
+                        const yearA = parseInt(a.releaseYear) || 0;
+                        const yearB = parseInt(b.releaseYear) || 0;
+                        return yearA - yearB;
+                    });
+                case 'title':
+                    return sorted.sort((a, b) => {
+                        const titleA = (a.title || '').toLowerCase();
+                        const titleB = (b.title || '').toLowerCase();
+                        return titleA.localeCompare(titleB);
+                    });
+                case 'popularity':
+                default:
+                    // Keep original order (from database)
+                    return sorted;
+            }
+        }
+
+        // Function to update results count
+        function updateResultsCount(count) {
+            const resultsCount = document.getElementById('results-count');
+            if (resultsCount) {
+                resultsCount.textContent = `Showing ${count} movie${count !== 1 ? 's' : ''}`;
+            }
+        }
+
+        // Function to apply filters and reload movies
+        function applyFilters() {
+            loadMovies(currentFilters.search);
+        }
+
+        // Function to clear all filters
+        function clearFilters() {
+            currentFilters = {
+                search: '',
+                genre: '',
+                year: '',
+                rating: '',
+                sort: 'popularity'
+            };
+
+            // Reset UI elements
+            const genreFilter = document.getElementById('genre-filter');
+            const yearFilter = document.getElementById('year-filter');
+            const ratingFilter = document.getElementById('rating-filter');
+            const sortBy = document.getElementById('sort-by');
+            const desktopHeaderSearch = document.getElementById('desktop-header-search');
+            const mobileSearch = document.getElementById('mobile-search');
+            const desktopMainSearch = document.getElementById('desktop-main-search');
+
+            if (genreFilter) genreFilter.value = '';
+            if (yearFilter) yearFilter.value = '';
+            if (ratingFilter) ratingFilter.value = '';
+            if (sortBy) sortBy.value = 'popularity';
+            if (desktopHeaderSearch) desktopHeaderSearch.value = '';
+            if (mobileSearch) mobileSearch.value = '';
+            if (desktopMainSearch) desktopMainSearch.value = '';
+
+            // Clear URL params
+            window.history.pushState({}, '', window.location.pathname);
+
+            // Reload movies
+            applyFilters();
+        }
+
         // Function to add movie to watchlist from browse page
         function addToWatchlistFromBrowse(movieId, title, poster, year, buttonElement) {
             const movie = {
@@ -553,7 +701,7 @@
 
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
         }
-        
+
         // Function for mobile bookmark button
         function addToWatchlistFromBrowseMobile(movieId, title, poster, year, buttonElement) {
             const movie = {
@@ -607,13 +755,13 @@
             // Check for URL search parameter
             const urlParams = new URLSearchParams(window.location.search);
             const searchQuery = urlParams.get('search');
-            
+
             if (searchQuery) {
                 // Set the search query in all search boxes
                 if (desktopHeaderSearch) desktopHeaderSearch.value = searchQuery;
                 if (mobileSearch) mobileSearch.value = searchQuery;
                 if (desktopMainSearch) desktopMainSearch.value = searchQuery;
-                
+
                 // Perform the search
                 loadMovies(searchQuery);
             }
@@ -622,11 +770,11 @@
             const handleSearch = (e) => {
                 const searchQuery = e.target.value;
                 loadMovies(searchQuery);
-                
+
                 // Update URL without reloading page
-                const newUrl = searchQuery 
-                    ? `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}`
-                    : window.location.pathname;
+                const newUrl = searchQuery ?
+                    `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}` :
+                    window.location.pathname;
                 window.history.pushState({}, '', newUrl);
             };
 
@@ -661,7 +809,54 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadMovies();
             initializeSearch();
+            initializeFilters();
         });
+
+        // Initialize filter controls
+        function initializeFilters() {
+            const genreFilter = document.getElementById('genre-filter');
+            const yearFilter = document.getElementById('year-filter');
+            const ratingFilter = document.getElementById('rating-filter');
+            const sortBy = document.getElementById('sort-by');
+            const clearFiltersBtn = document.getElementById('clear-filters');
+
+            // Genre filter
+            if (genreFilter) {
+                genreFilter.addEventListener('change', (e) => {
+                    currentFilters.genre = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Year filter
+            if (yearFilter) {
+                yearFilter.addEventListener('change', (e) => {
+                    currentFilters.year = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Rating filter
+            if (ratingFilter) {
+                ratingFilter.addEventListener('change', (e) => {
+                    currentFilters.rating = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Sort by
+            if (sortBy) {
+                sortBy.addEventListener('change', (e) => {
+                    currentFilters.sort = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Clear filters button
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', clearFilters);
+            }
+        }
     </script>
     <script src="page-transition.js"></script>
 
