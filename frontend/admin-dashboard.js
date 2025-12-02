@@ -2,7 +2,7 @@
 const API_BASE_URL = 'http://localhost:4000';
 
 // Check authentication and admin role
-window.onload = async function () {
+window.onload = async function() {
     const user = localStorage.getItem('user');
 
     // Redirect to sign-in page if user is not signed in
@@ -34,6 +34,7 @@ window.onload = async function () {
     await loadUsers();
     await loadGenreStats();
     await loadUserGrowthStats();
+    await loadUserActivity();
 };
 
 // Load admin statistics from API
@@ -86,9 +87,9 @@ async function loadMostWatchlistedMovies() {
 
         // Create cards for each movie
         movies.forEach(movie => {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded overflow-hidden shadow-sm hover:shadow-lg transition';
-            card.innerHTML = `
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded overflow-hidden shadow-sm hover:shadow-lg transition';
+                    card.innerHTML = `
                 <div class="w-full h-48 bg-gray-400 flex items-center justify-center text-white overflow-hidden">
                     ${movie.poster ? `<img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover" />` : 'Movie Poster'}
                 </div>
@@ -135,6 +136,11 @@ async function loadUsers() {
 
         // Create rows for each user
         users.forEach(user => {
+            // Format last activity timestamp
+            const lastActivity = user.lastActivity ? new Date(user.lastActivity) : null;
+            const lastActivityText = lastActivity ? formatRelativeTime(lastActivity) : 'Never';
+            const lastActivityColor = getActivityColor(lastActivity);
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -153,7 +159,12 @@ async function loadUsers() {
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}">${user.role}</span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.watchlistCount || 0}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <span class="font-semibold">${user.watchlistCount || 0}</span> ${user.watchlistCount === 1 ? 'movie' : 'movies'}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${lastActivityColor}">${lastActivityText}</span>
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div class="flex items-center gap-3">
                         <div class="relative">
@@ -413,4 +424,132 @@ async function loadUserGrowthStats() {
     } catch (error) {
         console.error('Error loading user growth stats:', error);
     }
+}
+
+// Load user activity statistics
+async function loadUserActivity() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/user-activity`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch user activity stats');
+        }
+        const activityData = await response.json();
+        console.log('User activity stats loaded:', activityData);
+
+        // Update activity stats cards
+        document.getElementById('active-24h').textContent = activityData.activeIn24Hours.toLocaleString();
+        document.getElementById('active-7d').textContent = activityData.activeIn7Days.toLocaleString();
+        document.getElementById('active-30d').textContent = activityData.activeIn30Days.toLocaleString();
+
+        // Create daily activity chart
+        const chartColors = {
+            primary: '#10b981',
+            background: 'rgba(16, 185, 129, 0.1)',
+            gridColor: '#e5e7eb',
+            textColor: '#6b7280'
+        };
+
+        // Prepare data for last 7 days (fill in missing days with 0)
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            const dayData = activityData.dailyActivity.find(d => d.date === dateStr);
+            last7Days.push({
+                label: date.toLocaleDateString('default', { weekday: 'short', month: 'short', day: 'numeric' }),
+                count: dayData ? dayData.count : 0
+            });
+        }
+
+        const labels = last7Days.map(d => d.label);
+        const data = last7Days.map(d => d.count);
+
+        // Initialize Daily Activity Chart
+        const dailyActivityCtx = document.getElementById('dailyActivityChart').getContext('2d');
+
+        // Destroy existing chart if it exists
+        if (window.dailyActivityChartInstance) {
+            window.dailyActivityChartInstance.destroy();
+        }
+
+        window.dailyActivityChartInstance = new Chart(dailyActivityCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Active Users',
+                    data: data,
+                    backgroundColor: chartColors.primary,
+                    borderColor: chartColors.primary,
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: chartColors.gridColor
+                        },
+                        ticks: {
+                            color: chartColors.textColor,
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: chartColors.textColor
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error loading user activity stats:', error);
+        // Set to 0 on error
+        document.getElementById('active-24h').textContent = '0';
+        document.getElementById('active-7d').textContent = '0';
+        document.getElementById('active-30d').textContent = '0';
+    }
+}
+
+// Helper function to format relative time
+function formatRelativeTime(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+    return date.toLocaleDateString();
+}
+
+// Helper function to get activity color based on recency
+function getActivityColor(date) {
+    if (!date) return 'bg-gray-100 text-gray-800';
+    
+    const now = new Date();
+    const diffHours = (now - date) / 3600000;
+
+    if (diffHours < 24) return 'bg-green-100 text-green-800';
+    if (diffHours < 168) return 'bg-blue-100 text-blue-800';
+    if (diffHours < 720) return 'bg-yellow-100 text-yellow-800';
+    return 'bg-gray-100 text-gray-800';
 }

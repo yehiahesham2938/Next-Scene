@@ -258,8 +258,59 @@
         </div>
     </section>
 
-    <!-- USER MANAGEMENT SECTION -->
+    <!-- USER ACTIVITY SECTION -->
     <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-8">User Activity</h2>
+
+            <!-- Activity Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Active in Last 24 Hours -->
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="bg-green-100 rounded-full p-3">
+                            <i class="fas fa-clock text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-1">Active in Last 24 Hours</p>
+                    <p class="text-3xl font-bold text-gray-900" id="active-24h">0</p>
+                </div>
+
+                <!-- Active in Last 7 Days -->
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="bg-blue-100 rounded-full p-3">
+                            <i class="fas fa-calendar-week text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-1">Active in Last 7 Days</p>
+                    <p class="text-3xl font-bold text-gray-900" id="active-7d">0</p>
+                </div>
+
+                <!-- Active in Last 30 Days -->
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="bg-purple-100 rounded-full p-3">
+                            <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-1">Active in Last 30 Days</p>
+                    <p class="text-3xl font-bold text-gray-900" id="active-30d">0</p>
+                </div>
+            </div>
+
+            <!-- Daily Activity Chart -->
+            <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+                <h3 class="text-xl font-semibold mb-4">Daily User Activity (Last 7 Days)</h3>
+                <div class="flex justify-center">
+                    <canvas id="dailyActivityChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- USER MANAGEMENT SECTION -->
+    <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-2xl font-bold">User Management</h2>
@@ -278,7 +329,9 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Role</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Watchlists</th>
+                                Watchlist Count</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Last Activity</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions</th>
                         </tr>
