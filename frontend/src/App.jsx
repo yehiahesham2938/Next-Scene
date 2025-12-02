@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import {
   Dashboard,
@@ -12,7 +12,8 @@ function App() {
     <Router>
       <MainLayout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/search" element={<Search />} />
           <Route path="/movie/:id" element={<MovieDetails />} />
           <Route path="/watchlist" element={<Watchlist />} />

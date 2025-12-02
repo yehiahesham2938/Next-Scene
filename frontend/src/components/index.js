@@ -6,3 +6,6 @@ export { default as PageContainer } from './PageContainer';
 export { default as SectionHeader } from './SectionHeader';
 export { default as MovieCard } from './MovieCard';
 export { default as ThemeToggle } from './ThemeToggle';
+export { default as StatsCard } from './StatsCard';
+export { default as WatchedChart } from './WatchedChart';
+export { default as GenreChart } from './GenreChart';
