@@ -61,22 +61,17 @@
             <!-- Logo -->
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-3xl transition-colors"></i>
-                <a href="index.html" id="logo-link"
-                    class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
+                <a href="index.html" id="logo-link" class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex gap-8 items-center" id="main-nav">
-                <a href="index.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
-                <a href="dashboard-page.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Dashboard</a>
+                <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
+                <a href="dashboard-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Dashboard</a>
                 <a href="watchlist-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">My
                     Watchlist</a>
-                <a href="browse.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
-                <a href="about-page.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About
+                <a href="browse.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
+                <a href="about-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About
                     us</a>
             </nav>
 
@@ -265,10 +260,10 @@
     </main>
 
     <!-- Mobile Footer Navigation (sm:hidden) -->
-    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50" id="mobile-nav">
+    <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50" id="mobile-nav">
         <div class="flex justify-around items-center py-3">
             <!-- Home -->
-            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600">
+            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
@@ -276,15 +271,23 @@
             </a>
 
             <!-- Browse -->
-            <a href="Browse.html" class="flex flex-col items-center gap-1 text-gray-600">
+            <a href="Browse.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
                 <span class="text-xs">Browse</span>
             </a>
 
+            <!-- Watchlist -->
+            <a href="watchlist-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+          </svg>
+                <span class="text-xs">Watchlist</span>
+            </a>
+
             <!-- Dashboard (Active) -->
-            <a href="dashboard-page.html" class="flex flex-col items-center gap-1 text-gray-600">
+            <a href="dashboard-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
@@ -364,7 +367,7 @@
     <script>
         // Load movie details from API based on ?id= in the URL
         const API_BASE_URL = 'http://localhost:4000';
-        
+
         // Store current movie data globally for watchlist functionality
         let currentMovieData = null;
 
@@ -384,7 +387,7 @@
                 }
 
                 const movie = await res.json();
-                
+
                 // Store movie data globally for watchlist
                 currentMovieData = {
                     id: movie._id,
@@ -467,7 +470,7 @@
 
                 // Load similar movies (same genre)
                 await loadSimilarMovies(movie.genre, id);
-                
+
                 // Check if movie is already in watchlist and update button state
                 if (typeof checkMovieInWatchlist === 'function') {
                     checkMovieInWatchlist(currentMovieData.title);
@@ -476,19 +479,19 @@
                 console.error(error);
             }
         }
-        
+
         // Override addToWatchlist to use the loaded movie data
         function addToWatchlistFromDetails() {
             if (!currentMovieData) {
                 console.error('Movie data not loaded yet');
                 return;
             }
-            
+
             let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-            
+
             // Check if already exists
             const existingIndex = watchlist.findIndex(m => m.id === currentMovieData.id || m.title === currentMovieData.title);
-            
+
             if (existingIndex >= 0) {
                 // Remove if exists (toggle behavior)
                 watchlist.splice(existingIndex, 1);
@@ -504,14 +507,14 @@
                 }
                 updateWatchlistButtonState(true);
             }
-            
+
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
         }
-        
+
         function updateWatchlistButtonState(exists) {
             const btn = document.getElementById('addToWatchlistBtn');
             const btnMobile = document.getElementById('addToWatchlistBtnMobile');
-            
+
             if (btn) {
                 if (exists) {
                     btn.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
@@ -523,7 +526,7 @@
                     btn.classList.add('bg-black', 'dark:bg-white', 'text-white', 'dark:text-black');
                 }
             }
-            
+
             if (btnMobile) {
                 if (exists) {
                     btnMobile.innerHTML = '<i class="fas fa-check"></i> In Watchlist';
@@ -549,7 +552,7 @@
                 }
 
                 const allMovies = await res.json();
-                
+
                 // Filter movies with the same genre (excluding current movie)
                 const primaryGenre = genre ? genre.split(',')[0].trim().toLowerCase() : '';
                 const similarMovies = allMovies

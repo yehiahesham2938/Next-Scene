@@ -37,7 +37,6 @@
                 padding-bottom: 80px;
                 padding-top: 60px;
             }
-
             /* Center empty state vertically on small screens */
             #empty-state {
                 min-height: calc(100vh - 200px);
@@ -46,6 +45,25 @@
                 align-items: center;
                 justify-content: center;
             }
+        }
+        /* Smooth card hover effects */
+        
+        .watchlist-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .watchlist-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .watchlist-card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        /* Active state for mobile */
+        
+        .watchlist-card:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -99,7 +117,7 @@
         <div class="flex justify-between items-center px-4 py-3">
             <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-2xl transition-colors"></i>
             <h1 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors">My Watchlist</h1>
-            <a href="profile-page.html" class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center transition-colors">
+            <a href="profile-page.html" class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
                 <i class="fa-solid fa-user text-gray-600 text-xs"></i>
             </a>
         </div>
@@ -219,28 +237,52 @@
     <!-- Mobile Footer Navigation (sm:hidden) -->
     <nav class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50 transition-colors">
         <div class="flex justify-around items-center py-3">
-            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
-                <i class="fas fa-home text-lg"></i>
+            <!-- Home -->
+            <a href="index.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
                 <span class="text-xs">Home</span>
             </a>
-            <a href="browse.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
-                <i class="fas fa-search text-lg"></i>
+
+            <!-- Browse -->
+            <a href="browse.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 <span class="text-xs">Browse</span>
             </a>
-            <a href="dashboard-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
-                <i class="fas fa-chart-line text-lg"></i>
-                <span class="text-xs">Dashboard</span>
+
+            <!-- Watchlist (Active) -->
+            <a href="watchlist-page.html" class="flex flex-col items-center gap-1 text-gray-900 dark:text-white font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                <span class="text-xs">Watchlist</span>
             </a>
-            <a href="profile-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400">
-                <i class="fas fa-user text-lg"></i>
-                <span class="text-xs">Profile</span>
+
+            <!-- Dashboard -->
+            <a href="dashboard-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300 ">
+                <svg xmlns="http://www.w3.org/2000/svg " class="w-6 h-6 " fill="none " viewBox="0 0 24 24 " stroke="currentColor " stroke-width="2 ">
+                    <path stroke-linecap="round " stroke-linejoin="round " d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2
+                0 01-2 2h-2a2 2 0 01-2-2z " />
+                </svg>
+                <span class="text-xs ">Dashboard</span>
+            </a>
+
+            <!-- Profile -->
+            <a href="profile-page.html " class="flex flex-col items-center gap-1 text-gray-600 ">
+                <svg xmlns="http://www.w3.org/2000/svg " class="w-6 h-6 " fill="none " viewBox="0 0 24 24 " stroke="currentColor " stroke-width="2 ">
+                    <path stroke-linecap="round " stroke-linejoin="round " d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z " />
+                </svg>
+                <span class="text-xs ">Profile</span>
             </a>
         </div>
     </nav>
 
-    <script src="/public/theme.js"></script>
-    <script src="/public/search.js"></script>
-    <script src="src/watchlist.js"></script>
+    <script src="/public/theme.js "></script>
+    <script src="/public/search.js "></script>
+    <script src="src/watchlist.js "></script>
 </body>
 
 </html>
