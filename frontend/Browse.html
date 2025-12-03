@@ -37,6 +37,33 @@
                 padding-top: 60px;
             }
         }
+        /* Hide scrollbar but keep functionality */
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        /* Smooth card hover effects */
+        
+        .movie-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-4px);
+        }
+        /* Responsive text truncation */
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -137,19 +164,13 @@
             </div>
         </div>
 
-        <div class="md:hidden mb-6 overflow-x-auto">
-            <div class="flex gap-2 pb-2">
-                <button
-                    class="px-4 py-2 bg-black dark:bg-white dark:text-black text-white rounded-full text-sm whitespace-nowrap font-medium">All</button>
-                <button
-                    class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">Action</button>
-                <button
-                    class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">Drama</button>
-                <button
-                    class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">2024</button>
-                <button
-                    class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700">5+
-                    ⭐</button>
+        <div class="md:hidden mb-6 overflow-x-auto scrollbar-hide">
+            <div class="flex gap-2 pb-2 min-w-max">
+                <button class="px-4 py-2 bg-black dark:bg-white dark:text-black text-white rounded-full text-sm whitespace-nowrap font-medium active:scale-95 transition-transform">All</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">Action</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">Drama</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">2024</button>
+                <button class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">5+ ⭐</button>
             </div>
         </div>
 
@@ -164,54 +185,76 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between">
-                <div class="flex gap-3">
-                    <select
-                        class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <option>Genre</option>
-                        <option>Action</option>
-                        <option>Drama</option>
-                        <option>Comedy</option>
-                        <option>Thriller</option>
-                    </select>
-                    <select
-                        class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <option>Year</option>
-                        <option>2024</option>
-                        <option>2023</option>
-                        <option>2022</option>
-                    </select>
-                    <select
-                        class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <option>Rating</option>
-                        <option>9+ Stars</option>
-                        <option>8+ Stars</option>
-                        <option>7+ Stars</option>
-                    </select>
-                    <button
-                        class="px-4 py-2 text-gray-600 dark:text-gray-300 text-sm hover:text-black dark:hover:text-white flex items-center gap-2">
-                        <i class="fas fa-times"></i> Clear Filters
-                    </button>
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex flex-wrap gap-3">
+                    <select id="genre-filter" class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                            <option value="">All Genres</option>
+                            <option value="Action">Action</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Animation">Animation</option>
+                            <option value="Comedy">Comedy</option>
+                            <option value="Crime">Crime</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Thriller">Thriller</option>
+                        </select>
+                    <select id="year-filter" class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                            <option value="">All Years</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                        </select>
+                    <select id="rating-filter" class="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600">
+                            <option value="">All Ratings</option>
+                            <option value="9">9+ Stars</option>
+                            <option value="8">8+ Stars</option>
+                            <option value="7">7+ Stars</option>
+                            <option value="6">6+ Stars</option>
+                            <option value="5">5+ Stars</option>
+                        </select>
+                    <button id="clear-filters" class="px-4 py-2 text-gray-600 dark:text-gray-300 text-sm hover:text-black dark:hover:text-white flex items-center gap-2">
+                            <i class="fas fa-times"></i> Clear Filters
+                        </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="text-sm text-gray-600 dark:text-gray-300">Showing 1-24 • 1080</span>
+                    <span id="results-count" class="text-sm text-gray-600 dark:text-gray-300">Showing 0 movies</span>
                     <span class="text-gray-300 dark:text-gray-600">|</span>
                     <span class="text-sm text-gray-600 dark:text-gray-300">Sort by:</span>
-                    <select
-                        class="px-3 py-1 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded text-sm focus:outline-none">
-                        <option>Popularity</option>
-                        <option>Rating</option>
-                        <option>Year</option>
-                    </select>
+                    <select id="sort-by" class="px-3 py-1 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded text-sm focus:outline-none">
+                            <option value="popularity">Popularity</option>
+                            <option value="rating">Rating (High to Low)</option>
+                            <option value="rating-asc">Rating (Low to High)</option>
+                            <option value="year">Year (Newest)</option>
+                            <option value="year-asc">Year (Oldest)</option>
+                            <option value="title">Title (A-Z)</option>
+                        </select>
                 </div>
             </div>
         </div>
 
         <!-- Desktop movies grid (populated dynamically from API) -->
-        <div id="browse-grid-desktop" class="hidden md:grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4"></div>
+        <div id="browse-grid-desktop" class="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-4"></div>
 
         <!-- Mobile movies list (populated dynamically from API) -->
-        <div id="browse-list-mobile" class="md:hidden space-y-4"></div>
+        <div id="browse-list-mobile" class="md:hidden grid grid-cols-2 gap-4"></div>
 
     </main>
 
@@ -279,6 +322,14 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span class="text-xs">Browse</span>
+            </a>
+
+            <!-- Watchlist -->
+            <a href="watchlist-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg>
+                <span class="text-xs">Watchlist</span>
             </a>
 
             <!-- Dashboard (Active) -->
@@ -418,6 +469,13 @@
 
         // Store all movies globally for filtering
         let allMovies = [];
+        let currentFilters = {
+            search: '',
+            genre: '',
+            year: '',
+            rating: '',
+            sort: 'popularity'
+        };
 
         // Check if user is admin
         function isAdmin() {
@@ -432,6 +490,7 @@
         }
 
         async function loadMovies(searchQuery = '') {
+            currentFilters.search = searchQuery;
             const desktopGrid = document.getElementById('browse-grid-desktop');
             const mobileList = document.getElementById('browse-list-mobile');
 
@@ -448,11 +507,13 @@
                     console.log('Loaded movies:', allMovies.length);
                 }
 
-                // Filter movies based on search query
+                // Apply all filters
                 let filteredMovies = allMovies;
-                if (searchQuery && searchQuery.trim() !== '') {
-                    const query = searchQuery.toLowerCase().trim();
-                    filteredMovies = allMovies.filter(movie => {
+
+                // Filter by search query
+                if (currentFilters.search && currentFilters.search.trim() !== '') {
+                    const query = currentFilters.search.toLowerCase().trim();
+                    filteredMovies = filteredMovies.filter(movie => {
                         const title = (movie.title || '').toLowerCase();
                         const genre = (movie.genre || '').toLowerCase();
                         const description = (movie.description || '').toLowerCase();
@@ -466,6 +527,36 @@
                             cast.includes(query);
                     });
                 }
+
+                // Filter by genre
+                if (currentFilters.genre) {
+                    filteredMovies = filteredMovies.filter(movie => {
+                        const genres = (movie.genre || '').toLowerCase();
+                        return genres.includes(currentFilters.genre.toLowerCase());
+                    });
+                }
+
+                // Filter by year
+                if (currentFilters.year) {
+                    filteredMovies = filteredMovies.filter(movie => {
+                        const releaseYear = movie.releaseYear || '';
+                        return releaseYear.toString() === currentFilters.year;
+                    });
+                }
+
+                // Filter by rating
+                if (currentFilters.rating) {
+                    const minRating = parseFloat(currentFilters.rating);
+                    filteredMovies = filteredMovies.filter(movie => {
+                        return (movie.rating || 0) >= minRating;
+                    });
+                }
+
+                // Sort movies
+                filteredMovies = sortMovies(filteredMovies, currentFilters.sort);
+
+                // Update results count
+                updateResultsCount(filteredMovies.length);
 
                 // Clear existing content
                 if (desktopGrid) {
@@ -538,7 +629,7 @@
                         card.innerHTML = `
                                 <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition group cursor-pointer">
                                     <div class="relative">
-                                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm">
+                                        <div class="w-full aspect-[2/3] bg-gray-300 flex items-center justify-center text-white text-sm gap-4">
                                             <img src="${poster}" alt="Movie Poster" class="absolute inset-0 w-full h-full object-cover" />
                                         </div>
                                         ${actionButton}
@@ -556,45 +647,85 @@
                             `;
                         desktopGrid.appendChild(card);
                     }
+                    // ✅ Proper Mobile CARD layout (titles now inside the card)
+if (mobileList) {
+    const card = document.createElement('a');
+    card.href = 'MovieDetails.html?id=' + encodeURIComponent(movieId);
 
-                    // Mobile list item
-                    if (mobileList) {
-                        const item = document.createElement('div');
-                        const mobileActionButton = adminUser
-                            ? `<button onclick="deleteMovie('${movieId}', '${title.replace(/'/g, "\\'")}', this);" class="flex-shrink-0 ml-2 hover:text-red-600 transition-colors z-10" title="Delete Movie">
-                                        <i class="fas fa-trash text-red-500"></i>
-                                    </button>`
-                            : `<button onclick="event.preventDefault(); event.stopPropagation(); addToWatchlistFromBrowseMobile('${movieId}', '${title.replace(/'/g, "\\'")}', '${poster.replace(/'/g, "\\'")}', '${year}', this);" class="flex-shrink-0 ml-2 hover:text-gray-600 transition-colors z-10">
-                                        <i class="${bookmarkIcon} text-gray-400"></i>
-                                    </button>`;
-                        const titleLink = `<a href="MovieDetails.html?id=${encodeURIComponent(movieId)}">
-    <h3 class="font-semibold text-sm">${title}</h3>
-</a>`;
+    const mobileActionButton = adminUser
+        ? `<button onclick="event.preventDefault(); event.stopPropagation(); deleteMovie('${movieId}', '${title.replace(/'/g, "\\'")}', this);" 
+              class="absolute top-2 right-2 w-7 h-7 bg-red-600 rounded-full flex items-center justify-center z-10">
+              <i class="fas fa-trash text-white text-xs"></i>
+           </button>`
+        : `<button onclick="event.preventDefault(); event.stopPropagation(); addToWatchlistFromBrowseMobile('${movieId}', '${title.replace(/'/g, "\\'")}', '${poster.replace(/'/g, "\\'")}', '${year}', this);" 
+              class="absolute top-2 right-2 w-7 h-7 bg-gray-800 rounded-full flex items-center justify-center z-10">
+              <i class="${bookmarkIcon} text-white text-xs"></i>
+           </button>`;
 
-                        item.innerHTML = `
-                                ${adminUser ? '<div' : '<a href="MovieDetails.html?id=' + encodeURIComponent(movieId) + '"'} class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
-                                    <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs overflow-hidden">
-                                        <img src="${poster}" alt="Movie Poster" class="w-16 h-24 object-cover rounded" />
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-start justify-between mb-1">
-                                            ${titleLink}
-                                            ${mobileActionButton}
-                                        </div>
-                                        <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">${year} • ${genres}</p>
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <div class="flex items-center gap-1">
-                                                <i class="fas fa-star text-yellow-500 text-xs"></i>
-                                                <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">${rating}</span>
-                                            </div>
-                                            <span class="text-gray-400 text-xs">${runtime}</span>
-                                        </div>
-                                        <p class="text-gray-600 text-xs line-clamp-2">${shortDescription}</p>
-                                    </div>
-                                ${adminUser ? '</div>' : '</a>'}
-                            `;
-                        mobileList.appendChild(item);
-                    }
+    card.innerHTML = `
+        <div class="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow movie-card">
+            
+            <div class="w-full aspect-[2/3] bg-gray-300">
+
+                <img src="${poster}" class="w-full h-full object-cover" />
+            </div>
+
+            ${mobileActionButton}
+
+            <div class="p-2">
+                <h3 class="text-sm font-semibold truncate">${title}</h3>
+                <p class="text-xs text-gray-500">${year}</p>
+
+                <div class="flex items-center gap-1 mt-1">
+                    <i class="fas fa-star text-yellow-500 text-xs"></i>
+                    <span class="text-xs">${rating}</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    mobileList.appendChild(card);
+}
+
+
+//                     // Mobile list item
+//                     if (mobileList) {
+//                         const item = document.createElement('div');
+//                         const mobileActionButton = adminUser
+//                             ? `<button onclick="deleteMovie('${movieId}', '${title.replace(/'/g, "\\'")}', this);" class="flex-shrink-0 ml-2 hover:text-red-600 transition-colors z-10" title="Delete Movie">
+//                                         <i class="fas fa-trash text-red-500"></i>
+//                                     </button>`
+//                             : `<button onclick="event.preventDefault(); event.stopPropagation(); addToWatchlistFromBrowseMobile('${movieId}', '${title.replace(/'/g, "\\'")}', '${poster.replace(/'/g, "\\'")}', '${year}', this);" class="flex-shrink-0 ml-2 hover:text-gray-600 transition-colors z-10">
+//                                         <i class="${bookmarkIcon} text-gray-400"></i>
+//                                     </button>`;
+//                         const titleLink = `<a href="MovieDetails.html?id=${encodeURIComponent(movieId)}">
+//     <h3 class="font-semibold text-sm">${title}</h3>
+// </a>`;
+
+//                         item.innerHTML = `
+//                                 ${adminUser ? '<div' : '<a href="MovieDetails.html?id=' + encodeURIComponent(movieId) + '"'} class="bg-white dark:bg-gray-800 rounded-lg p-4 flex gap-3 shadow-sm">
+//                                     <div class="w-16 h-24 bg-gray-300 rounded flex-shrink-0 flex items-center justify-center text-white text-xs overflow-hidden">
+//                                         <img src="${poster}" alt="Movie Poster" class="w-16 h-24 object-cover rounded" />
+//                                     </div>
+//                                     <div class="flex-1 min-w-0">
+//                                         <div class="flex items-start justify-between mb-1">
+//                                             ${titleLink}
+//                                             ${mobileActionButton}
+//                                         </div>
+//                                         <p class="text-gray-500 dark:text-gray-400 text-xs mb-2">${year} • ${genres}</p>
+//                                         <div class="flex items-center gap-2 mb-2">
+//                                             <div class="flex items-center gap-1">
+//                                                 <i class="fas fa-star text-yellow-500 text-xs"></i>
+//                                                 <span class="text-gray-700 dark:text-gray-300 text-xs font-medium">${rating}</span>
+//                                             </div>
+//                                             <span class="text-gray-400 text-xs">${runtime}</span>
+//                                         </div>
+//                                         <p class="text-gray-600 text-xs line-clamp-2">${shortDescription}</p>
+//                                     </div>
+//                                 ${adminUser ? '</div>' : '</a>'}
+//                             `;
+//                         mobileList.appendChild(item);
+//                     }
                 });
             } catch (error) {
                 console.error('Error loading movies:', error);
@@ -607,6 +738,87 @@
                     mobileList.className = 'md:hidden space-y-4';
                 }
             }
+        }
+
+        // Function to sort movies
+        function sortMovies(movies, sortBy) {
+            const sorted = [...movies];
+
+            switch (sortBy) {
+                case 'rating':
+                    return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                case 'rating-asc':
+                    return sorted.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+                case 'year':
+                    return sorted.sort((a, b) => {
+                        const yearA = parseInt(a.releaseYear) || 0;
+                        const yearB = parseInt(b.releaseYear) || 0;
+                        return yearB - yearA;
+                    });
+                case 'year-asc':
+                    return sorted.sort((a, b) => {
+                        const yearA = parseInt(a.releaseYear) || 0;
+                        const yearB = parseInt(b.releaseYear) || 0;
+                        return yearA - yearB;
+                    });
+                case 'title':
+                    return sorted.sort((a, b) => {
+                        const titleA = (a.title || '').toLowerCase();
+                        const titleB = (b.title || '').toLowerCase();
+                        return titleA.localeCompare(titleB);
+                    });
+                case 'popularity':
+                default:
+                    // Keep original order (from database)
+                    return sorted;
+            }
+        }
+
+        // Function to update results count
+        function updateResultsCount(count) {
+            const resultsCount = document.getElementById('results-count');
+            if (resultsCount) {
+                resultsCount.textContent = `Showing ${count} movie${count !== 1 ? 's' : ''}`;
+            }
+        }
+
+        // Function to apply filters and reload movies
+        function applyFilters() {
+            loadMovies(currentFilters.search);
+        }
+
+        // Function to clear all filters
+        function clearFilters() {
+            currentFilters = {
+                search: '',
+                genre: '',
+                year: '',
+                rating: '',
+                sort: 'popularity'
+            };
+
+            // Reset UI elements
+            const genreFilter = document.getElementById('genre-filter');
+            const yearFilter = document.getElementById('year-filter');
+            const ratingFilter = document.getElementById('rating-filter');
+            const sortBy = document.getElementById('sort-by');
+            const desktopHeaderSearch = document.getElementById('desktop-header-search');
+            const mobileSearch = document.getElementById('mobile-search');
+            const desktopMainSearch = document.getElementById('desktop-main-search');
+
+            if (genreFilter) genreFilter.value = '';
+            if (yearFilter) yearFilter.value = '';
+            if (ratingFilter) ratingFilter.value = '';
+            if (sortBy) sortBy.value = 'popularity';
+            if (desktopHeaderSearch) desktopHeaderSearch.value = '';
+            if (mobileSearch) mobileSearch.value = '';
+            if (desktopMainSearch) desktopMainSearch.value = '';
+
+            // Clear URL params
+            window.history.pushState({}, '', window.location.pathname);
+
+            // Reload movies
+            applyFilters();
         }
 
         // Function to add movie to watchlist from browse page
@@ -773,9 +985,9 @@
                 loadMovies(searchQuery);
 
                 // Update URL without reloading page
-                const newUrl = searchQuery
-                    ? `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}`
-                    : window.location.pathname;
+                const newUrl = searchQuery ?
+                    `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}` :
+                    window.location.pathname;
                 window.history.pushState({}, '', newUrl);
             };
 
@@ -810,7 +1022,54 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadMovies();
             initializeSearch();
+            initializeFilters();
         });
+
+        // Initialize filter controls
+        function initializeFilters() {
+            const genreFilter = document.getElementById('genre-filter');
+            const yearFilter = document.getElementById('year-filter');
+            const ratingFilter = document.getElementById('rating-filter');
+            const sortBy = document.getElementById('sort-by');
+            const clearFiltersBtn = document.getElementById('clear-filters');
+
+            // Genre filter
+            if (genreFilter) {
+                genreFilter.addEventListener('change', (e) => {
+                    currentFilters.genre = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Year filter
+            if (yearFilter) {
+                yearFilter.addEventListener('change', (e) => {
+                    currentFilters.year = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Rating filter
+            if (ratingFilter) {
+                ratingFilter.addEventListener('change', (e) => {
+                    currentFilters.rating = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Sort by
+            if (sortBy) {
+                sortBy.addEventListener('change', (e) => {
+                    currentFilters.sort = e.target.value;
+                    applyFilters();
+                });
+            }
+
+            // Clear filters button
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', clearFilters);
+            }
+        }
     </script>
     <script src="page-transition.js"></script>
 

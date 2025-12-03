@@ -48,6 +48,32 @@
                 padding-bottom: 80px;
             }
         }
+        /* Hide scrollbar but keep functionality */
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        /* Smooth card hover effects */
+        
+        .stat-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        /* Responsive charts */
+        
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
     </style>
 </head>
 
@@ -59,22 +85,17 @@
             <!-- Logo -->
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-film text-gray-800 dark:text-gray-200 text-3xl transition-colors"></i>
-                <a href="index.html" id="logo-link"
-                    class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
+                <a href="index.html" id="logo-link" class="text-gray-900 dark:text-white text-lg font-bold transition-colors">Next-scene</a>
             </div>
 
             <!-- Navigation Links -->
             <nav class="flex gap-8 items-center" id="main-nav">
-                <a href="index.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
-                <a href="dashboard-page.html"
-                    class="text-black dark:text-white font-semibold transition-colors">Dashboard</a>
+                <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Home</a>
+                <a href="dashboard-page.html" class="text-black dark:text-white font-semibold transition-colors">Dashboard</a>
                 <a href="watchlist-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">My
                     Watchlist</a>
-                <a href="browse.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
-                <a href="about-page.html"
-                    class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About
+                <a href="browse.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">Browse</a>
+                <a href="about-page.html" class="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">About
                     us</a>
             </nav>
 
@@ -122,65 +143,65 @@
             <h2 class="sm:hidden text-xl font-bold mb-4 dark:text-white">Your Stats</h2>
 
             <!-- Stats Cards Grid -->
-            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 <!-- Total Movies Card (Order: 1 on mobile, 1 on desktop) -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 order-1">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 sm:p-4 order-1 stat-card transition-all hover:shadow-md">
                     <div class="flex items-center justify-between mb-2">
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-2 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Movies</p>
-                    <p id="total-movies-count" class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
+                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Total Movies</p>
+                    <p id="total-movies-count" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">0</p>
                 </div>
 
                 <!-- Watchlist Card (Order: 2 on mobile, 2 on desktop) -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 order-2">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 sm:p-4 order-2 stat-card transition-all hover:shadow-md">
                     <div class="flex items-center justify-between mb-2">
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-2 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Watchlist</p>
-                    <p id="watchlist-count" class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
+                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Watchlist</p>
+                    <p id="watchlist-count" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">0</p>
                 </div>
 
                 <!-- Watched Card (Order: 3 on mobile, 3 on desktop) -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 order-3">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 sm:p-4 order-3 stat-card transition-all hover:shadow-md">
                     <div class="flex items-center justify-between mb-2">
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-2 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">Watched</p>
-                    <p id="watched-count" class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
+                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Watched</p>
+                    <p id="watched-count" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">0</p>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
             <!-- Watched vs Unwatched Pie Chart bmock data -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                <h3 class="text-xl font-semibold mb-4 dark:text-white">Watched vs Unwatched</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 transition-all hover:shadow-md">
+                <h3 class="text-lg sm:text-xl font-semibold mb-4 dark:text-white">Watched vs Unwatched</h3>
                 <div class="flex justify-center mb-4">
-                    <canvas id="watchedPieChart" width="300" height="300"></canvas>
+                    <canvas id="watchedPieChart" class="max-w-full"></canvas>
                 </div>
-                <p id="watched-percentage-text" class="text-center text-sm text-gray-600 dark:text-gray-300">0% Watched | 0% Unwatched</p>
+                <p id="watched-percentage-text" class="text-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">0% Watched | 0% Unwatched</p>
             </div>
 
             <!-- Movies per Genre Bar Chart bmock data -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                <h3 class="text-xl font-semibold mb-4 dark:text-white">Movies per Genre</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 transition-all hover:shadow-md">
+                <h3 class="text-lg sm:text-xl font-semibold mb-4 dark:text-white">Movies per Genre</h3>
                 <div class="flex justify-center mb-4">
-                    <canvas id="genreBarChart" width="400" height="300"></canvas>
+                    <canvas id="genreBarChart" class="max-w-full"></canvas>
                 </div>
-                <p id="genre-summary-text" class="text-center text-sm text-gray-600 dark:text-gray-300">Loading...</p>
+                <p id="genre-summary-text" class="text-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">Loading...</p>
             </div>
         </div>
 
@@ -221,6 +242,14 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span class="text-xs">Browse</span>
+            </a>
+
+            <!-- Watchlist -->
+            <a href="watchlist-page.html" class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                <span class="text-xs">Watchlist</span>
             </a>
 
             <!-- Dashboard (Active) -->
@@ -412,7 +441,7 @@
 
                 // Get watchlist from local storage
                 const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-                
+
                 // Get watched movies from local storage
                 const watchedMovies = JSON.parse(localStorage.getItem('watchedMovies')) || [];
 
@@ -457,7 +486,7 @@
 
             // Get watchlist for watched/unwatched calculation
             const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-            
+
             // Watched vs Unwatched data - from watchlist
             const watchedCount = watchlist.filter(movie => movie.watched === true).length;
             const unwatchedCount = watchlist.length - watchedCount;
@@ -465,7 +494,7 @@
             const unwatchedPercentage = 100 - watchedPercentage;
 
             // Update percentage text
-            document.getElementById('watched-percentage-text').textContent = 
+            document.getElementById('watched-percentage-text').textContent =
                 `${watchedPercentage}% Watched | ${unwatchedPercentage}% Unwatched`;
 
             // Initialize or update Pie Chart
@@ -501,14 +530,14 @@
 
             // Count movies per genre from WATCHLIST (not all movies)
             const genreCounts = {};
-            
+
             // For each movie in watchlist, fetch its genre from allMovies
             watchlist.forEach(watchlistMovie => {
                 // Find the movie in allMovies by ID or title
-                const movie = allMovies.find(m => 
+                const movie = allMovies.find(m =>
                     m._id === watchlistMovie.id || m.title === watchlistMovie.title
                 );
-                
+
                 if (movie && movie.genre) {
                     const genres = Array.isArray(movie.genre) ? movie.genre : movie.genre.split(',').map(g => g.trim());
                     genres.forEach(genre => {
@@ -701,7 +730,7 @@
             }
 
             localStorage.setItem('watchlist', JSON.stringify(watchlist));
-            
+
             // Update watchlist count in stats
             document.getElementById('watchlist-count').textContent = watchlist.length;
         }
