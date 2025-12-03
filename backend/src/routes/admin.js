@@ -6,7 +6,7 @@ const Watchlist = require('../models/Watchlist');
 const router = express.Router();
 
 // GET /api/admin/stats - Get admin dashboard statistics
-router.get('/stats', async (req, res) => {
+router.get('/stats', async(req, res) => {
     try {
         // Get total users count
         const totalUsers = await User.countDocuments();
@@ -33,7 +33,7 @@ router.get('/stats', async (req, res) => {
 });
 
 // GET /api/admin/users - Get all users
-router.get('/users', async (req, res) => {
+router.get('/users', async(req, res) => {
     try {
         const users = await User.find()
             .select('-password') // Exclude password field
@@ -41,7 +41,7 @@ router.get('/users', async (req, res) => {
 
         // For each user, count their watchlists
         const usersWithWatchlistCount = await Promise.all(
-            users.map(async (user) => {
+            users.map(async(user) => {
                 const watchlistCount = await Watchlist.countDocuments({ userId: user._id });
                 return {
                     id: user._id,
@@ -49,6 +49,7 @@ router.get('/users', async (req, res) => {
                     email: user.email,
                     role: user.role,
                     createdAt: user.createdAt,
+                    lastActivity: user.updatedAt,
                     watchlistCount
                 };
             })
@@ -62,13 +63,12 @@ router.get('/users', async (req, res) => {
 });
 
 // GET /api/admin/most-watchlisted - Get most added to watchlist movies
-router.get('/most-watchlisted', async (req, res) => {
+router.get('/most-watchlisted', async(req, res) => {
     try {
         const limit = req.query.limit ? parseInt(req.query.limit, 10) : 4;
 
         // Aggregate to count how many times each movie has been added to watchlists
-        const mostWatchlisted = await Watchlist.aggregate([
-            {
+        const mostWatchlisted = await Watchlist.aggregate([{
                 $group: {
                     _id: '$movieId',
                     count: { $sum: 1 }
@@ -111,7 +111,7 @@ router.get('/most-watchlisted', async (req, res) => {
 });
 
 // GET /api/admin/genre-stats - Get movies per genre statistics
-router.get('/genre-stats', async (req, res) => {
+router.get('/genre-stats', async(req, res) => {
     try {
         const movies = await Movie.find().select('genre');
 
@@ -142,7 +142,7 @@ router.get('/genre-stats', async (req, res) => {
 });
 
 // DELETE /api/admin/users/:id - Delete a user
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', async(req, res) => {
     try {
         const userId = req.params.id;
         await User.findByIdAndDelete(userId);
@@ -156,7 +156,7 @@ router.delete('/users/:id', async (req, res) => {
 });
 
 // PATCH /api/admin/users/:id/role - Update user role
-router.patch('/users/:id/role', async (req, res) => {
+router.patch('/users/:id/role', async(req, res) => {
     try {
         const userId = req.params.id;
         const { role } = req.body;
@@ -166,9 +166,7 @@ router.patch('/users/:id/role', async (req, res) => {
         }
 
         const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { role },
-            { new: true }
+            userId, { role }, { new: true }
         );
 
         if (!updatedUser) {
@@ -183,10 +181,9 @@ router.patch('/users/:id/role', async (req, res) => {
 });
 
 // GET /api/admin/user-growth - Get user growth statistics (users per month)
-router.get('/user-growth', async (req, res) => {
+router.get('/user-growth', async(req, res) => {
     try {
-        const userGrowth = await User.aggregate([
-            {
+        const userGrowth = await User.aggregate([{
                 $group: {
                     _id: {
                         month: { $month: "$createdAt" },
@@ -213,6 +210,56 @@ router.get('/user-growth', async (req, res) => {
     } catch (error) {
         console.error('Error fetching user growth stats:', error);
         res.status(500).json({ message: 'Failed to fetch user growth statistics' });
+    }
+});
+
+// GET /api/admin/user-activity - Get user activity statistics
+router.get('/user-activity', async(req, res) => {
+    try {
+        const now = new Date();
+        const last24Hours = new Date(now - 24 * 60 * 60 * 1000);
+        const last7Days = new Date(now - 7 * 24 * 60 * 60 * 1000);
+        const last30Days = new Date(now - 30 * 24 * 60 * 60 * 1000);
+
+        // Count active users in different timeframes (using updatedAt as last activity)
+        const activeIn24Hours = await User.countDocuments({ updatedAt: { $gte: last24Hours } });
+        const activeIn7Days = await User.countDocuments({ updatedAt: { $gte: last7Days } });
+        const activeIn30Days = await User.countDocuments({ updatedAt: { $gte: last30Days } });
+
+        // Get recent user activity grouped by day (last 7 days)
+        const dailyActivity = await User.aggregate([{
+                $match: {
+                    updatedAt: { $gte: last7Days }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$updatedAt" }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ]);
+
+        // Format daily activity for chart
+        const formattedActivity = dailyActivity.map(item => ({
+            date: item._id,
+            count: item.count
+        }));
+
+        res.json({
+            activeIn24Hours,
+            activeIn7Days,
+            activeIn30Days,
+            dailyActivity: formattedActivity
+        });
+    } catch (error) {
+        console.error('Error fetching user activity stats:', error);
+        res.status(500).json({ message: 'Failed to fetch user activity statistics' });
     }
 });
 
