@@ -35,14 +35,14 @@ export const WatchlistProvider = ({ children }) => {
       setLoading(true);
       const data = await watchlistAPI.get(user._id || user.id);
       
-      if (data && data.movies) {
-        const watched = data.movies.filter(m => m.watched).map(m => ({
-          id: m.movieId._id,
-          ...m.movieId,
+      if (data && Array.isArray(data)) {
+        const watched = data.filter(item => item.watched).map(item => ({
+          id: item.movieId?._id,
+          ...item.movieId,
         }));
-        const unwatched = data.movies.filter(m => !m.watched).map(m => ({
-          id: m.movieId._id,
-          ...m.movieId,
+        const unwatched = data.filter(item => !item.watched).map(item => ({
+          id: item.movieId?._id,
+          ...item.movieId,
         }));
         
         setWatchedMovies(watched);

@@ -50,26 +50,51 @@ router.post('/', async (req, res) => {
     }
 });
 
-// DELETE /api/watchlist/:id - Remove from watchlist
-router.delete('/:id', async (req, res) => {
+// DELETE /api/watchlist/remove - Remove from watchlist by userId and movieId
+router.delete('/remove', async (req, res) => {
     try {
-        const { id } = req.params;
-        const { userId } = req.query; // Verify ownership
+        const { userId, movieId } = req.body;
         
-        const item = await Watchlist.findById(id);
+        if (!userId || !movieId) {
+            return res.status(400).json({ message: 'User ID and Movie ID required' });
+        }
+
+        const item = await Watchlist.findOne({ userId, movieId });
         if (!item) {
             return res.status(404).json({ message: 'Watchlist item not found' });
         }
 
-        if (item.userId.toString() !== userId) {
-            return res.status(403).json({ message: 'Unauthorized' });
-        }
-
-        await Watchlist.findByIdAndDelete(id);
+        await Watchlist.findByIdAndDelete(item._id);
         res.json({ message: 'Removed from watchlist' });
     } catch (error) {
         console.error('Error removing from watchlist:', error);
         res.status(500).json({ message: 'Failed to remove from watchlist' });
+    }
+});
+
+// PATCH /api/watchlist/watched - Mark movie as watched
+router.patch('/watched', async (req, res) => {
+    try {
+        const { userId, movieId } = req.body;
+        
+        if (!userId || !movieId) {
+            return res.status(400).json({ message: 'User ID and Movie ID required' });
+        }
+
+        const item = await Watchlist.findOne({ userId, movieId });
+        if (!item) {
+            return res.status(404).json({ message: 'Watchlist item not found' });
+        }
+
+        item.watched = true;
+        item.watchedAt = new Date();
+        await item.save();
+        
+        const populated = await Watchlist.findById(item._id).populate('movieId');
+        res.json(populated);
+    } catch (error) {
+        console.error('Error marking as watched:', error);
+        res.status(500).json({ message: 'Failed to mark as watched' });
     }
 });
 

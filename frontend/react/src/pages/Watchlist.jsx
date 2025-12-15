@@ -5,7 +5,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 const Watchlist = () => {
   const navigate = useNavigate();
-  const { watchlist, watchedMovies, loading, removeFromWatchlist } = useWatchlist();
+  const { watchlist, watchedMovies, loading, removeFromWatchlist, markAsWatched } = useWatchlist();
   const [activeFilter, setActiveFilter] = useState('newest-added');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -52,6 +52,11 @@ const Watchlist = () => {
   const handleRemove = async (e, movieId) => {
     e.stopPropagation();
     await removeFromWatchlist(movieId);
+  };
+
+  const handleMarkAsWatched = async (e, movieId) => {
+    e.stopPropagation();
+    await markAsWatched(movieId);
   };
 
   if (loading) {
@@ -152,48 +157,63 @@ const Watchlist = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredMovies.map((movie) => {
               const movieId = movie.id || movie._id;
-              const year = movie.year || 'N/A';
+              const year = movie.releaseYear || movie.year || 'N/A';
               const rating = movie.rating ? movie.rating.toFixed(1) : 'N/A';
+              const isWatched = watchedMovies.some(m => (m.id || m._id) === movieId);
 
               return (
                 <div
                   key={movieId}
+                  className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group relative cursor-pointer"
                   onClick={() => handleMovieClick(movieId)}
-                  className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-200 cursor-pointer group watchlist-card"
                 >
-                  <div className="w-full aspect-[2/3] bg-gray-300 dark:bg-gray-700 overflow-hidden">
+                  <div className="relative aspect-[2/3] overflow-hidden">
                     {movie.poster ? (
                       <img
                         src={movie.poster}
                         alt={movie.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white text-xs">
+                      <div className="w-full h-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-white text-xs">
                         No Image
                       </div>
                     )}
+                    
+                    {/* Watched Badge */}
+                    {isWatched && (
+                      <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                        <i className="fas fa-check"></i> Watched
+                      </span>
+                    )}
+
+                    {/* Hover Overlay with Buttons */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                      <button
+                        onClick={(e) => handleMarkAsWatched(e, movieId)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg"
+                      >
+                        <i className="fas fa-check-circle"></i> {isWatched ? 'Watched' : 'Mark as Watched'}
+                      </button>
+                      <button
+                        onClick={(e) => handleRemove(e, movieId)}
+                        className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg"
+                      >
+                        <i className="fas fa-trash-alt"></i> Remove
+                      </button>
+                    </div>
                   </div>
 
-                  <button
-                    onClick={(e) => handleRemove(e, movieId)}
-                    className="absolute top-2 right-2 w-8 h-8 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Remove from watchlist"
-                  >
-                    <i className="fas fa-trash text-white text-sm"></i>
-                  </button>
-
-                  <div className="p-3">
-                    <h3 className="font-semibold text-sm text-gray-900 dark:text-white line-clamp-1 mb-1">
+                  <div className="p-4">
+                    <h3 className="font-bold text-gray-900 dark:text-white truncate mb-1 text-lg">
                       {movie.title}
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-xs mb-2">{year}</p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1">
-                        <i className="fas fa-star text-yellow-500 text-xs"></i>
-                        <span className="text-gray-700 dark:text-gray-300 text-xs font-medium">{rating}</span>
-                      </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500 dark:text-gray-400 text-sm">{year}</span>
+                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                        {movie.addedAt ? new Date(movie.addedAt).toLocaleDateString() : ''}
+                      </span>
                     </div>
                   </div>
                 </div>

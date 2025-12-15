@@ -55,17 +55,21 @@ export const movieAPI = {
 // Watchlist APIs
 export const watchlistAPI = {
   get: async (userId) => {
-    const response = await fetch(`${API_BASE_URL}/api/watchlist/${userId}`);
+    const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
     if (!response.ok) throw new Error('Failed to fetch watchlist');
     return response.json();
   },
 
   add: async (userId, movieId) => {
-    const response = await fetch(`${API_BASE_URL}/api/watchlist/add`, {
+    const response = await fetch(`${API_BASE_URL}/api/watchlist`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, movieId }),
     });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to add to watchlist' }));
+      throw new Error(errorData.message || 'Failed to add to watchlist');
+    }
     return response.json();
   },
 
@@ -75,6 +79,10 @@ export const watchlistAPI = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, movieId }),
     });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to remove from watchlist' }));
+      throw new Error(errorData.message || 'Failed to remove from watchlist');
+    }
     return response.json();
   },
 
@@ -84,6 +92,10 @@ export const watchlistAPI = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, movieId }),
     });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to mark as watched' }));
+      throw new Error(errorData.message || 'Failed to mark as watched');
+    }
     return response.json();
   },
 };

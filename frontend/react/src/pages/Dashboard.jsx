@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 import { movieAPI } from '../services/api';
@@ -27,7 +27,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (!isLoading && allMovies.length > 0 && pieChartRef.current && barChartRef.current) {
+    if (!isLoading && pieChartRef.current && barChartRef.current) {
       try {
         updateCharts();
       } catch (err) {
@@ -91,7 +91,7 @@ const Dashboard = () => {
     };
   }, [allMovies, watchlist, watchedMovies]);
 
-  const updateCharts = () => {
+  const updateCharts = useCallback(() => {
     const isDarkMode = theme === 'dark';
     const chartColors = {
       primary: isDarkMode ? '#60a5fa' : '#1f2937',
@@ -102,8 +102,8 @@ const Dashboard = () => {
 
     // Pie Chart
     if (pieChartRef.current) {
-      const watchedCount = stats.watchedCount;
-      const unwatchedCount = stats.watchlistCount - stats.watchedCount;
+      const watchedCount = stats.watchedCount || 0;
+      const unwatchedCount = Math.max(0, (stats.watchlistCount || 0) - watchedCount);
 
       if (pieChartInstance.current) {
         pieChartInstance.current.destroy();
@@ -115,7 +115,7 @@ const Dashboard = () => {
         data: {
           labels: ['Watched', 'Unwatched'],
           datasets: [{
-            data: [watchedCount, unwatchedCount],
+            data: watchedCount === 0 && unwatchedCount === 0 ? [1, 1] : [watchedCount, unwatchedCount],
             backgroundColor: [chartColors.primary, chartColors.secondary],
             borderWidth: 0,
           }],
@@ -126,6 +126,7 @@ const Dashboard = () => {
           plugins: {
             legend: {
               position: 'bottom',
+              display: false,
               labels: {
                 color: chartColors.textColor,
                 padding: 15,
@@ -139,9 +140,18 @@ const Dashboard = () => {
 
     // Bar Chart
     if (barChartRef.current) {
-      const topGenres = Object.entries(stats.genreCounts)
+      let topGenres = Object.entries(stats.genreCounts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5);
+
+      // If no genres, show sample data
+      if (topGenres.length === 0) {
+        topGenres = [
+          ['Action', 0],
+          ['Drama', 0],
+          ['Comedy', 0],
+        ];
+      }
 
       if (barChartInstance.current) {
         barChartInstance.current.destroy();
@@ -157,6 +167,7 @@ const Dashboard = () => {
             data: topGenres.map(([, count]) => count),
             backgroundColor: chartColors.primary,
             borderRadius: 4,
+            borderWidth: 0,
           }],
         },
         options: {
@@ -168,20 +179,46 @@ const Dashboard = () => {
           scales: {
             x: {
               ticks: { color: chartColors.textColor },
-              grid: { color: chartColors.gridColor },
+              grid: { display: false },
             },
             y: {
-              ticks: { color: chartColors.textColor },
+              beginAtZero: true,
+              ticks: { 
+                color: chartColors.textColor,
+                stepSize: 1,
+              },
               grid: { color: chartColors.gridColor },
             },
           },
         },
       });
     }
-  };
+  }, [theme, stats]);
+
+  useEffect(() => {
+    if (!isLoading && pieChartRef.current && barChartRef.current) {
+      try {
+        updateCharts();
+      } catch (err) {
+        console.error('Error updating charts:', err);
+      }
+    }
+    return () => {
+      if (pieChartInstance.current) {
+        pieChartInstance.current.destroy();
+        pieChartInstance.current = null;
+      }
+      if (barChartInstance.current) {
+        barChartInstance.current.destroy();
+        barChartInstance.current = null;
+      }
+    };
+  }, [isLoading, updateCharts]);
 
   if (isLoading) {
     return <LoadingSpinner />;
+  }
+
   if (error) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 mt-16 sm:mt-0">
@@ -190,8 +227,6 @@ const Dashboard = () => {
         </div>
       </div>
     );
-  }
-
   }
 
   const watchedPercentage = stats.watchlistCount > 0 

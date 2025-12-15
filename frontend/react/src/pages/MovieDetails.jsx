@@ -81,12 +81,7 @@ const MovieDetails = () => {
     if (inWatchlist) {
       await removeFromWatchlist(movie._id);
     } else {
-      await addToWatchlist({
-        id: movie._id,
-        title: movie.title,
-        poster: movie.poster,
-        year: movie.year || movie.releaseDate?.split('-')[0]
-      });
+      await addToWatchlist(movie._id);
     }
   };
 

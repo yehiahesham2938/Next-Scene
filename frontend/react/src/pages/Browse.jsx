@@ -148,12 +148,7 @@ const Browse = () => {
     if (isInWatchlist) {
       await removeFromWatchlist(movie._id);
     } else {
-      await addToWatchlist({
-        id: movie._id,
-        title: movie.title,
-        poster: movie.poster,
-        year: movie.year || movie.releaseDate?.split('-')[0]
-      });
+      await addToWatchlist(movie._id);
     }
   };
 
@@ -204,7 +199,8 @@ const Browse = () => {
 
   const MovieCardComponent = ({ movie, isMobile = false }) => {
     const inWatchlist = isInWatchlist(movie._id, movie.title);
-    const year = movie.year || movie.releaseDate?.split('-')[0] || 'N/A';
+    // const year = movie.year || movie.releaseDate?.split('-')[0] || 'N/A';
+    const year = movie.year || movie.releaseYear || movie.releaseDate?.split('-')[0] || 'N/A';
     const rating = movie.rating ? movie.rating.toFixed(1) : 'N/A';
     const genres = movie.genre || 'Unknown';
     const runtime = movie.runtime || 'N/A';
