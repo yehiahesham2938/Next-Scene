@@ -17,6 +17,7 @@ import About from './pages/About';
 import Search from './pages/Search';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminBrowse from './pages/AdminBrowse';
+import AddMovie from './pages/AddMovie';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -113,6 +114,14 @@ function App() {
                   element={
                     <AdminRoute>
                       <AdminBrowse />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/add-movie"
+                  element={
+                    <AdminRoute>
+                      <AddMovie />
                     </AdminRoute>
                   }
                 />

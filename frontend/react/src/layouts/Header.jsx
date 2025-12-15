@@ -42,67 +42,91 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <i className="fa-solid fa-film text-gray-800 dark:text-gray-200 text-3xl transition-colors"></i>
-            <Link to="/" className="text-gray-900 dark:text-white text-lg font-bold transition-colors">
+            <i className={`fa-solid fa-film text-3xl transition-colors ${user?.role === 'admin' ? 'text-gray-800' : 'text-gray-800 dark:text-gray-200'}`}></i>
+            <Link 
+              to={user?.role === 'admin' ? '/admin' : '/'} 
+              className={`text-lg font-bold transition-colors ${user?.role === 'admin' ? 'text-gray-900' : 'text-gray-900 dark:text-white'}`}
+            >
               Next-Scene
             </Link>
           </div>
 
           {/* Navigation Links */}
           <nav className="flex gap-8 items-center">
-            <Link
-              to="/"
-              className={`${
-                isActive('/') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-              } hover:text-black dark:hover:text-white transition-colors`}
-            >
-              Home
-            </Link>
-            {user && (
+            {user?.role === 'admin' ? (
               <>
                 <Link
-                  to="/dashboard"
+                  to="/admin"
                   className={`${
-                    isActive('/dashboard') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                  } hover:text-black dark:hover:text-white transition-colors`}
+                    isActive('/admin') ? 'text-black font-semibold' : 'text-gray-700'
+                  } hover:text-black transition-colors`}
                 >
-                  Dashboard
+                  Admin Dashboard
                 </Link>
                 <Link
-                  to="/watchlist"
+                  to="/admin/add-movie"
                   className={`${
-                    isActive('/watchlist') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                  } hover:text-black dark:hover:text-white transition-colors`}
+                    isActive('/admin/add-movie') ? 'text-black font-semibold' : 'text-gray-700'
+                  } hover:text-black transition-colors`}
                 >
-                  My Watchlist
+                  Add Movie
+                </Link>
+                <Link
+                  to="/admin/browse"
+                  className={`${
+                    isActive('/admin/browse') ? 'text-black font-semibold' : 'text-gray-700'
+                  } hover:text-black transition-colors`}
+                >
+                  Browse
                 </Link>
               </>
-            )}
-            <Link
-              to="/browse"
-              className={`${
-                isActive('/browse') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-              } hover:text-black dark:hover:text-white transition-colors`}
-            >
-              Browse
-            </Link>
-            <Link
-              to="/about"
-              className={`${
-                isActive('/about') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-              } hover:text-black dark:hover:text-white transition-colors`}
-            >
-              About us
-            </Link>
-            {user?.role === 'admin' && (
-              <Link
-                to="/admin"
-                className={`${
-                  isActive('/admin') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                } hover:text-black dark:hover:text-white transition-colors`}
-              >
-                Admin
-              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/"
+                  className={`${
+                    isActive('/') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
+                  } hover:text-black dark:hover:text-white transition-colors`}
+                >
+                  Home
+                </Link>
+                {user && (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      className={`${
+                        isActive('/dashboard') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
+                      } hover:text-black dark:hover:text-white transition-colors`}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/watchlist"
+                      className={`${
+                        isActive('/watchlist') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
+                      } hover:text-black dark:hover:text-white transition-colors`}
+                    >
+                      My Watchlist
+                    </Link>
+                  </>
+                )}
+                <Link
+                  to="/browse"
+                  className={`${
+                    isActive('/browse') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
+                  } hover:text-black dark:hover:text-white transition-colors`}
+                >
+                  Browse
+                </Link>
+                <Link
+                  to="/about"
+                  className={`${
+                    isActive('/about') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
+                  } hover:text-black dark:hover:text-white transition-colors`}
+                >
+                  About us
+                </Link>
+              </>
             )}
           </nav>
 
@@ -132,25 +156,31 @@ const Header = () => {
               <>
                 <Link
                   to="/profile"
-                  className="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full bg-gray-800 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition flex-shrink-0"
+                  className={`w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full flex items-center justify-center transition flex-shrink-0 ${
+                    user.role === 'admin' 
+                      ? 'bg-gray-800 hover:bg-gray-700' 
+                      : 'bg-gray-800 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-600'
+                  }`}
                 >
                   <i className="fa-solid fa-user text-white text-sm"></i>
                 </Link>
-                <button
-                  className="relative inline-flex items-center h-8 w-20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700"
-                  onClick={toggleTheme}
-                  title="Toggle theme"
-                >
-                  <span
-                    className="inline-flex items-center justify-center h-6 w-6 transform rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out translate-x-1 dark:translate-x-[52px]"
+                {user.role !== 'admin' && (
+                  <button
+                    className="relative inline-flex items-center h-8 w-20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 bg-gray-300 dark:bg-gray-700"
+                    onClick={toggleTheme}
+                    title="Toggle theme"
                   >
-                    {theme === 'dark' ? (
-                      <i className="fa-solid fa-moon text-gray-800 text-xs"></i>
-                    ) : (
-                      <i className="fa-solid fa-sun text-yellow-500 text-xs"></i>
-                    )}
-                  </span>
-                </button>
+                    <span
+                      className="inline-flex items-center justify-center h-6 w-6 transform rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out translate-x-1 dark:translate-x-[52px]"
+                    >
+                      {theme === 'dark' ? (
+                        <i className="fa-solid fa-moon text-gray-800 text-xs"></i>
+                      ) : (
+                        <i className="fa-solid fa-sun text-yellow-500 text-xs"></i>
+                      )}
+                    </span>
+                  </button>
+                )}
               </>
             ) : (
               <>
