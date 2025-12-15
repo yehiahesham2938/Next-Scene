@@ -114,6 +114,10 @@ export const adminAPI = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(movieData),
     });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to add movie' }));
+      throw new Error(errorData.message || 'Failed to add movie');
+    }
     return response.json();
   },
 
@@ -123,6 +127,10 @@ export const adminAPI = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(movieData),
     });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to update movie' }));
+      throw new Error(errorData.message || 'Failed to update movie');
+    }
     return response.json();
   },
 
@@ -130,6 +138,10 @@ export const adminAPI = {
     const response = await fetch(`${API_BASE_URL}/api/admin/movies/${id}`, {
       method: 'DELETE',
     });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to delete movie' }));
+      throw new Error(errorData.message || 'Failed to delete movie');
+    }
     return response.json();
   },
 };

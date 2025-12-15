@@ -263,4 +263,75 @@ router.get('/user-activity', async(req, res) => {
     }
 });
 
+// POST /api/admin/movies - Add a new movie
+router.post('/movies', async (req, res) => {
+    try {
+        const { title, director, releaseYear, runtime, genre, rating, poster, trailerUrl, description, mainCast } = req.body;
+
+        // Validate required fields
+        if (!title || !director || !releaseYear || !genre || !description) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        const newMovie = new Movie({
+            title,
+            director,
+            releaseYear,
+            runtime,
+            genre,
+            rating,
+            poster,
+            trailerUrl,
+            description,
+            mainCast: mainCast || ''
+        });
+
+        await newMovie.save();
+        res.status(201).json({ message: 'Movie added successfully', movie: newMovie });
+    } catch (error) {
+        console.error('Error adding movie:', error);
+        res.status(500).json({ message: 'Failed to add movie', error: error.message });
+    }
+});
+
+// PUT /api/admin/movies/:id - Update a movie
+router.put('/movies/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        const updatedMovie = await Movie.findByIdAndUpdate(id, updateData, { new: true });
+
+        if (!updatedMovie) {
+            return res.status(404).json({ message: 'Movie not found' });
+        }
+
+        res.json({ message: 'Movie updated successfully', movie: updatedMovie });
+    } catch (error) {
+        console.error('Error updating movie:', error);
+        res.status(500).json({ message: 'Failed to update movie', error: error.message });
+    }
+});
+
+// DELETE /api/admin/movies/:id - Delete a movie
+router.delete('/movies/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedMovie = await Movie.findByIdAndDelete(id);
+
+        if (!deletedMovie) {
+            return res.status(404).json({ message: 'Movie not found' });
+        }
+
+        // Also remove from all watchlists
+        await Watchlist.deleteMany({ movieId: id });
+
+        res.json({ message: 'Movie deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting movie:', error);
+        res.status(500).json({ message: 'Failed to delete movie', error: error.message });
+    }
+});
+
 module.exports = router;

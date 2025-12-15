@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { movieAPI } from '../services/api';
+import { movieAPI, adminAPI } from '../services/api';
 import { useWatchlist } from '../context/WatchlistContext';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -96,9 +96,9 @@ const MovieDetails = () => {
     }
 
     try {
-      await movieAPI.delete(movie._id);
+      await adminAPI.deleteMovie(movie._id);
       alert('Movie deleted successfully');
-      navigate('/browse');
+      navigate('/admin/browse');
     } catch (error) {
       console.error('Error deleting movie:', error);
       alert('Failed to delete movie: ' + error.message);

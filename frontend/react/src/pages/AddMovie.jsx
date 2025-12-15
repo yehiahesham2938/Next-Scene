@@ -87,7 +87,7 @@ const AddMovie = () => {
         poster: formData.poster,
         trailerUrl: formData.trailerUrl,
         description: formData.description,
-        cast: formData.cast ? formData.cast.split(',').map(c => c.trim()) : []
+        mainCast: formData.cast || ''
       };
 
       await adminAPI.addMovie(movieData);
