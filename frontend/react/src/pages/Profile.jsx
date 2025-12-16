@@ -188,24 +188,24 @@ const Profile = () => {
             <div className="flex items-center gap-3">
               <span className="text-sm text-gray-600 dark:text-gray-400">Light</span>
               <button
-                onClick={toggleTheme}
-                className={`relative inline-flex items-center h-8 w-20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 ${
-                  theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
-                }`}
-                title="Toggle theme"
-              >
-                <span
-                  className={`inline-flex items-center justify-center h-6 w-11 transform rounded-full bg-white shadow-lg transition-all duration-300 ease-in-out ${
-                    theme === 'dark' ? 'translate-x-7' : 'translate-x-1'
-                  }`}
-                >
-                  {theme === 'dark' ? (
-                    <i className="fa-solid fa-moon text-gray-700 text-xs"></i>
-                  ) : (
-                    <i className="fa-solid fa-sun text-yellow-500 text-xs"></i>
-                  )}
-                </span>
-              </button>
+                    className={`relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex-shrink-0 ${
+                      theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
+                    }`}
+                    onClick={toggleTheme}
+                    title="Toggle theme"
+                  >
+                    <span
+                      className={`inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+                        theme === 'dark' ? 'translate-x-7' : 'translate-x-1'
+                      }`}
+                    >
+                      {theme === 'dark' ? (
+                        <i className="fa-solid fa-moon text-gray-800 text-xs"></i>
+                      ) : (
+                        <i className="fa-solid fa-sun text-yellow-500 text-xs"></i>
+                      )}
+                    </span>
+                  </button>
               <span className="text-sm text-gray-600 dark:text-gray-400">Dark</span>
             </div>
           </div>
