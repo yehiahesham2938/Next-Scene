@@ -50,7 +50,49 @@ router.post('/', async (req, res) => {
     }
 });
 
+// DELETE /api/watchlist/remove - Remove from watchlist by userId and movieId
+// IMPORTANT: This route must come BEFORE /:id to avoid route conflicts
+router.delete('/remove', async (req, res) => {
+    try {
+        // Accept from either body or query params (DELETE requests sometimes don't support body)
+        const userId = req.body.userId || req.query.userId;
+        const movieId = req.body.movieId || req.query.movieId;
+        
+        console.log('DELETE /api/watchlist/remove called with:', { 
+            body: req.body, 
+            query: req.query, 
+            userId, 
+            movieId 
+        });
+        
+        if (!userId || !movieId) {
+            console.log('Missing userId or movieId');
+            return res.status(400).json({ message: 'User ID and Movie ID required' });
+        }
+
+        console.log('Searching for watchlist item:', { userId, movieId });
+        const item = await Watchlist.findOne({ userId, movieId });
+        
+        if (!item) {
+            console.log('Watchlist item not found');
+            // Let's also check what items exist for this user
+            const userItems = await Watchlist.find({ userId }).populate('movieId');
+            console.log('User watchlist items:', userItems.map(i => ({ id: i._id, movieId: i.movieId?._id, movieTitle: i.movieId?.title })));
+            return res.status(404).json({ message: 'Watchlist item not found', userId, movieId });
+        }
+
+        console.log('Found item to delete:', item);
+        await Watchlist.findByIdAndDelete(item._id);
+        console.log('Successfully deleted watchlist item');
+        res.json({ message: 'Removed from watchlist', success: true });
+    } catch (error) {
+        console.error('Error removing from watchlist:', error);
+        res.status(500).json({ message: 'Failed to remove from watchlist', error: error.message });
+    }
+});
+
 // DELETE /api/watchlist/:id - Remove from watchlist by watchlist item ID
+// IMPORTANT: This route must come AFTER /remove to avoid conflicts
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -67,28 +109,6 @@ router.delete('/:id', async (req, res) => {
         }
 
         await Watchlist.findByIdAndDelete(id);
-        res.json({ message: 'Removed from watchlist' });
-    } catch (error) {
-        console.error('Error removing from watchlist:', error);
-        res.status(500).json({ message: 'Failed to remove from watchlist' });
-    }
-});
-
-// DELETE /api/watchlist/remove - Remove from watchlist by userId and movieId
-router.delete('/remove', async (req, res) => {
-    try {
-        const { userId, movieId } = req.body;
-        
-        if (!userId || !movieId) {
-            return res.status(400).json({ message: 'User ID and Movie ID required' });
-        }
-
-        const item = await Watchlist.findOne({ userId, movieId });
-        if (!item) {
-            return res.status(404).json({ message: 'Watchlist item not found' });
-        }
-
-        await Watchlist.findByIdAndDelete(item._id);
         res.json({ message: 'Removed from watchlist' });
     } catch (error) {
         console.error('Error removing from watchlist:', error);

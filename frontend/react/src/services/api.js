@@ -74,27 +74,50 @@ export const watchlistAPI = {
   },
 
   remove: async (userId, movieId) => {
-    const response = await fetch(`${API_BASE_URL}/api/watchlist/remove`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, movieId }),
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Failed to remove from watchlist' }));
-      throw new Error(errorData.message || 'Failed to remove from watchlist');
+    console.log('API remove called with:', { userId, movieId, url: `${API_BASE_URL}/api/watchlist/remove?userId=${userId}&movieId=${movieId}` });
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/watchlist/remove?userId=${userId}&movieId=${movieId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, movieId }),
+      });
+      console.log('Remove response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch((e) => {
+          console.error('Failed to parse error response:', e);
+          return { message: `HTTP ${response.status}: Failed to remove from watchlist` };
+        });
+        console.error('Backend error:', errorData);
+        throw new Error(errorData.message || 'Failed to remove from watchlist');
+      }
+      const result = await response.json();
+      console.log('Remove successful:', result);
+      return result;
+    } catch (error) {
+      console.error('API remove error:', error);
+      throw error;
     }
-    return response.json();
   },
 
-  markWatched: async (userId, movieId) => {
+  markWatched: async (userId, movieId, watched = true) => {
     const response = await fetch(`${API_BASE_URL}/api/watchlist/watched`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, movieId }),
+      body: JSON.stringify({ userId, movieId, watched }),
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to mark as watched' }));
       throw new Error(errorData.message || 'Failed to mark as watched');
+    }
+    return response.json();
+  },
+
+  search: async (userId, query) => {
+    const response = await fetch(`${API_BASE_URL}/api/watchlist/search?userId=${userId}&query=${encodeURIComponent(query)}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to search watchlist' }));
+      throw new Error(errorData.message || 'Failed to search watchlist');
     }
     return response.json();
   },

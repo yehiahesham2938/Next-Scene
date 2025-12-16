@@ -5,7 +5,8 @@ const watchlistSchema = new mongoose.Schema(
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         movieId: { type: mongoose.Schema.Types.ObjectId, ref: 'Movie', required: true },
         addedAt: { type: Date, default: Date.now },
-        watched: { type: Boolean, default: false }
+        watched: { type: Boolean, default: false },
+        watchedAt: { type: Date, default: null }
     },
     { timestamps: true }
 );

@@ -67,25 +67,39 @@ export const WatchlistProvider = ({ children }) => {
   };
 
   const removeFromWatchlist = async (movieId) => {
-    if (!user) return;
+    if (!user) {
+      console.error('No user found when trying to remove from watchlist');
+      return;
+    }
     
     try {
-      await watchlistAPI.remove(user._id || user.id, movieId);
+      console.log('Removing movie from watchlist:', { userId: user._id || user.id, movieId });
+      const result = await watchlistAPI.remove(user._id || user.id, movieId);
+      console.log('Remove result:', result);
       await fetchWatchlist();
     } catch (error) {
       console.error('Error removing from watchlist:', error);
+      alert('Failed to remove from watchlist: ' + error.message);
     }
   };
 
-  const markAsWatched = async (movieId) => {
+  const markAsWatched = async (movieId, watched = true) => {
     if (!user) return;
     
     try {
-      await watchlistAPI.markWatched(user._id || user.id, movieId);
+      await watchlistAPI.markWatched(user._id || user.id, movieId, watched);
       await fetchWatchlist();
     } catch (error) {
       console.error('Error marking as watched:', error);
+      throw error;
     }
+  };
+
+  const toggleWatched = async (movieId) => {
+    if (!user) return;
+    
+    const currentlyWatched = isWatched(movieId);
+    await markAsWatched(movieId, !currentlyWatched);
   };
 
   const isInWatchlist = (movieId) => {
@@ -105,6 +119,7 @@ export const WatchlistProvider = ({ children }) => {
         addToWatchlist,
         removeFromWatchlist,
         markAsWatched,
+        toggleWatched,
         isInWatchlist,
         isWatched,
         fetchWatchlist,
