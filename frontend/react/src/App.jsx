@@ -4,7 +4,6 @@ import { ThemeProvider } from './context/ThemeContext';
 import { WatchlistProvider } from './context/WatchlistContext';
 import MainLayout from './layouts/MainLayout';
 
-// Pages (we'll create these)
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
@@ -18,6 +17,7 @@ import Search from './pages/Search';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminBrowse from './pages/AdminBrowse';
 import AddMovie from './pages/AddMovie';
+import NotFound from './pages/NotFound';
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
@@ -125,6 +125,9 @@ function App() {
                     </AdminRoute>
                   }
                 />
+                
+                {/* 404 Catch-all route */}
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </WatchlistProvider>
