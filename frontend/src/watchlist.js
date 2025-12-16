@@ -88,14 +88,15 @@ function removeFromWatchlist(title) {
 async function removeFromWatchlistById(id) {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (user && user._id) {
+        const userId = user?.id || user?._id;
+        if (user && userId) {
             // Try to remove from database
-            const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${user._id}`);
+            const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
             if (response.ok) {
                 const items = await response.json();
                 const item = items.find(i => (i.movieId?._id || i.movieId) === id);
                 if (item) {
-                    const deleteResponse = await fetch(`${API_BASE_URL}/api/watchlist/${item._id}?userId=${user._id}`, {
+                    const deleteResponse = await fetch(`${API_BASE_URL}/api/watchlist/${item._id}?userId=${userId}`, {
                         method: 'DELETE'
                     });
                     if (deleteResponse.ok) {
@@ -129,7 +130,49 @@ async function removeFromWatchlistById(id) {
     showNotification('Movie removed', 'success');
 }
 
-function markAsWatched(id) {
+async function markAsWatched(id) {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const userId = user?.id || user?._id;
+        
+        if (user && userId) {
+            // Try to update in database
+            const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
+            if (response.ok) {
+                const items = await response.json();
+                const item = items.find(i => (i.movieId?._id || i.movieId) === id);
+                
+                if (item) {
+                    const updateResponse = await fetch(`${API_BASE_URL}/api/watchlist/watched`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            userId: userId,
+                            movieId: id,
+                            watched: !item.watched // Toggle
+                        })
+                    });
+                    
+                    if (updateResponse.ok) {
+                        const status = !item.watched ? 'marked as watched' : 'marked as unwatched';
+                        showNotification(`Movie ${status}`, 'success');
+                        
+                        // Re-render if on watchlist page
+                        if (document.getElementById('watchlist-grid')) {
+                            const activeFilter = document.querySelector('.filter-btn.active')?.dataset.sort || 'newest-added';
+                            const searchQuery = document.getElementById('watchlist-search')?.value || '';
+                            renderWatchlist(activeFilter, searchQuery);
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error updating watched status in database, falling back to localStorage:', error);
+    }
+    
+    // Fallback to localStorage
     let watchlist = getWatchlist();
     const movieIndex = watchlist.findIndex(m => m.id === id);
     
@@ -140,7 +183,8 @@ function markAsWatched(id) {
         // Re-render if on watchlist page
         if (document.getElementById('watchlist-grid')) {
             const activeFilter = document.querySelector('.filter-btn.active')?.dataset.sort || 'newest-added';
-            renderWatchlist(activeFilter);
+            const searchQuery = document.getElementById('watchlist-search')?.value || '';
+            renderWatchlist(activeFilter, searchQuery);
         }
         
         const status = watchlist[movieIndex].watched ? 'marked as watched' : 'marked as unwatched';
@@ -324,9 +368,10 @@ async function renderWatchlist(sortBy, searchQuery = '') {
 async function loadWatchlistFromDB() {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (!user || !user._id) return null;
+        const userId = user?.id || user?._id;
+        if (!user || !userId) return null;
         
-        const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${user._id}`);
+        const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
         if (!response.ok) return null;
         
         const items = await response.json();

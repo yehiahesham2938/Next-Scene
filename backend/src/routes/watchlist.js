@@ -50,6 +50,30 @@ router.post('/', async (req, res) => {
     }
 });
 
+// DELETE /api/watchlist/:id - Remove from watchlist by watchlist item ID
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.query;
+        
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID required' });
+        }
+
+        // Verify the item belongs to the user before deleting
+        const item = await Watchlist.findOne({ _id: id, userId });
+        if (!item) {
+            return res.status(404).json({ message: 'Watchlist item not found' });
+        }
+
+        await Watchlist.findByIdAndDelete(id);
+        res.json({ message: 'Removed from watchlist' });
+    } catch (error) {
+        console.error('Error removing from watchlist:', error);
+        res.status(500).json({ message: 'Failed to remove from watchlist' });
+    }
+});
+
 // DELETE /api/watchlist/remove - Remove from watchlist by userId and movieId
 router.delete('/remove', async (req, res) => {
     try {
@@ -72,10 +96,10 @@ router.delete('/remove', async (req, res) => {
     }
 });
 
-// PATCH /api/watchlist/watched - Mark movie as watched
+// PATCH /api/watchlist/watched - Mark movie as watched/unwatched
 router.patch('/watched', async (req, res) => {
     try {
-        const { userId, movieId } = req.body;
+        const { userId, movieId, watched } = req.body;
         
         if (!userId || !movieId) {
             return res.status(400).json({ message: 'User ID and Movie ID required' });
@@ -86,15 +110,22 @@ router.patch('/watched', async (req, res) => {
             return res.status(404).json({ message: 'Watchlist item not found' });
         }
 
-        item.watched = true;
-        item.watchedAt = new Date();
+        // If watched boolean is provided, use it; otherwise toggle current state
+        item.watched = watched !== undefined ? watched : !item.watched;
+        
+        if (item.watched) {
+            item.watchedAt = new Date();
+        } else {
+            item.watchedAt = null;
+        }
+        
         await item.save();
         
         const populated = await Watchlist.findById(item._id).populate('movieId');
         res.json(populated);
     } catch (error) {
-        console.error('Error marking as watched:', error);
-        res.status(500).json({ message: 'Failed to mark as watched' });
+        console.error('Error updating watched status:', error);
+        res.status(500).json({ message: 'Failed to update watched status' });
     }
 });
 

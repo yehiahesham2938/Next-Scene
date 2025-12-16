@@ -507,6 +507,24 @@
                     console.log('Loaded movies:', allMovies.length);
                 }
 
+                // Fetch user's watchlist from backend
+                let userWatchlist = [];
+                const user = JSON.parse(localStorage.getItem('user') || 'null');
+                const userId = user?.id || user?._id;
+                
+                if (user && userId) {
+                    try {
+                        const watchlistRes = await fetch(`${BROWSE_API_BASE_URL}/api/watchlist?userId=${userId}`);
+                        if (watchlistRes.ok) {
+                            userWatchlist = await watchlistRes.json();
+                        }
+                    } catch (error) {
+                        console.error('Error fetching watchlist:', error);
+                        // Fallback to localStorage
+                        userWatchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
+                    }
+                }
+
                 // Apply all filters
                 let filteredMovies = allMovies;
 
@@ -605,8 +623,11 @@
                     let isInWatchlist = false;
                     let bookmarkIcon = 'far fa-bookmark';
                     if (!adminUser) {
-                        const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-                        isInWatchlist = watchlist.some(m => m.id === movieId || m.title === title);
+                        // Check if movie is in the fetched watchlist from backend
+                        isInWatchlist = userWatchlist.some(item => {
+                            const itemMovieId = item.movieId?._id || item.movieId;
+                            return itemMovieId === movieId;
+                        });
                         bookmarkIcon = isInWatchlist ? 'fas fa-bookmark' : 'far fa-bookmark';
                     }
 
@@ -822,95 +843,179 @@ if (mobileList) {
         }
 
         // Function to add movie to watchlist from browse page
-        function addToWatchlistFromBrowse(movieId, title, poster, year, buttonElement) {
-            const movie = {
-                id: movieId,
-                title: title,
-                poster: poster,
-                year: year,
-                addedAt: new Date().toISOString()
-            };
-
-            let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-            const existingIndex = watchlist.findIndex(m => m.id === movieId || m.title === title);
-
-            if (existingIndex >= 0) {
-                // Remove if exists (toggle behavior)
-                watchlist.splice(existingIndex, 1);
-                if (typeof showNotification === 'function') {
-                    showNotification('Removed from Watchlist', 'error');
-                } else {
-                    console.log('Removed from Watchlist');
-                }
-                // Update icon to empty bookmark
-                if (buttonElement) {
-                    const icon = buttonElement.querySelector('i');
-                    if (icon) {
-                        icon.className = 'far fa-bookmark text-white text-sm';
-                    }
-                }
-            } else {
-                // Add new
-                watchlist.push(movie);
-                if (typeof showNotification === 'function') {
-                    showNotification('Added to Watchlist', 'success');
-                } else {
-                    console.log('Added to Watchlist');
-                }
-                // Update icon to filled bookmark
-                if (buttonElement) {
-                    const icon = buttonElement.querySelector('i');
-                    if (icon) {
-                        icon.className = 'fas fa-bookmark text-white text-sm';
-                    }
-                }
+        async function addToWatchlistFromBrowse(movieId, title, poster, year, buttonElement) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const userId = user?.id || user?._id;
+            
+            if (!user || !userId) {
+                alert('Please sign in to add to watchlist');
+                return;
             }
 
-            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            try {
+                // Check if already in watchlist
+                const checkResponse = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
+                if (!checkResponse.ok) throw new Error('Failed to check watchlist');
+                
+                const watchlistItems = await checkResponse.json();
+                const existingItem = watchlistItems.find(item => 
+                    (item.movieId?._id || item.movieId) === movieId
+                );
+
+                if (existingItem) {
+                    // Remove from watchlist
+                    const deleteResponse = await fetch(`${API_BASE_URL}/api/watchlist/${existingItem._id}?userId=${userId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (deleteResponse.ok) {
+                        if (typeof showNotification === 'function') {
+                            showNotification('Removed from Watchlist', 'error');
+                        }
+                        // Update icon to empty bookmark
+                        if (buttonElement) {
+                            const icon = buttonElement.querySelector('i');
+                            if (icon) {
+                                icon.className = 'far fa-bookmark text-white text-sm';
+                            }
+                        }
+                    }
+                } else {
+                    // Add to watchlist
+                    const addResponse = await fetch(`${API_BASE_URL}/api/watchlist`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId, movieId })
+                    });
+                    
+                    if (addResponse.ok) {
+                        if (typeof showNotification === 'function') {
+                            showNotification('Added to Watchlist', 'success');
+                        }
+                        // Update icon to filled bookmark
+                        if (buttonElement) {
+                            const icon = buttonElement.querySelector('i');
+                            if (icon) {
+                                icon.className = 'fas fa-bookmark text-white text-sm';
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating watchlist:', error);
+                // Fallback to localStorage
+                let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+                const existingIndex = watchlist.findIndex(m => m.id === movieId);
+                
+                if (existingIndex >= 0) {
+                    watchlist.splice(existingIndex, 1);
+                    if (typeof showNotification === 'function') {
+                        showNotification('Removed from Watchlist', 'error');
+                    }
+                    if (buttonElement) {
+                        const icon = buttonElement.querySelector('i');
+                        if (icon) icon.className = 'far fa-bookmark text-white text-sm';
+                    }
+                } else {
+                    watchlist.push({ id: movieId, title, poster, year, addedAt: new Date().toISOString() });
+                    if (typeof showNotification === 'function') {
+                        showNotification('Added to Watchlist', 'success');
+                    }
+                    if (buttonElement) {
+                        const icon = buttonElement.querySelector('i');
+                        if (icon) icon.className = 'fas fa-bookmark text-white text-sm';
+                    }
+                }
+                localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            }
         }
 
         // Function for mobile bookmark button
-        function addToWatchlistFromBrowseMobile(movieId, title, poster, year, buttonElement) {
-            const movie = {
-                id: movieId,
-                title: title,
-                poster: poster,
-                year: year,
-                addedAt: new Date().toISOString()
-            };
-
-            let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
-            const existingIndex = watchlist.findIndex(m => m.id === movieId || m.title === title);
-
-            if (existingIndex >= 0) {
-                // Remove if exists (toggle behavior)
-                watchlist.splice(existingIndex, 1);
-                if (typeof showNotification === 'function') {
-                    showNotification('Removed from Watchlist', 'error');
-                }
-                // Update icon to empty bookmark
-                if (buttonElement) {
-                    const icon = buttonElement.querySelector('i');
-                    if (icon) {
-                        icon.className = 'far fa-bookmark text-gray-400';
-                    }
-                }
-            } else {
-                // Add new
-                watchlist.push(movie);
-                if (typeof showNotification === 'function') {
-                    showNotification('Added to Watchlist', 'success');
-                }
-                // Update icon to filled bookmark
-                if (buttonElement) {
-                    const icon = buttonElement.querySelector('i');
-                    if (icon) {
-                        icon.className = 'fas fa-bookmark text-gray-400';
-                    }
-                }
+        async function addToWatchlistFromBrowseMobile(movieId, title, poster, year, buttonElement) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const userId = user?.id || user?._id;
+            
+            if (!user || !userId) {
+                alert('Please sign in to add to watchlist');
+                return;
             }
 
-            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            try {
+                // Check if already in watchlist
+                const checkResponse = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
+                if (!checkResponse.ok) throw new Error('Failed to check watchlist');
+                
+                const watchlistItems = await checkResponse.json();
+                const existingItem = watchlistItems.find(item => 
+                    (item.movieId?._id || item.movieId) === movieId
+                );
+
+                if (existingItem) {
+                    // Remove from watchlist
+                    const deleteResponse = await fetch(`${API_BASE_URL}/api/watchlist/${existingItem._id}?userId=${userId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (deleteResponse.ok) {
+                        if (typeof showNotification === 'function') {
+                            showNotification('Removed from Watchlist', 'error');
+                        }
+                        // Update icon to empty bookmark
+                        if (buttonElement) {
+                            const icon = buttonElement.querySelector('i');
+                            if (icon) {
+                                icon.className = 'far fa-bookmark text-gray-400';
+                            }
+                        }
+                    }
+                } else {
+                    // Add to watchlist
+                    const addResponse = await fetch(`${API_BASE_URL}/api/watchlist`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId, movieId })
+                    });
+                    
+                    if (addResponse.ok) {
+                        if (typeof showNotification === 'function') {
+                            showNotification('Added to Watchlist', 'success');
+                        }
+                        // Update icon to filled bookmark
+                        if (buttonElement) {
+                            const icon = buttonElement.querySelector('i');
+                            if (icon) {
+                                icon.className = 'fas fa-bookmark text-gray-400';
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating watchlist:', error);
+                // Fallback to localStorage
+                let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+                const existingIndex = watchlist.findIndex(m => m.id === movieId);
+                
+                if (existingIndex >= 0) {
+                    watchlist.splice(existingIndex, 1);
+                    if (typeof showNotification === 'function') {
+                        showNotification('Removed from Watchlist', 'error');
+                    }
+                    if (buttonElement) {
+                        const icon = buttonElement.querySelector('i');
+                        if (icon) icon.className = 'far fa-bookmark text-gray-400';
+                    }
+                } else {
+                    watchlist.push({ id: movieId, title, poster, year, addedAt: new Date().toISOString() });
+                    if (typeof showNotification === 'function') {
+                        showNotification('Added to Watchlist', 'success');
+                    }
+                    if (buttonElement) {
+                        const icon = buttonElement.querySelector('i');
+                        if (icon) icon.className = 'fas fa-bookmark text-gray-400';
+                    }
+                }
+                localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            }
         }
 
         // Delete movie function (for admin users)

@@ -510,7 +510,8 @@
             
             try {
                 const user = JSON.parse(localStorage.getItem('user'));
-                if (!user || !user._id) {
+                const userId = user?.id || user?._id;
+                if (!user || !userId) {
                     alert('Please sign in to add to watchlist');
                     return;
                 }
@@ -521,7 +522,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        userId: user._id,
+                        userId: userId,
                         movieId: currentMovieData.id
                     })
                 });
@@ -567,17 +568,18 @@
         async function removeFromWatchlistDB(movieId) {
             try {
                 const user = JSON.parse(localStorage.getItem('user'));
-                if (!user || !user._id) return;
+                const userId = user?.id || user?._id;
+                if (!user || !userId) return;
                 
                 // Find watchlist item
-                const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${user._id}`);
+                const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
                 if (!response.ok) return;
                 
                 const items = await response.json();
                 const item = items.find(i => (i.movieId?._id || i.movieId) === movieId);
                 if (!item) return;
                 
-                await fetch(`${API_BASE_URL}/api/watchlist/${item._id}?userId=${user._id}`, {
+                await fetch(`${API_BASE_URL}/api/watchlist/${item._id}?userId=${userId}`, {
                     method: 'DELETE'
                 });
             } catch (error) {
@@ -588,9 +590,10 @@
         async function checkMovieInWatchlistDB() {
             try {
                 const user = JSON.parse(localStorage.getItem('user'));
-                if (!user || !user._id || !currentMovieData) return false;
+                const userId = user?.id || user?._id;
+                if (!user || !userId || !currentMovieData) return false;
                 
-                const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${user._id}`);
+                const response = await fetch(`${API_BASE_URL}/api/watchlist?userId=${userId}`);
                 if (!response.ok) return false;
                 
                 const items = await response.json();
