@@ -1,6 +1,6 @@
 # Next-Scene React App
 
-This is the React version of the Next-Scene movie discovery platform, converted from the original HTML/JavaScript implementation.
+This is the React version of the Next-Scene movie discovery platform
 
 ## Features
 
@@ -25,7 +25,7 @@ This is the React version of the Next-Scene movie discovery platform, converted 
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- npm or yarn
+- npm
 - Backend server running on `http://localhost:4000`
 
 ### Installation
@@ -81,6 +81,3 @@ Create a `.env` file with:
 VITE_API_URL=http://localhost:4000
 ```
 
-## License
-
-This project is part of the Next-Scene platform.
