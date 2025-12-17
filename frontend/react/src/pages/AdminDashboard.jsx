@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { movieAPI, adminAPI } from '../services/api';
-import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend, LineElement, PointElement } from 'chart.js';
+import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend, LineElement, PointElement, PieController, BarController, LineController } from 'chart.js';
 
 // Register Chart.js components
-Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend, LineElement, PointElement);
+Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend, LineElement, PointElement, PieController, BarController, LineController);
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -160,7 +160,11 @@ const AdminDashboard = () => {
   // Initialize charts after data is loaded
   useEffect(() => {
     if (!loading && movies.length > 0 && stats) {
-      initializeCharts();
+      // Small delay to ensure canvas elements are fully mounted
+      const timer = setTimeout(() => {
+        initializeCharts();
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [loading, movies, stats, users]);
 

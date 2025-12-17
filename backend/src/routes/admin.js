@@ -226,7 +226,6 @@ router.get('/user-activity', async(req, res) => {
         const activeIn7Days = await User.countDocuments({ updatedAt: { $gte: last7Days } });
         const activeIn30Days = await User.countDocuments({ updatedAt: { $gte: last30Days } });
 
-        // Get recent user activity grouped by day (last 7 days)
         const dailyActivity = await User.aggregate([{
                 $match: {
                     updatedAt: { $gte: last7Days }
