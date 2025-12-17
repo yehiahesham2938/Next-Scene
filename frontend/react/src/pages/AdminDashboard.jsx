@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { movieAPI } from '../services/api';
+import { movieAPI, adminAPI } from '../services/api';
 import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend, LineElement, PointElement } from 'chart.js';
 
 // Register Chart.js components
@@ -10,8 +10,10 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [users, setUsers] = useState([]);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [actionLoading, setActionLoading] = useState(null);
   
   // Chart refs
   const usersGrowthChartRef = useRef(null);
@@ -42,12 +44,24 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       setError(null);
-      const moviesData = await movieAPI.getAll();
-      setMovies(moviesData);
       
-      // Get users from localStorage (mock data for now)
-      const storedUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
-      setUsers(storedUsers);
+      // Fetch all data from backend API
+      const [moviesData, usersData, statsData] = await Promise.all([
+        movieAPI.getAll(),
+        adminAPI.getUsers(),
+        adminAPI.getStats()
+      ]);
+      
+      setMovies(moviesData);
+      setUsers(usersData);
+      
+      // Store stats for use in component
+      setStats({
+        totalUsers: statsData.totalUsers || 0,
+        totalMovies: statsData.totalMovies || 0,
+        totalWatchlists: statsData.totalWatchlists || 0,
+        adminUsers: statsData.adminUsers || 0,
+      });
     } catch (error) {
       console.error('Error fetching admin data:', error);
       setError(error.message);
@@ -56,64 +70,99 @@ const AdminDashboard = () => {
     }
   };
 
-  // Calculate stats
-  const stats = {
-    totalUsers: users.length || 15,
-    totalMovies: movies.length,
-    totalWatchlists: calculateTotalWatchlists(),
-    adminUsers: users.filter(u => u.role === 'admin').length || 2,
-    active24h: Math.floor(users.length * 0.6) || 9,
-    active7d: Math.floor(users.length * 0.8) || 12,
-    active30d: Math.floor(users.length * 0.95) || 14,
+  // Toggle user admin role
+  const handleToggleAdmin = async (userId, currentRole) => {
+    const newRole = currentRole === 'admin' ? 'user' : 'admin';
+    const confirmMessage = currentRole === 'admin' 
+      ? 'Are you sure you want to remove admin privileges from this user?'
+      : 'Are you sure you want to grant admin privileges to this user?';
+    
+    if (!confirm(confirmMessage)) return;
+    
+    try {
+      setActionLoading(userId);
+      await adminAPI.updateUserRole(userId, newRole);
+      alert(`User role updated to ${newRole} successfully!`);
+      await fetchAdminData(); // Refresh data
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      alert('Failed to update user role: ' + error.message);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
-  function calculateTotalWatchlists() {
-    let count = 0;
-    users.forEach(user => {
-      const userWatchlist = JSON.parse(localStorage.getItem(`watchlist_${user.username}`) || '[]');
-      count += userWatchlist.length;
-    });
-    return count || 42; // Default value if no data
+  // Delete user account
+  const handleDeleteUser = async (userId, userEmail) => {
+    if (!confirm(`Are you sure you want to delete the account for ${userEmail}? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      setActionLoading(userId);
+      await adminAPI.deleteUser(userId);
+      alert('User account deleted successfully!');
+      await fetchAdminData(); // Refresh data
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Failed to delete user: ' + error.message);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Calculate activity stats from real user data
+  const activityStats = {
+    totalUsers: stats?.totalUsers || users.length || 0,
+    totalMovies: stats?.totalMovies || movies.length || 0,
+    totalWatchlists: stats?.totalWatchlists || 0,
+    adminUsers: stats?.adminUsers || 0,
+    // Calculate activity based on user lastActivity or updatedAt timestamps
+    active24h: users.filter(u => {
+      const lastActivity = new Date(u.lastActivity || u.updatedAt);
+      const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      return lastActivity > dayAgo;
+    }).length,
+    active7d: users.filter(u => {
+      const lastActivity = new Date(u.lastActivity || u.updatedAt);
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      return lastActivity > weekAgo;
+    }).length,
+    active30d: users.filter(u => {
+      const lastActivity = new Date(u.lastActivity || u.updatedAt);
+      const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      return lastActivity > monthAgo;
+    }).length,
   }
 
-  // Get most added to watchlists
-  const getMostWatchlisted = () => {
-    const movieCounts = {};
+  // Get most added to watchlists from backend
+  const [mostWatchlisted, setMostWatchlisted] = useState([]);
+  
+  useEffect(() => {
+    const fetchMostWatchlisted = async () => {
+      try {
+        const data = await adminAPI.getMostWatchlisted();
+        setMostWatchlisted(data);
+      } catch (error) {
+        console.error('Error fetching most watchlisted:', error);
+        // Fallback to showing some movies if API fails
+        if (movies.length > 0) {
+          setMostWatchlisted(movies.slice(0, 4));
+        }
+      }
+    };
     
-    users.forEach(user => {
-      const watchlist = JSON.parse(localStorage.getItem(`watchlist_${user.username}`) || '[]');
-      watchlist.forEach(item => {
-        const movieId = item.id || item.title;
-        movieCounts[movieId] = (movieCounts[movieId] || 0) + 1;
-      });
-    });
-
-    const sortedMovies = Object.entries(movieCounts)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 4)
-      .map(([id, count]) => {
-        const movie = movies.find(m => m._id === id || m.title === id);
-        return movie ? { ...movie, watchlistCount: count } : null;
-      })
-      .filter(Boolean);
-
-    // If no data, return sample movies
-    if (sortedMovies.length === 0 && movies.length > 0) {
-      return movies.slice(0, 4).map((m, i) => ({
-        ...m,
-        watchlistCount: [234, 189, 167, 145][i] || 100
-      }));
+    if (movies.length > 0) {
+      fetchMostWatchlisted();
     }
-
-    return sortedMovies;
-  };
+  }, [movies]);
 
   // Initialize charts after data is loaded
   useEffect(() => {
-    if (!loading && movies.length > 0) {
+    if (!loading && movies.length > 0 && stats) {
       initializeCharts();
     }
-  }, [loading, movies]);
+  }, [loading, movies, stats, users]);
 
   const initializeCharts = () => {
     try {
@@ -127,14 +176,14 @@ const AdminDashboard = () => {
         usersGrowthChartInstance.current = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: ['New Users (Last 30 Days)', 'Active Users', 'Inactive Users'],
+          labels: ['Active (30d)', 'Active (7d)', 'Active (24h)'],
           datasets: [{
             data: [
-              Math.floor(stats.totalUsers * 0.2),
-              Math.floor(stats.totalUsers * 0.6),
-              Math.floor(stats.totalUsers * 0.2)
+              activityStats.active30d,
+              activityStats.active7d,
+              activityStats.active24h
             ],
-            backgroundColor: ['#3b82f6', '#10b981', '#ef4444'],
+            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b'],
             borderWidth: 2,
             borderColor: '#ffffff'
           }]
@@ -291,8 +340,6 @@ const AdminDashboard = () => {
     );
   }
 
-  const mostWatchlisted = getMostWatchlisted();
-
   return (
     <div className="bg-white text-gray-900 min-h-screen">
       {/* ADMIN STATS SECTION */}
@@ -312,7 +359,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-gray-600 mb-1">Total Users</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{activityStats.totalUsers}</p>
             </div>
 
             {/* Total Movies Card */}
@@ -325,7 +372,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-gray-600 mb-1">Total Movies</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.totalMovies}</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{activityStats.totalMovies}</p>
             </div>
 
             {/* Total Watchlists Card */}
@@ -338,7 +385,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-gray-600 mb-1">Total Watchlists</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.totalWatchlists}</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{activityStats.totalWatchlists}</p>
             </div>
 
             {/* Admin Users Card */}
@@ -351,7 +398,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-gray-600 mb-1">Admin Users</p>
-              <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.adminUsers}</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{activityStats.adminUsers}</p>
             </div>
           </div>
         </div>
@@ -433,7 +480,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-sm text-gray-600 mb-1">Active in Last 24 Hours</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.active24h}</p>
+              <p className="text-3xl font-bold text-gray-900">{activityStats.active24h}</p>
             </div>
 
             {/* Active in Last 7 Days */}
@@ -444,7 +491,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-sm text-gray-600 mb-1">Active in Last 7 Days</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.active7d}</p>
+              <p className="text-3xl font-bold text-gray-900">{activityStats.active7d}</p>
             </div>
 
             {/* Active in Last 30 Days */}
@@ -455,7 +502,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <p className="text-sm text-gray-600 mb-1">Active in Last 30 Days</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.active30d}</p>
+              <p className="text-3xl font-bold text-gray-900">{activityStats.active30d}</p>
             </div>
           </div>
 
@@ -501,16 +548,15 @@ const AdminDashboard = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {users.length > 0 ? (
                   users.map((user) => {
-                    const userWatchlist = JSON.parse(localStorage.getItem(`watchlist_${user.username}`) || '[]');
                     return (
-                      <tr key={user._id || user.username}>
+                      <tr key={user._id || user.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
                               <i className="fa-solid fa-user text-gray-600"></i>
                             </div>
                             <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{user.username}</div>
+                              <div className="text-sm font-medium text-gray-900">{user.fullName || user.username}</div>
                             </div>
                           </div>
                         </td>
@@ -525,10 +571,39 @@ const AdminDashboard = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {userWatchlist.length}
+                          {user.watchlistCount || 0}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <a href="#" className="text-blue-600 hover:text-blue-900">View</a>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleToggleAdmin(user.id, user.role)}
+                              disabled={actionLoading === user.id}
+                              className={`px-3 py-1 rounded text-xs font-medium transition ${
+                                user.role === 'admin'
+                                  ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                                  : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                              } disabled:opacity-50`}
+                              title={user.role === 'admin' ? 'Remove Admin' : 'Make Admin'}
+                            >
+                              {actionLoading === user.id ? (
+                                <i className="fas fa-spinner fa-spin"></i>
+                              ) : (
+                                user.role === 'admin' ? 'Remove Admin' : 'Make Admin'
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteUser(user.id, user.email)}
+                              disabled={actionLoading === user.id}
+                              className="px-3 py-1 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition disabled:opacity-50"
+                              title="Delete User"
+                            >
+                              {actionLoading === user.id ? (
+                                <i className="fas fa-spinner fa-spin"></i>
+                              ) : (
+                                <i className="fas fa-trash-alt"></i>
+                              )}
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -548,27 +623,54 @@ const AdminDashboard = () => {
           <div className="md:hidden space-y-4">
             {users.length > 0 ? (
               users.map((user) => {
-                const userWatchlist = JSON.parse(localStorage.getItem(`watchlist_${user.username}`) || '[]');
                 return (
-                  <div key={user._id || user.username} className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                  <div key={user._id || user.id} className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
                     <div className="flex items-center mb-3">
                       <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center mr-3">
                         <i className="fa-solid fa-user text-gray-600"></i>
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-900">{user.username}</div>
+                        <div className="text-sm font-medium text-gray-900">{user.fullName || user.username}</div>
                         <div className="text-xs text-gray-500">{user.email}</div>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mb-3">
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'
                       }`}>
                         {user.role || 'User'}
                       </span>
                       <span className="text-xs text-gray-600">
-                        Watchlist: {userWatchlist.length}
+                        Watchlist: {user.watchlistCount || 0}
                       </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleToggleAdmin(user.id, user.role)}
+                        disabled={actionLoading === user.id}
+                        className={`flex-1 px-3 py-2 rounded text-xs font-medium transition ${
+                          user.role === 'admin'
+                            ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                        } disabled:opacity-50`}
+                      >
+                        {actionLoading === user.id ? (
+                          <i className="fas fa-spinner fa-spin"></i>
+                        ) : (
+                          user.role === 'admin' ? 'Remove Admin' : 'Make Admin'
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id, user.email)}
+                        disabled={actionLoading === user.id}
+                        className="px-4 py-2 rounded text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition disabled:opacity-50"
+                      >
+                        {actionLoading === user.id ? (
+                          <i className="fas fa-spinner fa-spin"></i>
+                        ) : (
+                          <i className="fas fa-trash-alt"></i>
+                        )}
+                      </button>
                     </div>
                   </div>
                 );

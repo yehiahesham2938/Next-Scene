@@ -334,4 +334,52 @@ router.delete('/movies/:id', async (req, res) => {
     }
 });
 
+// PATCH /api/admin/users/:id/role - Update user role (toggle admin)
+router.patch('/users/:id/role', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { role } = req.body;
+
+        if (!role || (role !== 'admin' && role !== 'user')) {
+            return res.status(400).json({ message: 'Valid role required (admin or user)' });
+        }
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.role = role;
+        await user.save();
+
+        res.json({ message: 'User role updated successfully', user: { id: user._id, role: user.role } });
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        res.status(500).json({ message: 'Failed to update user role', error: error.message });
+    }
+});
+
+// DELETE /api/admin/users/:id - Delete a user account
+router.delete('/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Delete user's watchlist entries
+        await Watchlist.deleteMany({ userId: id });
+
+        // Delete the user
+        await User.findByIdAndDelete(id);
+
+        res.json({ message: 'User account deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Failed to delete user', error: error.message });
+    }
+});
+
 module.exports = router;

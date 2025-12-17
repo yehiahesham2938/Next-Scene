@@ -179,6 +179,30 @@ export const adminAPI = {
     }
     return response.json();
   },
+
+  updateUserRole: async (userId, role) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/role`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to update user role' }));
+      throw new Error(errorData.message || 'Failed to update user role');
+    }
+    return response.json();
+  },
+
+  deleteUser: async (userId) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to delete user' }));
+      throw new Error(errorData.message || 'Failed to delete user');
+    }
+    return response.json();
+  },
 };
 
 export default {
