@@ -466,56 +466,7 @@ const AdminDashboard = () => {
       </section>
 
       {/* USER ACTIVITY SECTION */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8">User Activity</h2>
-
-          {/* Activity Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {/* Active in Last 24 Hours */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <div className="bg-green-100 rounded-full p-3">
-                  <i className="fas fa-clock text-green-600 text-xl"></i>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-1">Active in Last 24 Hours</p>
-              <p className="text-3xl font-bold text-gray-900">{activityStats.active24h}</p>
-            </div>
-
-            {/* Active in Last 7 Days */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <div className="bg-blue-100 rounded-full p-3">
-                  <i className="fas fa-calendar-week text-blue-600 text-xl"></i>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-1">Active in Last 7 Days</p>
-              <p className="text-3xl font-bold text-gray-900">{activityStats.active7d}</p>
-            </div>
-
-            {/* Active in Last 30 Days */}
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <div className="bg-purple-100 rounded-full p-3">
-                  <i className="fas fa-calendar-alt text-purple-600 text-xl"></i>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mb-1">Active in Last 30 Days</p>
-              <p className="text-3xl font-bold text-gray-900">{activityStats.active30d}</p>
-            </div>
-          </div>
-
-          {/* Daily Activity Chart */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-xl font-semibold mb-4">Daily User Activity (Last 7 Days)</h3>
-            <div className="flex justify-center">
-              <canvas ref={dailyActivityChartRef} width="400" height="200"></canvas>
-            </div>
-          </div>
-        </div>
-      </section>
-
+{/* Deleted */}
       {/* USER MANAGEMENT SECTION */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
