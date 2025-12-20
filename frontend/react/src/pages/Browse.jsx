@@ -64,7 +64,7 @@ const Browse = () => {
     // Year filter
     if (filters.year) {
       result = result.filter(movie => {
-        const movieYear = movie.year || movie.releaseDate?.split('-')[0];
+        const movieYear = movie.releaseYear || movie.year || movie.releaseDate?.split('-')[0];
         return movieYear === filters.year;
       });
     }
@@ -85,15 +85,15 @@ const Browse = () => {
         break;
       case 'year':
         result.sort((a, b) => {
-          const yearA = a.year || a.releaseDate?.split('-')[0] || 0;
-          const yearB = b.year || b.releaseDate?.split('-')[0] || 0;
+          const yearA = parseInt(a.releaseYear || a.year || a.releaseDate?.split('-')[0] || 0);
+          const yearB = parseInt(b.releaseYear || b.year || b.releaseDate?.split('-')[0] || 0);
           return yearB - yearA;
         });
         break;
       case 'year-asc':
         result.sort((a, b) => {
-          const yearA = a.year || a.releaseDate?.split('-')[0] || 0;
-          const yearB = b.year || b.releaseDate?.split('-')[0] || 0;
+          const yearA = parseInt(a.releaseYear || a.year || a.releaseDate?.split('-')[0] || 0);
+          const yearB = parseInt(b.releaseYear || b.year || b.releaseDate?.split('-')[0] || 0);
           return yearA - yearB;
         });
         break;
@@ -191,7 +191,7 @@ const Browse = () => {
   const allYears = useMemo(() => {
     const yearsSet = new Set();
     allMovies.forEach(movie => {
-      const year = movie.year || movie.releaseDate?.split('-')[0];
+      const year = movie.releaseYear || movie.year || movie.releaseDate?.split('-')[0];
       if (year) yearsSet.add(year);
     });
     return Array.from(yearsSet).sort((a, b) => b - a);
