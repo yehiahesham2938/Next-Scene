@@ -23,7 +23,7 @@ const Watchlist = () => {
       const query = searchQuery.toLowerCase();
       result = result.filter(movie => 
         movie.title?.toLowerCase().includes(query) ||
-        movie.year?.toString().includes(query)
+        movie.releaseYear?.toString().includes(query)
       );
     }
 
@@ -36,7 +36,11 @@ const Watchlist = () => {
         result.sort((a, b) => new Date(a.addedAt || 0) - new Date(b.addedAt || 0));
         break;
       case 'release-date':
-        result.sort((a, b) => (b.year || 0) - (a.year || 0));
+        result.sort((a, b) => {
+          const yearA = parseInt(a.releaseYear || 0);
+          const yearB = parseInt(b.releaseYear || 0);
+          return yearB - yearA;
+        });
         break;
       default:
         break;
@@ -54,9 +58,9 @@ const Watchlist = () => {
     await removeFromWatchlist(movieId);
   };
 
-  const handleMarkAsWatched = async (e, movieId) => {
+  const handleMarkAsWatched = async (e, movieId, isCurrentlyWatched) => {
     e.stopPropagation();
-    await markAsWatched(movieId);
+    await markAsWatched(movieId, !isCurrentlyWatched);
   };
 
   if (loading) {
@@ -158,7 +162,6 @@ const Watchlist = () => {
             {filteredMovies.map((movie) => {
               const movieId = movie.id || movie._id;
               const year = movie.releaseYear || movie.year || 'N/A';
-              const rating = movie.rating ? movie.rating.toFixed(1) : 'N/A';
               const isWatched = watchedMovies.some(m => (m.id || m._id) === movieId);
 
               return (
@@ -191,10 +194,15 @@ const Watchlist = () => {
                     {/* Hover Overlay with Buttons */}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
                       <button
-                        onClick={(e) => handleMarkAsWatched(e, movieId)}
-                        className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg"
+                        onClick={(e) => handleMarkAsWatched(e, movieId, isWatched)}
+                        className={`${
+                          isWatched 
+                            ? 'bg-yellow-600 hover:bg-yellow-700' 
+                            : 'bg-green-600 hover:bg-green-700'
+                        } text-white px-4 py-2 rounded-full transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg`}
                       >
-                        <i className="fas fa-check-circle"></i> {isWatched ? 'Watched' : 'Mark as Watched'}
+                        <i className={`fas ${isWatched ? 'fa-undo' : 'fa-check-circle'}`}></i> 
+                        {isWatched ? 'Mark as Unwatched' : 'Mark as Watched'}
                       </button>
                       <button
                         onClick={(e) => handleRemove(e, movieId)}

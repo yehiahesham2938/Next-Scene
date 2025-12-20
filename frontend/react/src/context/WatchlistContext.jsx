@@ -39,10 +39,12 @@ export const WatchlistProvider = ({ children }) => {
         const watched = data.filter(item => item.watched).map(item => ({
           id: item.movieId?._id,
           ...item.movieId,
+          addedAt: item.addedAt,
         }));
         const unwatched = data.filter(item => !item.watched).map(item => ({
           id: item.movieId?._id,
           ...item.movieId,
+          addedAt: item.addedAt,
         }));
         
         setWatchedMovies(watched);
