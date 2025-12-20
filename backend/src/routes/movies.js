@@ -3,6 +3,32 @@ const Movie = require('../models/Movie');
 
 const router = express.Router();
 
+// GET /api/movies/search?q=<query> -> search movies
+router.get('/search', async (req, res) => {
+	try {
+		const query = req.query.q;
+		
+		if (!query || query.trim() === '') {
+			return res.json([]);
+		}
+
+		// Search in title, director, genre, and description
+		const movies = await Movie.find({
+			$or: [
+				{ title: { $regex: query, $options: 'i' } },
+				{ director: { $regex: query, $options: 'i' } },
+				{ genre: { $regex: query, $options: 'i' } },
+				{ description: { $regex: query, $options: 'i' } }
+			]
+		}).sort({ createdAt: -1 });
+
+		res.json(movies);
+	} catch (error) {
+		console.error('Error searching movies:', error);
+		res.status(500).json({ message: 'Failed to search movies' });
+	}
+});
+
 // GET /api/movies?limit=4 -> list movies (optionally limited), newest first
 router.get('/', async (req, res) => {
 	try {
