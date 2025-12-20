@@ -17,6 +17,7 @@ import Search from './pages/Search';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminBrowse from './pages/AdminBrowse';
 import AddMovie from './pages/AddMovie';
+import EditMovie from './pages/EditMovie';
 import NotFound from './pages/NotFound';
 
 // Protected Route component
@@ -122,6 +123,14 @@ function App() {
                   element={
                     <AdminRoute>
                       <AddMovie />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/edit-movie/:id"
+                  element={
+                    <AdminRoute>
+                      <EditMovie />
                     </AdminRoute>
                   }
                 />

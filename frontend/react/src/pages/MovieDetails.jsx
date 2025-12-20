@@ -59,6 +59,26 @@ const MovieDetails = () => {
     }
   };
 
+  const getYouTubeEmbedUrl = (url) => {
+    if (!url) return null;
+    
+    // Extract video ID from various YouTube URL formats
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    
+    if (match && match[2].length === 11) {
+      return `https://www.youtube.com/embed/${match[2]}`;
+    }
+    
+    // If already an embed URL, return as is
+    if (url.includes('youtube.com/embed/')) {
+      return url;
+    }
+    
+    // Return original URL if not YouTube
+    return url;
+  };
+
   const isInWatchlist = () => {
     return [...watchlist, ...watchedMovies].some(
       m => m.id === movie?._id || m.title === movie?.title
@@ -132,9 +152,18 @@ const MovieDetails = () => {
             <i className="fas fa-arrow-left text-xl"></i>
           </button>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Movie Details</h1>
-          <button className="text-gray-700 dark:text-gray-300">
-            <i className="fas fa-ellipsis-v text-xl"></i>
-          </button>
+          {isAdmin ? (
+            <button 
+              onClick={() => navigate(`/admin/edit-movie/${movie._id}`)}
+              className="text-blue-600 dark:text-blue-400"
+            >
+              <i className="fas fa-edit text-xl"></i>
+            </button>
+          ) : (
+            <button className="text-gray-700 dark:text-gray-300">
+              <i className="fas fa-ellipsis-v text-xl"></i>
+            </button>
+          )}
         </div>
       </header>
 
@@ -187,6 +216,15 @@ const MovieDetails = () => {
                 </>
               )}
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => navigate(`/admin/edit-movie/${movie._id}`)}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg mb-3 transition flex items-center justify-center gap-2"
+              >
+                <i className="fas fa-edit"></i>
+                Edit Movie
+              </button>
+            )}
             <button
               onClick={() => switchTab('trailer')}
               className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition flex items-center justify-center gap-2"
@@ -347,7 +385,7 @@ const MovieDetails = () => {
                     <div className="w-full aspect-video bg-gray-300 dark:bg-gray-700 rounded-lg overflow-hidden">
                       <iframe
                         className="w-full h-full"
-                        src={movie.trailerUrl}
+                        src={getYouTubeEmbedUrl(movie.trailerUrl)}
                         title={`${movie.title} Trailer`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

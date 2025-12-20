@@ -45,6 +45,30 @@ export const movieAPI = {
     return response.json();
   },
 
+  update: async (id, movieData) => {
+    const response = await fetch(`${API_BASE_URL}/api/movies/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(movieData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to update movie' }));
+      throw new Error(errorData.message || 'Failed to update movie');
+    }
+    return response.json();
+  },
+
+  delete: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/api/movies/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to delete movie' }));
+      throw new Error(errorData.message || 'Failed to delete movie');
+    }
+    return response.json();
+  },
+
   getByGenre: async (genre) => {
     const response = await fetch(`${API_BASE_URL}/api/movies/genre/${encodeURIComponent(genre)}`);
     if (!response.ok) throw new Error('Failed to fetch movies by genre');

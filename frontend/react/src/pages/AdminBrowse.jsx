@@ -354,16 +354,28 @@ const AdminBrowse = () => {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteMovie(movie._id, movie.title);
-                }}
-                className="absolute top-2 right-2 w-8 h-8 bg-red-600 bg-opacity-90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-red-700 z-10"
-                title="Delete Movie"
-              >
-                <i className="fas fa-trash text-white text-sm"></i>
-              </button>
+              <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/admin/edit-movie/${movie._id}`);
+                  }}
+                  className="w-8 h-8 bg-blue-600 bg-opacity-90 rounded-full flex items-center justify-center hover:bg-blue-700"
+                  title="Edit Movie"
+                >
+                  <i className="fas fa-edit text-white text-sm"></i>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteMovie(movie._id, movie.title);
+                  }}
+                  className="w-8 h-8 bg-red-600 bg-opacity-90 rounded-full flex items-center justify-center hover:bg-red-700"
+                  title="Delete Movie"
+                >
+                  <i className="fas fa-trash text-white text-sm"></i>
+                </button>
+              </div>
             </div>
             <div className="p-3" onClick={() => viewMovieDetails(movie._id)}>
               <h3 className="font-semibold text-sm mb-1 truncate text-gray-900 dark:text-white">
@@ -406,16 +418,28 @@ const AdminBrowse = () => {
                 <h3 className="font-semibold text-sm text-gray-900 dark:text-white">
                   {movie.title}
                 </h3>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteMovie(movie._id, movie.title);
-                  }}
-                  className="flex-shrink-0 ml-2 text-red-600 hover:text-red-700 transition-colors z-10"
-                  title="Delete Movie"
-                >
-                  <i className="fas fa-trash"></i>
-                </button>
+                <div className="flex gap-2 ml-2 flex-shrink-0">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/admin/edit-movie/${movie._id}`);
+                    }}
+                    className="text-blue-600 hover:text-blue-700 transition-colors z-10"
+                    title="Edit Movie"
+                  >
+                    <i className="fas fa-edit"></i>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteMovie(movie._id, movie.title);
+                    }}
+                    className="text-red-600 hover:text-red-700 transition-colors z-10"
+                    title="Delete Movie"
+                  >
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </div>
               </div>
               <p className="text-gray-500 dark:text-gray-400 text-xs mb-2">
                 {movie.releaseYear} • {movie.genre}

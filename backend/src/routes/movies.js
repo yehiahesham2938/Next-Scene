@@ -132,6 +132,55 @@ router.post('/', async (req, res) => {
 	}
 });
 
+// PUT /api/movies/:id -> update a movie
+router.put('/:id', async (req, res) => {
+	try {
+		const { id } = req.params;
+		const {
+			title,
+			director,
+			releaseYear,
+			runtime,
+			genre,
+			rating,
+			poster,
+			trailerUrl,
+			description,
+			mainCast
+		} = req.body;
+
+		const movie = await Movie.findById(id);
+		if (!movie) {
+			return res.status(404).json({ message: 'Movie not found' });
+		}
+
+		// Update fields
+		if (title !== undefined) movie.title = title.trim();
+		if (director !== undefined) movie.director = director.trim();
+		if (releaseYear !== undefined) movie.releaseYear = String(releaseYear).trim();
+		if (runtime !== undefined) movie.runtime = runtime ? parseInt(runtime) : undefined;
+		if (genre !== undefined) movie.genre = genre.trim();
+		if (rating !== undefined) movie.rating = rating ? parseFloat(rating) : undefined;
+		if (poster !== undefined) movie.poster = poster || undefined;
+		if (trailerUrl !== undefined) movie.trailerUrl = trailerUrl ? trailerUrl.trim() : undefined;
+		if (description !== undefined) movie.description = description ? description.trim() : undefined;
+		if (mainCast !== undefined) movie.mainCast = mainCast ? mainCast.trim() : undefined;
+
+		const updatedMovie = await movie.save();
+		console.log('Movie updated successfully:', updatedMovie._id);
+		res.json(updatedMovie);
+	} catch (error) {
+		console.error('Error updating movie:', error);
+		if (error.name === 'ValidationError') {
+			return res.status(400).json({ 
+				message: error.message || 'Validation error',
+				errors: error.errors
+			});
+		}
+		res.status(500).json({ message: error.message || 'Failed to update movie' });
+	}
+});
+
 // DELETE /api/movies/:id -> delete a movie
 router.delete('/:id', async (req, res) => {
 	try {

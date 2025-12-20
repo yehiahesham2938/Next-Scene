@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { adminAPI } from '../services/api';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { movieAPI } from '../services/api';
 
-const AddMovie = () => {
+const EditMovie = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     title: '',
     director: '',
-    releaseYear: '2025',
-    runtime: '120',
+    releaseYear: '',
+    runtime: '',
     genre: '',
     rating: '',
     poster: '',
@@ -18,6 +20,34 @@ const AddMovie = () => {
   });
   const [posterFile, setPosterFile] = useState(null);
   const [fileName, setFileName] = useState('');
+
+  useEffect(() => {
+    const fetchMovie = async () => {
+      try {
+        setLoading(true);
+        const movie = await movieAPI.getById(id);
+        setFormData({
+          title: movie.title || '',
+          director: movie.director || '',
+          releaseYear: movie.releaseYear || '',
+          runtime: movie.runtime?.toString() || '',
+          genre: movie.genre || '',
+          rating: movie.rating?.toString() || '',
+          poster: movie.poster || '',
+          trailerUrl: movie.trailerUrl || '',
+          description: movie.description || '',
+          cast: movie.mainCast || ''
+        });
+      } catch (error) {
+        console.error('Error fetching movie:', error);
+        alert('Failed to load movie');
+        navigate('/admin/browse');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMovie();
+  }, [id, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -86,14 +116,22 @@ const AddMovie = () => {
         mainCast: formData.cast || ''
       };
 
-      await adminAPI.addMovie(movieData);
-      alert('Movie added successfully!');
-      navigate('/admin');
+      await movieAPI.update(id, movieData);
+      alert('Movie updated successfully!');
+      navigate('/admin/browse');
     } catch (error) {
-      console.error('Error adding movie:', error);
-      alert('Failed to add movie: ' + (error.message || 'Unknown error'));
+      console.error('Error updating movie:', error);
+      alert('Failed to update movie: ' + (error.message || 'Unknown error'));
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white text-gray-900 min-h-screen">
@@ -101,15 +139,15 @@ const AddMovie = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg p-8">
             <div className="text-sm text-gray-500 mb-4">
-              <button onClick={() => navigate('/admin')} className="hover:text-gray-700">
-                Admin Dashboard
+              <button onClick={() => navigate('/admin/browse')} className="hover:text-gray-700">
+                Browse Movies
               </button>
               <span className="mx-2">{'>'}</span>
-              <span className="text-gray-700">Add Movie</span>
+              <span className="text-gray-700">Edit Movie</span>
             </div>
 
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Add New Movie</h1>
-            <p className="text-gray-600 mb-8">Fill in the details below to add a new movie to the database.</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Movie</h1>
+            <p className="text-gray-600 mb-8">Update the movie details below.</p>
 
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Basic Information */}
@@ -225,8 +263,14 @@ const AddMovie = () => {
               <section>
                 <h2 className="text-xl font-bold text-gray-900 mb-6">Media</h2>
                 <div className="space-y-6">
+                  {formData.poster && (
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Current Poster</label>
+                      <img src={formData.poster} alt="Current poster" className="w-48 h-auto rounded shadow" />
+                    </div>
+                  )}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Movie Poster</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Update Movie Poster</label>
                     <input
                       type="file"
                       accept="image/*"
@@ -316,7 +360,7 @@ const AddMovie = () => {
               <div className="flex gap-4 pt-6 border-t border-gray-200">
                 <button
                   type="button"
-                  onClick={() => navigate('/admin')}
+                  onClick={() => navigate('/admin/browse')}
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
                 >
                   Cancel
@@ -325,8 +369,8 @@ const AddMovie = () => {
                   type="submit"
                   className="ml-auto px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition flex items-center gap-2"
                 >
-                  <i className="fa-solid fa-plus"></i>
-                  Add Movie
+                  <i className="fa-solid fa-save"></i>
+                  Update Movie
                 </button>
               </div>
             </form>
@@ -337,4 +381,4 @@ const AddMovie = () => {
   );
 };
 
-export default AddMovie;
+export default EditMovie;
