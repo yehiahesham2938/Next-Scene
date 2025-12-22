@@ -8,8 +8,17 @@ export default defineConfig({
     port: 5173,
   },
   build: {
-    rollupOptions: {
-      external: [],
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true,
     },
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', 'framer-motion', 'chart.js'],
   },
 })
