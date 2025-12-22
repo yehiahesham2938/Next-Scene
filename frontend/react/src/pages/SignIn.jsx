@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import Snowfall from 'react-snowfall';  
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
