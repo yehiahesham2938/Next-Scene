@@ -26,14 +26,22 @@ app.use('/api/watchlist', watchlistRouter);
 
 const port = process.env.PORT || 4000;
 
+// Connect to database immediately
 connectToDatabase()
 	.then(() => {
-		app.listen(port, () => {
-			console.log(`Backend server listening on http://localhost:${port}`);
-		});
+		console.log('Database connected successfully');
 	})
 	.catch((error) => {
-		console.error('Failed to start server due to DB connection error:', error);
-		process.exit(1);
+		console.error('Failed to connect to database:', error);
 	});
+
+// For Vercel serverless, export the app
+// For local development, start the server
+if (process.env.NODE_ENV !== 'production') {
+	app.listen(port, () => {
+		console.log(`Backend server listening on http://localhost:${port}`);
+	});
+}
+
+module.exports = app;
 
