@@ -13,14 +13,9 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUserState] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const currentUser = getUser();
-    setUserState(currentUser);
-    setLoading(false);
-  }, []);
+  const [user, setUserState] = useState(() => getUser());
+  const [loading, setLoading] = useState(false);
+ 
 
   const login = (userData) => {
     setUser(userData);
