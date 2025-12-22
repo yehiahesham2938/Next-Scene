@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { movieAPI } from '../services/api';
 import { useWatchlist } from '../context/WatchlistContext';
 import { useAuth } from '../context/AuthContext';
-import LoadingSpinner from '../components/LoadingSpinner';
+import MovieGridSkeleton from '../components/MovieGridSkeleton';
 import { motion } from 'framer-motion';
 
 const Browse = () => {
@@ -486,31 +486,46 @@ const Browse = () => {
         </div>
       </div>
 
-      {/* Desktop Grid */}
-      <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-4">
-        {filteredMovies.length > 0 ? (
-          filteredMovies.map(movie => (
-            <MovieCardComponent key={movie._id} movie={movie} />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">No movies found matching your filters.</p>
+      {isLoading ? (
+        <>
+          {/* Desktop Skeleton */}
+          <div className="hidden md:block">
+            <MovieGridSkeleton count={20} />
           </div>
-        )}
-      </div>
+          {/* Mobile Skeleton */}
+          <div className="md:hidden">
+            <MovieGridSkeleton count={10} />
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-4">
+            {filteredMovies.length > 0 ? (
+              filteredMovies.map(movie => (
+                <MovieCardComponent key={movie._id} movie={movie} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400">No movies found matching your filters.</p>
+              </div>
+            )}
+          </div>
 
-      {/* Mobile Grid */}
-      <div className="md:hidden grid grid-cols-2 gap-4">
-        {filteredMovies.length > 0 ? (
-          filteredMovies.map(movie => (
-            <MovieCardComponent key={movie._id} movie={movie} isMobile={true} />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">No movies found matching your filters.</p>
+          {/* Mobile Grid */}
+          <div className="md:hidden grid grid-cols-2 gap-4">
+            {filteredMovies.length > 0 ? (
+              filteredMovies.map(movie => (
+                <MovieCardComponent key={movie._id} movie={movie} isMobile={true} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400">No movies found matching your filters.</p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };
