@@ -1,33 +1,12 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "cd frontend/react && npm install && npm run build",
+  "outputDirectory": "frontend/react/dist",
+  "installCommand": "cd frontend/react && npm install",
+  "framework": null,
+  "rewrites": [
     {
-      "src": "frontend/react/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    },
-    {
-      "src": "backend/src/server.js",
-      "use": "@vercel/node"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/src/server.js"
-    },
-    {
-      "src": "/health",
-      "dest": "backend/src/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "frontend/react/dist/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
