@@ -1,12 +1,14 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWatchlist } from '../context/WatchlistContext';
+import { useToast } from '../context/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { motion, AnimatePresence } from "framer-motion";
 
 const Watchlist = () => {
   const navigate = useNavigate();
   const { watchlist, watchedMovies, loading, removeFromWatchlist, markAsWatched } = useWatchlist();
+  const { toast } = useToast();
   const [activeFilter, setActiveFilter] = useState('newest-added');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTab, setSelectedTab] = useState('all');
@@ -82,14 +84,21 @@ const Watchlist = () => {
     navigate(`/movie/${movieId}`);
   };
 
-  const handleRemove = async (e, movieId) => {
+  const handleRemove = async (e, movieId, movieTitle) => {
     e.stopPropagation();
     await removeFromWatchlist(movieId);
+    toast.error(`"${movieTitle}" removed from watchlist`);
   };
 
-  const handleMarkAsWatched = async (e, movieId, isCurrentlyWatched) => {
+  const handleMarkAsWatched = async (e, movieId, isCurrentlyWatched, movieTitle) => {
     e.stopPropagation();
     await markAsWatched(movieId, !isCurrentlyWatched);
+    
+    if (isCurrentlyWatched) {
+      toast.info(`"${movieTitle}" marked as unwatched`);
+    } else {
+      toast.success(`"${movieTitle}" marked as watched`);
+    }
   };
 
   if (loading) {
@@ -273,7 +282,7 @@ const Watchlist = () => {
                     {/* Hover Overlay with Buttons */}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
                       <button
-                        onClick={(e) => handleMarkAsWatched(e, movieId, isWatched)}
+                        onClick={(e) => handleMarkAsWatched(e, movieId, isWatched, movie.title)}
                         className={`${
                           isWatched 
                             ? 'bg-yellow-600 hover:bg-yellow-700' 
@@ -284,7 +293,7 @@ const Watchlist = () => {
                         {isWatched ? 'Mark as Unwatched' : 'Mark as Watched'}
                       </button>
                       <button
-                        onClick={(e) => handleRemove(e, movieId)}
+                        onClick={(e) => handleRemove(e, movieId, movie.title)}
                         className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg"
                       >
                         <i className="fas fa-trash-alt"></i> Remove

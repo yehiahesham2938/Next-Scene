@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { WatchlistProvider } from './context/WatchlistContext';
+import { ToastProvider } from './context/ToastContext';
 import MainLayout from './layouts/MainLayout';
 
 import Home from './pages/Home';
@@ -68,15 +69,16 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <WatchlistProvider>
-            <Routes>
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/browse" element={<Browse />} />
-                <Route path="/movie/:id" element={<MovieDetails />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/about" element={<About />} />
+            <ToastProvider>
+              <Routes>
+                <Route element={<MainLayout />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/signin" element={<SignIn />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/browse" element={<Browse />} />
+                  <Route path="/movie/:id" element={<MovieDetails />} />
+                  <Route path="/search" element={<Search />} />
+                  <Route path="/about" element={<About />} />
                 
                 <Route
                   path="/dashboard"
@@ -139,6 +141,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
+            </ToastProvider>
           </WatchlistProvider>
         </AuthProvider>
       </ThemeProvider>
