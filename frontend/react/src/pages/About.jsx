@@ -1,4 +1,8 @@
+import { motion, useScroll } from 'framer-motion';
+
 const About = () => {
+  const { scrollYProgress } = useScroll();
+  
   const teamMembers = [
     {
       name: 'Yehia Hesham',
@@ -40,6 +44,22 @@ const About = () => {
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
+      {/* Scroll Progress Indicator */}
+      <motion.div
+        style={{
+          scaleX: scrollYProgress,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 10,
+          originX: 0,
+          backgroundColor: "#000",
+          zIndex: 9999
+        }}
+        className="dark:bg-white"
+      />
+      
       <div className="max-w-7xl mx-auto px-4 py-12 mt-16 sm:mt-0">
         {/* Project Overview Section */}
         <section className="mb-16">

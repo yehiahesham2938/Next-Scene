@@ -2,12 +2,28 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWatchlist } from '../context/WatchlistContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { motion, AnimatePresence } from "framer-motion";
 
 const Watchlist = () => {
   const navigate = useNavigate();
   const { watchlist, watchedMovies, loading, removeFromWatchlist, markAsWatched } = useWatchlist();
   const [activeFilter, setActiveFilter] = useState('newest-added');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTab, setSelectedTab] = useState('all');
+
+  // Tab configuration
+  const tabs = [
+    { id: 'all', label: 'All' },
+    { id: 'to-watch', label: 'To Watch' },
+    { id: 'watched', label: 'Watched' }
+  ];
+
+  // Filter button configuration
+  const filterButtons = [
+    { id: 'newest-added', label: 'Recently Added' },
+    { id: 'oldest-added', label: 'Oldest Added' },
+    { id: 'release-date', label: 'Release Date' }
+  ];
 
   // Combine watchlist and watched movies
   const allMovies = useMemo(() => {
@@ -17,6 +33,19 @@ const Watchlist = () => {
   // Filter and sort movies
   const filteredMovies = useMemo(() => {
     let result = [...allMovies];
+
+    // Apply tab filter
+    if (selectedTab === 'to-watch') {
+      result = result.filter(movie => {
+        const movieId = movie.id || movie._id;
+        return !watchedMovies.some(m => (m.id || m._id) === movieId);
+      });
+    } else if (selectedTab === 'watched') {
+      result = result.filter(movie => {
+        const movieId = movie.id || movie._id;
+        return watchedMovies.some(m => (m.id || m._id) === movieId);
+      });
+    }
 
     // Apply search filter
     if (searchQuery) {
@@ -47,7 +76,7 @@ const Watchlist = () => {
     }
 
     return result;
-  }, [allMovies, searchQuery, activeFilter]);
+  }, [allMovies, searchQuery, activeFilter, selectedTab, watchedMovies]);
 
   const handleMovieClick = (movieId) => {
     navigate(`/movie/${movieId}`);
@@ -78,37 +107,79 @@ const Watchlist = () => {
           </div>
 
           {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
-            <button
-              onClick={() => setActiveFilter('newest-added')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeFilter === 'newest-added'
-                  ? 'bg-black dark:bg-white text-white dark:text-black shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              Recently Added
-            </button>
-            <button
-              onClick={() => setActiveFilter('oldest-added')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeFilter === 'oldest-added'
-                  ? 'bg-black dark:bg-white text-white dark:text-black shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              Oldest Added
-            </button>
-            <button
-              onClick={() => setActiveFilter('release-date')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeFilter === 'release-date'
-                  ? 'bg-black dark:bg-white text-white dark:text-black shadow-sm'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-              }`}
-            >
-              Release Date
-            </button>
+          <div className="bg-gray-50 dark:bg-gray-800 p-1.5 rounded-lg inline-flex">
+            <ul className="flex gap-1 list-none m-0 p-0">
+              {filterButtons.map((filter) => (
+                <motion.li
+                  key={filter.id}
+                  initial={false}
+                  animate={{
+                    backgroundColor:
+                      filter.id === activeFilter 
+                        ? 'rgb(255 255 255 / 1)' 
+                        : 'rgb(255 255 255 / 0)',
+                  }}
+                  className="relative px-4 py-2.5 rounded-md cursor-pointer select-none transition-colors"
+                  style={{
+                    color: filter.id === activeFilter 
+                      ? 'rgb(17 24 39)' 
+                      : 'rgb(107 114 128)',
+                  }}
+                  onClick={() => setActiveFilter(filter.id)}
+                >
+                  <span className="flex items-center justify-center gap-2 font-medium text-sm whitespace-nowrap">
+                    <span>{filter.icon}</span>
+                    <span>{filter.label}</span>
+                  </span>
+                  {filter.id === activeFilter && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-black dark:bg-white"
+                      layoutId="filterUnderline"
+                      id="filterUnderline"
+                    />
+                  )}
+                </motion.li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Animated Tabs */}
+        <div className="mb-8">
+          <div className="bg-gray-50 dark:bg-gray-800 p-1.5 rounded-lg inline-flex w-full max-w-md">
+            <ul className="flex w-full gap-1">
+              {tabs.map((tab) => (
+                <motion.li
+                  key={tab.id}
+                  initial={false}
+                  animate={{
+                    backgroundColor:
+                      tab.id === selectedTab 
+                        ? 'rgb(255 255 255 / 1)' 
+                        : 'rgb(255 255 255 / 0)',
+                  }}
+                  className="relative flex-1 px-4 py-2.5 rounded-md cursor-pointer select-none transition-colors list-none"
+                  style={{
+                    color: tab.id === selectedTab 
+                      ? 'rgb(17 24 39)' 
+                      : 'rgb(107 114 128)',
+                  }}
+                  onClick={() => setSelectedTab(tab.id)}
+                >
+                  <span className="flex items-center justify-center gap-2 font-medium text-sm">
+                    <span>{tab.icon}</span>
+                    <span>{tab.label}</span>
+                  </span>
+                  {tab.id === selectedTab && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-black dark:bg-white"
+                      layoutId="underline"
+                      id="underline"
+                    />
+                  )}
+                </motion.li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -158,7 +229,15 @@ const Watchlist = () => {
           </div>
         ) : (
           /* Movie Grid */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedTab}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -10, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+            >
             {filteredMovies.map((movie) => {
               const movieId = movie.id || movie._id;
               const year = movie.releaseYear || movie.year || 'N/A';
@@ -227,7 +306,8 @@ const Watchlist = () => {
                 </div>
               );
             })}
-          </div>
+          </motion.div>
+          </AnimatePresence>
         )}
       </main>
     </div>

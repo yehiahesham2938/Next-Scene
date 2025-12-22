@@ -4,6 +4,7 @@ import { movieAPI } from '../services/api';
 import { useWatchlist } from '../context/WatchlistContext';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { motion } from 'framer-motion';
 
 const Browse = () => {
   const navigate = useNavigate();
@@ -253,11 +254,41 @@ const Browse = () => {
 
     // Desktop card
     return (
-      <div
+      <motion.div
         onClick={() => handleMovieClick(movie._id)}
         className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-200 cursor-pointer group movie-card"
+        initial="offscreen"
+        whileInView="onscreen"
+        viewport={{ once: true, amount: 0.3 }}
+        whileHover={{
+          scale: [null, 1.05, 1.08],
+          transition: {
+            duration: 0.5,
+            times: [0, 0.6, 1],
+            ease: ["easeInOut", "easeOut"],
+          },
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeOut",
+        }}
+        variants={{
+          offscreen: {
+            y: 100,
+            opacity: 0
+          },
+          onscreen: {
+            y: 0,
+            opacity: 1,
+            transition: {
+              type: "spring",
+              bounce: 0.4,
+              duration: 0.8
+            }
+          }
+        }}
       >
-        <div className="w-full aspect-[2/3] bg-gray-300 dark:bg-gray-700 overflow-hidden">
+        <div className="w-full aspect-[2/3] bg-gray-300 dark:bg-gray-700 overflow-hidden relative">
           {movie.poster ? (
             <img
               src={movie.poster}
@@ -270,6 +301,22 @@ const Browse = () => {
               No Image
             </div>
           )}
+          
+          {/* Description Overlay on Hover */}
+          <div className="absolute inset-0 bg-black/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center p-4 overflow-y-auto">
+            <h3 className="text-white font-bold text-lg mb-2">{movie.title}</h3>
+            <p className="text-gray-300 text-sm line-clamp-6">
+              {movie.description || 'No description available.'}
+            </p>
+            <div className="mt-3 flex items-center gap-3 text-sm text-gray-400">
+              <span className="flex items-center gap-1">
+                <i className="fas fa-star text-yellow-500"></i>
+                {rating}
+              </span>
+              <span>{year}</span>
+              <span>{runtime}</span>
+            </div>
+          </div>
         </div>
 
         <button
@@ -296,13 +343,9 @@ const Browse = () => {
             <span className="text-gray-400 dark:text-gray-500 text-xs">{runtime}</span>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   };
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 md:py-8 mt-16 sm:mt-0">

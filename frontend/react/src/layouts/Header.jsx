@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import SearchAutocomplete from '../components/SearchAutocomplete';
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -9,6 +10,8 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -22,127 +25,57 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/signin');
   };
 
-  const getInitials = () => {
-    if (user?.username) {
-      return user.username.charAt(0).toUpperCase();
-    }
-    if (user?.email) {
-      return user.email.charAt(0).toUpperCase();
-    }
-    return 'U';
+  const handleMouseEnter = () => {
+    setIsSidebarOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setTimeout(() => {
+      setIsSidebarOpen(false);
+    }, 100);
+  };
+
+  const handleHomeClick = () => {
+    navigate('/');
+    window.scrollTo(0, 0);
   };
 
   return (
     <>
-      {/* Desktop Header */}
-      <header className="hidden sm:flex bg-white dark:bg-gray-800 py-4 border-b border-gray-200 dark:border-gray-700 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
+      {/* Desktop Sidebar */}
+      <aside
+        className={`hidden sm:block fixed left-0 top-0 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-50 ${
+          isSidebarOpen ? 'w-64' : 'w-20'
+        }`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <i className={`fa-solid fa-film text-3xl transition-colors ${user?.role === 'admin' ? 'text-gray-800' : 'text-gray-800 dark:text-gray-200'}`}></i>
-            <Link 
-              to={user?.role === 'admin' ? '/admin' : '/'} 
-              className={`text-lg font-bold transition-colors ${user?.role === 'admin' ? 'text-gray-900' : 'text-gray-900 dark:text-white'}`}
-            >
-              Next-Scene
-            </Link>
+          <div className="flex items-center gap-3 p-5 border-b border-gray-200 dark:border-gray-700">
+            <i className="fa-solid fa-film text-2xl text-gray-800 dark:text-gray-200 flex-shrink-0"></i>
+            {isSidebarOpen && (
+              <span className="text-lg font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                Next-Scene
+              </span>
+            )}
           </div>
 
-          {/* Navigation Links */}
-          <nav className="flex gap-8 items-center">
-            {user?.role === 'admin' ? (
-              <>
-                <Link
-                  to="/admin"
-                  className={`${
-                    isActive('/admin') ? 'text-black font-semibold' : 'text-gray-700'
-                  } hover:text-black transition-colors`}
-                >
-                  Admin Dashboard
-                </Link>
-                <Link
-                  to="/admin/add-movie"
-                  className={`${
-                    isActive('/admin/add-movie') ? 'text-black font-semibold' : 'text-gray-700'
-                  } hover:text-black transition-colors`}
-                >
-                  Add Movie
-                </Link>
-                <Link
-                  to="/admin/browse"
-                  className={`${
-                    isActive('/admin/browse') ? 'text-black font-semibold' : 'text-gray-700'
-                  } hover:text-black transition-colors`}
-                >
-                  Browse
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/"
-                  className={`${
-                    isActive('/') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                  } hover:text-black dark:hover:text-white transition-colors`}
-                >
-                  Home
-                </Link>
-                {user && (
-                  <>
-                    <Link
-                      to="/dashboard"
-                      className={`${
-                        isActive('/dashboard') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                      } hover:text-black dark:hover:text-white transition-colors`}
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      to="/watchlist"
-                      className={`${
-                        isActive('/watchlist') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                      } hover:text-black dark:hover:text-white transition-colors`}
-                    >
-                      My Watchlist
-                    </Link>
-                  </>
-                )}
-                <Link
-                  to="/browse"
-                  className={`${
-                    isActive('/browse') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                  } hover:text-black dark:hover:text-white transition-colors`}
-                >
-                  Browse
-                </Link>
-                <Link
-                  to="/about"
-                  className={`${
-                    isActive('/about') ? 'text-black dark:text-white font-semibold' : 'text-gray-700 dark:text-gray-300'
-                  } hover:text-black dark:hover:text-white transition-colors`}
-                >
-                  About us
-                </Link>
-              </>
-            )}
-          </nav>
-
-          {/* Search Bar and Actions */}
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <form onSubmit={handleSearch} className="relative max-w-xs w-full">
-              <input
-                type="text"
+          {/* Search Bar */}
+          {isSidebarOpen && (
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <SearchAutocomplete
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={setSearchQuery}
                 placeholder="Search movies..."
-                className="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors"
+                className="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 dark:text-white rounded text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
               />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
+                className="w-5 h-5 absolute left-7 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none z-10"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -150,97 +83,214 @@ const Header = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-            </form>
+            </div>
+          )}
 
-            {user ? (
+          {/* Navigation Links */}
+          <nav className="flex-1 overflow-y-auto py-4">
+            {user?.role === 'admin' ? (
               <>
                 <Link
-                  to="/profile"
-                  className={`w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-full flex items-center justify-center transition flex-shrink-0 ${
-                    user.role === 'admin' 
-                      ? 'bg-gray-800 hover:bg-gray-700' 
-                      : 'bg-gray-800 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-600'
+                  to="/admin"
+                  className={`flex items-center gap-4 px-5 py-3 transition-colors ${
+                    isActive('/admin')
+                      ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <i className="fa-solid fa-user text-white text-sm"></i>
+                  <i className="fa-solid fa-gauge text-xl w-6 text-center flex-shrink-0"></i>
+                  {isSidebarOpen && <span className="whitespace-nowrap">Dashboard</span>}
                 </Link>
-                {user.role !== 'admin' && (
-                  <button
-                    className={`relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex-shrink-0 ${
-                      theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
-                    }`}
-                    onClick={toggleTheme}
-                    title="Toggle theme"
-                  >
-                    <span
-                      className={`inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
-                        theme === 'dark' ? 'translate-x-7' : 'translate-x-1'
-                      }`}
-                    >
-                      {theme === 'dark' ? (
-                        <i className="fa-solid fa-moon text-gray-800 text-xs"></i>
-                      ) : (
-                        <i className="fa-solid fa-sun text-yellow-500 text-xs"></i>
-                      )}
-                    </span>
-                  </button>
-                )}
+                <Link
+                  to="/admin/add-movie"
+                  className={`flex items-center gap-4 px-5 py-3 transition-colors ${
+                    isActive('/admin/add-movie')
+                      ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <i className="fa-solid fa-plus text-xl w-6 text-center flex-shrink-0"></i>
+                  {isSidebarOpen && <span className="whitespace-nowrap">Add Movie</span>}
+                </Link>
+                <Link
+                  to="/admin/browse"
+                  className={`flex items-center gap-4 px-5 py-3 transition-colors ${
+                    isActive('/admin/browse')
+                      ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <i className="fa-solid fa-th text-xl w-6 text-center flex-shrink-0"></i>
+                  {isSidebarOpen && <span className="whitespace-nowrap">Browse</span>}
+                </Link>
               </>
             ) : (
               <>
-                <Link
-                  to="/signin"
-                  className="bg-black dark:bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 dark:hover:bg-gray-600 transition whitespace-nowrap"
-                >
-                  Sign In
-                </Link>
                 <button
-                  className={`relative inline-flex items-center h-8 w-14 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex-shrink-0 ${
-                    theme === 'dark' ? 'bg-gray-700' : 'bg-gray-300'
+                  onClick={handleHomeClick}
+                  className={`w-full flex items-center gap-4 px-5 py-3 transition-colors ${
+                    isActive('/')
+                      ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
-                  onClick={toggleTheme}
-                  title="Toggle theme"
                 >
-                  <span
-                    className={`inline-flex items-center justify-center h-6 w-6 rounded-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
-                      theme === 'dark' ? 'translate-x-7' : 'translate-x-1'
-                    }`}
-                  >
-                    {theme === 'dark' ? (
-                      <i className="fa-solid fa-moon text-gray-800 text-xs"></i>
-                    ) : (
-                      <i className="fa-solid fa-sun text-yellow-500 text-xs"></i>
-                    )}
-                  </span>
+                  <i className="fa-solid fa-home text-xl w-6 text-center flex-shrink-0"></i>
+                  {isSidebarOpen && <span className="whitespace-nowrap">Home</span>}
                 </button>
+                {user && (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      className={`flex items-center gap-4 px-5 py-3 transition-colors ${
+                        isActive('/dashboard')
+                          ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      <i className="fa-solid fa-gauge text-xl w-6 text-center flex-shrink-0"></i>
+                      {isSidebarOpen && <span className="whitespace-nowrap">Dashboard</span>}
+                    </Link>
+                    <Link
+                      to="/watchlist"
+                      className={`flex items-center gap-4 px-5 py-3 transition-colors ${
+                        isActive('/watchlist')
+                          ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      <i className="fa-solid fa-bookmark text-xl w-6 text-center flex-shrink-0"></i>
+                      {isSidebarOpen && <span className="whitespace-nowrap">Watchlist</span>}
+                    </Link>
+                  </>
+                )}
+                <Link
+                  to="/browse"
+                  className={`flex items-center gap-4 px-5 py-3 transition-colors ${
+                    isActive('/browse')
+                      ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <i className="fa-solid fa-th text-xl w-6 text-center flex-shrink-0"></i>
+                  {isSidebarOpen && <span className="whitespace-nowrap">Browse</span>}
+                </Link>
+                <Link
+                  to="/about"
+                  className={`flex items-center gap-4 px-5 py-3 transition-colors ${
+                    isActive('/about')
+                      ? 'bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <i className="fa-solid fa-info-circle text-xl w-6 text-center flex-shrink-0"></i>
+                  {isSidebarOpen && <span className="whitespace-nowrap">About Us</span>}
+                </Link>
               </>
+            )}
+          </nav>
+
+          {/* Theme Toggle (only for non-admin) */}
+          {(!user || user?.role !== 'admin') && (
+            <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-4 w-full px-5 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors"
+                title="Toggle theme"
+              >
+                <i className={`fa-solid ${theme === 'dark' ? 'fa-moon' : 'fa-sun'} text-xl w-6 text-center flex-shrink-0`}></i>
+                {isSidebarOpen && <span className="whitespace-nowrap">{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>}
+              </button>
+            </div>
+          )}
+
+          {/* Profile/Sign In */}
+          <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowMoreOptions(!showMoreOptions)}
+                  className="flex items-center gap-4 w-full px-5 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors"
+                >
+                  <i className="fa-solid fa-user text-xl w-6 text-center flex-shrink-0"></i>
+                  {isSidebarOpen && <span className="whitespace-nowrap">More Options</span>}
+                </button>
+                {showMoreOptions && isSidebarOpen && (
+                  <div className="absolute bottom-full left-0 w-full mb-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded shadow-lg">
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      onClick={() => setShowMoreOptions(false)}
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setShowMoreOptions(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/signin"
+                className="flex items-center gap-4 px-5 py-3 bg-black dark:bg-gray-700 text-white rounded hover:bg-gray-800 dark:hover:bg-gray-600 transition justify-center"
+              >
+                <i className="fa-solid fa-sign-in-alt text-xl flex-shrink-0"></i>
+                {isSidebarOpen && <span className="whitespace-nowrap">Sign In</span>}
+              </Link>
             )}
           </div>
         </div>
-      </header>
+      </aside>
 
-      {/* Mobile Header */}
-      <header className="sm:hidden fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm z-50 transition-colors">
-        <div className="flex justify-between items-center px-4 py-3">
-          <i className="fa-solid fa-film text-gray-800 dark:text-gray-200 text-2xl transition-colors"></i>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors">
-            Next-Scene
-          </h1>
-
-          {user ? (
-            <Link to="/profile" className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center">
-              <i className="fa-solid fa-user text-gray-600 dark:text-gray-300 text-xs"></i>
-            </Link>
-          ) : (
+      {/* Mobile Bottom Navigation */}
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-50 transition-colors">
+        <div className="flex justify-around items-center py-3">
+          <Link
+            to="/"
+            className={`flex flex-col items-center gap-1 ${
+              isActive('/') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+            }`}
+          >
+            <i className="fa-solid fa-home text-xl"></i>
+            <span className="text-xs">Home</span>
+          </Link>
+          <Link
+            to="/browse"
+            className={`flex flex-col items-center gap-1 ${
+              isActive('/browse') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+            }`}
+          >
+            <i className="fa-solid fa-th text-xl"></i>
+            <span className="text-xs">Browse</span>
+          </Link>
+          {user && (
             <Link
-              to="/signin"
-              className="text-sm bg-black dark:bg-gray-700 text-white px-3 py-1 rounded"
+              to="/watchlist"
+              className={`flex flex-col items-center gap-1 ${
+                isActive('/watchlist') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+              }`}
             >
-              Sign In
+              <i className="fa-solid fa-bookmark text-xl"></i>
+              <span className="text-xs">Watchlist</span>
             </Link>
           )}
+          <Link
+            to={user ? '/profile' : '/signin'}
+            className={`flex flex-col items-center gap-1 ${
+              isActive('/profile') || isActive('/signin') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+            }`}
+          >
+            <i className="fa-solid fa-user text-xl"></i>
+            <span className="text-xs">{user ? 'Profile' : 'Sign In'}</span>
+          </Link>
         </div>
-      </header>
+      </nav>
     </>
   );
 };

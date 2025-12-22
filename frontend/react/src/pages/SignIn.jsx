@@ -38,22 +38,22 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-4 bg-gray-100 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 max-w-[320px] w-full p-8 pt-10 sm:border sm:border-gray-300 dark:border-gray-700 sm:rounded-lg">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-white">
+      <div className="bg-white max-w-[320px] w-full p-8 pt-10 border border-gray-300 rounded-lg shadow-sm">
         <div className="flex justify-center mb-6">
-          <div className="bg-gray-800 dark:bg-gray-700 rounded-xl p-4">
+          <div className="bg-gray-800 rounded-xl p-4">
             <i className="fa-solid fa-film text-white text-3xl"></i>
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white text-center">Welcome Back</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-1">
+        <h1 className="text-2xl font-bold text-gray-900 text-center">Welcome Back</h1>
+        <p className="text-sm text-gray-600 text-center mt-1">
           Sign in to your Next-Scene account
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           {error && (
-            <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded py-2 px-3">
+            <div className="text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded py-2 px-3">
               {error}
             </div>
           )}
@@ -88,9 +88,9 @@ const SignIn = () => {
           </Button>
         </form>
 
-        <p className="text-xs text-gray-600 dark:text-gray-400 text-center mt-4">
+        <p className="text-xs text-gray-600 text-center mt-4">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-gray-900 dark:text-white font-semibold hover:underline">
+          <Link to="/signup" className="text-gray-900 font-semibold hover:underline">
             Sign up
           </Link>
         </p>

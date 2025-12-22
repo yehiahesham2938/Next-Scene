@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { movieAPI } from '../services/api';
 import MovieCard from '../components/MovieCard';
 import LoadingSpinner from '../components/LoadingSpinner';
+import SearchAutocomplete from '../components/SearchAutocomplete';
 
 const Home = () => {
   const { user } = useAuth();
@@ -61,16 +62,16 @@ const Home = () => {
           </p>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row justify-center gap-2 mb-8 max-w-2xl mx-auto">
-            <input
-              type="text"
+          <div className="flex flex-col sm:flex-row justify-center gap-2 mb-8 max-w-2xl mx-auto">
+            <SearchAutocomplete
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={setSearchQuery}
               placeholder="Search for movies..."
               className="px-4 py-3 border border-gray-300 dark:border-gray-600 rounded w-full focus:outline-none focus:ring-2 focus:ring-gray-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all"
             />
             <button
-              type="submit"
+              type="button"
+              onClick={handleSearch}
               className="bg-black dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800 dark:hover:bg-gray-600 transition-all btn-hover flex items-center justify-center"
             >
               <svg
@@ -85,7 +86,7 @@ const Home = () => {
               </svg>
               <span className="ml-2 sm:hidden">Search</span>
             </button>
-          </form>
+          </div>
 
           {/* CTA Button */}
           <button
