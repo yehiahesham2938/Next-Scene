@@ -10,7 +10,15 @@ const watchlistRouter = require('./routes/watchlist');
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'https://your-vercel-url.vercel.app'  // Replace with your actual Vercel URL
+  ],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 // Increase body size limit to handle base64 images (10MB)
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
