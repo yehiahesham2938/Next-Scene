@@ -1,6 +1,5 @@
- 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.PROD ? '' : 'http://localhost:4000');
+// Use Fly.io backend in production, localhost in development
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 // Auth APIs
 export const authAPI = {

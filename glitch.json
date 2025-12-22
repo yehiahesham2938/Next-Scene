@@ -1,0 +1,10 @@
+{
+  "install": "cd backend && npm install",
+  "start": "cd backend && node src/server.js",
+  "watch": {
+    "throttle": 1000,
+    "ignore": [
+      "node_modules/*"
+    ]
+  }
+}
