@@ -30,9 +30,9 @@ This project focuses solely on **Frontend UI development** using **HTML** and **
 <tr>
 
 <td align="center">Team Leadership & Full-Stack Development</td>
+<td align="center">Front-End Development</td>
 <td align="center">Full-Stack Development</td>
-<td align="center">Full-Stack Development</td>
-<td align="center">Full-Stack Development</td>
+<td align="center">Back-End Development</td>
 </tr>
 </table>
 </p>
