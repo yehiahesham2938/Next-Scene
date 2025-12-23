@@ -7,7 +7,7 @@ export const authAPI = {
     const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, username }),
+      body: JSON.stringify({ email, password, fullName: username }),
     });
     return response.json();
   },
