@@ -164,3 +164,99 @@ jobs:
             echo "❌ Some CI checks failed. Please review the logs above." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
+
+  # Backend CD Job - Deploy to Fly.io
+  backend-deploy:
+    name: Deploy Backend to Fly.io
+    runs-on: ubuntu-latest
+    needs: [backend-ci]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Verify deployment
+        run: |
+          echo "### Backend Deployment 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Backend deployed successfully to Fly.io" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** https://next-scene-backend.fly.dev" >> $GITHUB_STEP_SUMMARY
+          echo "**Health Check:** https://next-scene-backend.fly.dev/health" >> $GITHUB_STEP_SUMMARY
+
+      - name: Health check
+        run: |
+          sleep 10
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://next-scene-backend.fly.dev/health)
+          if [ $response -eq 200 ]; then
+            echo "✅ Health check passed (HTTP $response)"
+          else
+            echo "❌ Health check failed (HTTP $response)"
+            exit 1
+          fi
+
+  # Frontend CD Job - Trigger Vercel deployment
+  frontend-deploy:
+    name: Deploy Frontend to Vercel
+    runs-on: ubuntu-latest
+    needs: [frontend-ci, backend-deploy]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trigger Vercel deployment
+        run: |
+          echo "### Frontend Deployment 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Frontend will be automatically deployed by Vercel" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** https://next-scene-flame.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** Vercel automatically deploys on push to main branch" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Monitor deployment at: https://vercel.com/dashboard" >> $GITHUB_STEP_SUMMARY
+
+  # Deployment Summary
+  deployment-summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [backend-deploy, frontend-deploy]
+    if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Deployment Status
+        run: |
+          echo "### 🎉 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Status | URL |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend | ${{ needs.backend-deploy.result }} | https://next-scene-backend.fly.dev |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend | ${{ needs.frontend-deploy.result }} | https://next-scene-flame.vercel.app |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ needs.backend-deploy.result }}" == "success" && "${{ needs.frontend-deploy.result }}" == "success" ]]; then
+            echo "✅ **All services deployed successfully!**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Test your app:**" >> $GITHUB_STEP_SUMMARY
+            echo "- Frontend: https://next-scene-flame.vercel.app" >> $GITHUB_STEP_SUMMARY
+            echo "- Backend Health: https://next-scene-backend.fly.dev/health" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "❌ **Some deployments failed. Please check the logs.**" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
