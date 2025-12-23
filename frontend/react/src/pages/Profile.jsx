@@ -374,13 +374,14 @@ const Profile = () => {
             </div>
           </div>
           <div className="mt-4 flex justify-end">
-            <bdisabled={loading}
+            <button
+              onClick={handleUpdatePassword}
+              disabled={loading}
               className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Updating...' : 'Update Password'}ray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
-            >
-              Update Password
+              {loading ? 'Updating...' : 'Update Password'}
             </button>
+          </div>
           </div>
         </div>
 
