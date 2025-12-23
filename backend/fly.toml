@@ -7,7 +7,7 @@ app = 'next-scene-backend'
 primary_region = 'cdg'
 
 [build]
-  dockerfile = 'Dockerfile'
+  dockerfile = '../deployment/Dockerfile.backend'
 
 [env]
   PORT = '8080'
