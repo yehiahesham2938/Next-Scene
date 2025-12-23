@@ -382,7 +382,6 @@ const Profile = () => {
               {loading ? 'Updating...' : 'Update Password'}
             </button>
           </div>
-          </div>
         </div>
 
         {/* Sign Out */}
