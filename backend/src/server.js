@@ -13,7 +13,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:5173',
-    'https://your-vercel-url.vercel.app'  // Replace with your actual Vercel URL
+    'https://next-scene-flame.vercel.app'
   ],
   credentials: true
 };
