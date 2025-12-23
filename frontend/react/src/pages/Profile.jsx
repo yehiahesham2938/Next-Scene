@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { authAPI } from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, login } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const isAdmin = user?.role === 'admin';
 
@@ -13,10 +16,25 @@ const Profile = () => {
   const [profileData, setProfileData] = useState({
     firstName: '',
     lastName: '',
-    username: user?.username || '',
-    email: user?.email || '',
-    bio: ''
+    email: '',
+    dob: '',
+    profilePicture: ''
   });
+
+  const [loading, setLoading] = useState(false);
+
+  // Load user data on mount
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : '',
+        profilePicture: user.profilePicture || ''
+      });
+    }
+  }, [user]);
 
   // Password form state
   const [passwordData, setPasswordData] = useState({
@@ -33,19 +51,60 @@ const Profile = () => {
     setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
   };
 
-  const handleSaveProfile = () => {
-    // TODO: Implement profile update API call
-    console.log('Saving profile:', profileData);
-  };
-
-  const handleUpdatePassword = () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match');
+  const handleSaveProfile = async () => {
+    if (!user?.id) {
+      showToast('User not found', 'error');
       return;
     }
-    // TODO: Implement password update API call
-    console.log('Updating password');
-    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+    setLoading(true);
+    try {
+      const updateData = {
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        email: profileData.email,
+        dob: profileData.dob,
+        profilePicture: profileData.profilePicture
+      };
+
+      const updatedUser = await authAPI.updateProfile(user.id, updateData);
+      login(updatedUser); // Update user in context
+      showToast('Profile updated successfully!', 'success');
+    } catch (error) {
+      console.error('Profile update error:', error);
+      showToast(error.message || 'Failed to update profile', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!user?.id) {
+      showToast('User not found', 'error');
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      showToast('New passwords do not match', 'error');
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      showToast('Password must be at least 6 characters', 'error');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await authAPI.updatePassword(user.id, passwordData.currentPassword, passwordData.newPassword);
+      showToast('Password updated successfully!', 'success');
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (error) {
+      console.error('Password update error:', error);
+      showToast(error.message || 'Failed to update password', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignOut = () => {
@@ -79,12 +138,35 @@ const Profile = () => {
         <div className="flex flex-col sm:flex-row gap-8 mb-8">
           {/* Avatar */}
           <div className="flex flex-col items-center gap-3">
-            <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-              <i className="fa-solid fa-user text-white text-3xl"></i>
+            <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center overflow-hidden">
+              {profileData.profilePicture ? (
+                <img 
+                  src={profileData.profilePicture} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <i className="fa-solid fa-user text-white text-3xl"></i>
+              )}
             </div>
-            <button className="text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded px-3 py-1 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <label className="text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded px-3 py-1 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
               Change Avatar
-            </button>
+              <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setProfileData({ ...profileData, profilePicture: reader.result });
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+              />
+            </label>
           </div>
 
           {/* Form Fields */}
@@ -120,14 +202,13 @@ const Profile = () => {
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Username
+                Date of Birth
               </label>
               <input
-                type="text"
-                name="username"
-                value={profileData.username}
+                type="date"
+                name="dob"
+                value={profileData.dob}
                 onChange={handleProfileChange}
-                placeholder="Your unique username.."
                 className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
               />
             </div>
@@ -148,23 +229,26 @@ const Profile = () => {
 
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Bio
+                Full Name
               </label>
-              <textarea
-                name="bio"
-                value={profileData.bio}
-                onChange={handleProfileChange}
-                placeholder="Tell us about yourself..."
-                className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm h-20 resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+              <input
+                type="text"
+                value={user?.fullName || ''}
+                disabled
+                className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Full name cannot be changed
+              </p>
             </div>
 
             <div className="flex justify-end">
               <button
                 onClick={handleSaveProfile}
-                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
+                disabled={loading}
+                className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Save Changes
+                {loading ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
@@ -290,9 +374,10 @@ const Profile = () => {
             </div>
           </div>
           <div className="mt-4 flex justify-end">
-            <button
-              onClick={handleUpdatePassword}
-              className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
+            <bdisabled={loading}
+              className="bg-gray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Updating...' : 'Update Password'}ray-900 dark:bg-gray-700 text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors"
             >
               Update Password
             </button>

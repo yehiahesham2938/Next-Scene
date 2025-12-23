@@ -21,7 +21,11 @@ router.post('/signup', async (req, res) => {
 		return res.status(201).json({
 			id: user._id.toString(),
 			fullName: user.fullName,
+			firstName: user.firstName,
+			lastName: user.lastName,
 			email: user.email,
+			dob: user.dob,
+			profilePicture: user.profilePicture,
 			role: user.role,
 			createdAt: user.createdAt,
 		});
@@ -50,12 +54,91 @@ router.post('/signin', async (req, res) => {
 		return res.status(200).json({
 			id: user._id.toString(),
 			fullName: user.fullName,
+			firstName: user.firstName,
+			lastName: user.lastName,
 			email: user.email,
+			dob: user.dob,
+			profilePicture: user.profilePicture,
 			role: user.role,
 			createdAt: user.createdAt,
 		});
 	} catch (err) {
 		console.error('Signin error:', err);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+});
+
+// PUT /api/auth/profile - Update user profile
+router.put('/profile', async (req, res) => {
+	try {
+		const { userId, firstName, lastName, dob, profilePicture, email } = req.body;
+		
+		if (!userId) {
+			return res.status(400).json({ message: 'User ID is required' });
+		}
+
+		const updateData = {};
+		if (firstName !== undefined) updateData.firstName = firstName.trim();
+		if (lastName !== undefined) updateData.lastName = lastName.trim();
+		if (dob !== undefined) updateData.dob = dob;
+		if (profilePicture !== undefined) updateData.profilePicture = profilePicture;
+		if (email !== undefined) updateData.email = email.toLowerCase().trim();
+
+		const user = await User.findByIdAndUpdate(
+			userId,
+			updateData,
+			{ new: true, runValidators: true }
+		);
+
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+
+		return res.status(200).json({
+			id: user._id.toString(),
+			fullName: user.fullName,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			email: user.email,
+			dob: user.dob,
+			profilePicture: user.profilePicture,
+			role: user.role,
+			createdAt: user.createdAt,
+		});
+	} catch (err) {
+		console.error('Profile update error:', err);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+});
+
+// PUT /api/auth/password - Update user password
+router.put('/password', async (req, res) => {
+	try {
+		const { userId, currentPassword, newPassword } = req.body;
+		
+		if (!userId || !currentPassword || !newPassword) {
+			return res.status(400).json({ message: 'User ID, current password, and new password are required' });
+		}
+
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+
+		if (user.password !== currentPassword) {
+			return res.status(401).json({ message: 'Current password is incorrect' });
+		}
+
+		if (newPassword.length < 6) {
+			return res.status(400).json({ message: 'New password must be at least 6 characters' });
+		}
+
+		user.password = newPassword;
+		await user.save();
+
+		return res.status(200).json({ message: 'Password updated successfully' });
+	} catch (err) {
+		console.error('Password update error:', err);
 		return res.status(500).json({ message: 'Internal server error' });
 	}
 });

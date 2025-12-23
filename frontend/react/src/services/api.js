@@ -21,6 +21,32 @@ export const authAPI = {
     const data = await response.json();
     return { data, status: response.status };
   },
+
+  updateProfile: async (userId, profileData) => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, ...profileData }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to update profile' }));
+      throw new Error(errorData.message || 'Failed to update profile');
+    }
+    return response.json();
+  },
+
+  updatePassword: async (userId, currentPassword, newPassword) => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/password`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, currentPassword, newPassword }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to update password' }));
+      throw new Error(errorData.message || 'Failed to update password');
+    }
+    return response.json();
+  },
 };
 
 // Movie APIs
