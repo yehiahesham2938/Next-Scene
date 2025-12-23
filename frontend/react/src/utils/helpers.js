@@ -42,3 +42,24 @@ export const capitalizeFirstLetter = (string) => {
   if (!string) return '';
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+export const isValidPassword = (password) => {
+  if (!password || typeof password !== 'string') {
+    return { valid: false, message: 'Password is required' };
+  }
+
+  if (password.length < 8) {
+    return { valid: false, message: 'Password must be at least 8 characters' };
+  }
+
+  if (!/^[A-Z]/.test(password)) {
+    return { valid: false, message: 'Password must begin with an uppercase letter' };
+  }
+
+  // Require at least one non-alphanumeric (special) character
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    return { valid: false, message: 'Password must include at least one special character' };
+  }
+
+  return { valid: true };
+};

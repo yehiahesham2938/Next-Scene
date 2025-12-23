@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import { isValidPassword } from '../utils/helpers';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -24,8 +25,9 @@ const SignUp = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    const pwdCheck = isValidPassword(password);
+    if (!pwdCheck.valid) {
+      setError(pwdCheck.message);
       return;
     }
 

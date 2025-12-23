@@ -2,6 +2,15 @@
  const User = require('../models/User');
  
  const router = express.Router();
+
+// Server-side password validation: starts with uppercase, min 8 chars, includes special char
+const validatePassword = (password) => {
+	if (!password || typeof password !== 'string') return { valid: false, message: 'Password is required' };
+	if (password.length < 8) return { valid: false, message: 'Password must be at least 8 characters' };
+	if (!/^[A-Z]/.test(password)) return { valid: false, message: 'Password must begin with an uppercase letter' };
+	if (!/[^A-Za-z0-9]/.test(password)) return { valid: false, message: 'Password must include at least one special character' };
+	return { valid: true };
+};
   
 
  
@@ -15,6 +24,11 @@ router.post('/signup', async (req, res) => {
 		const existing = await User.findOne({ email: email.toLowerCase().trim() });
 		if (existing) {
 			return res.status(409).json({ message: 'User already exists' });
+		}
+
+		const pwdCheck = validatePassword(password);
+		if (!pwdCheck.valid) {
+			return res.status(400).json({ message: pwdCheck.message });
 		}
 
 		const user = await User.create({ fullName, email, password });
@@ -129,8 +143,9 @@ router.put('/password', async (req, res) => {
 			return res.status(401).json({ message: 'Current password is incorrect' });
 		}
 
-		if (newPassword.length < 6) {
-			return res.status(400).json({ message: 'New password must be at least 6 characters' });
+		const pwdCheck = validatePassword(newPassword);
+		if (!pwdCheck.valid) {
+			return res.status(400).json({ message: pwdCheck.message });
 		}
 
 		user.password = newPassword;

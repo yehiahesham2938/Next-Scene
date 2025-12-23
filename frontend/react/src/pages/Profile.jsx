@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { authAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { isValidPassword } from '../utils/helpers';
 
 const Profile = () => {
   const { user, logout, login } = useAuth();
@@ -89,8 +90,9 @@ const Profile = () => {
       return;
     }
 
-    if (passwordData.newPassword.length < 6) {
-      showToast('Password must be at least 6 characters', 'error');
+    const pwdCheck = isValidPassword(passwordData.newPassword);
+    if (!pwdCheck.valid) {
+      showToast(pwdCheck.message, 'error');
       return;
     }
 
