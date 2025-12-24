@@ -28,4 +28,13 @@ export default [
       'no-unused-vars': 'off',
     },
   },
+  {
+    files: ['jest.setup.js', '__mocks__/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+  },
 ]
