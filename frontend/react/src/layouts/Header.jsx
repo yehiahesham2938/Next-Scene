@@ -15,6 +15,44 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Pages that should show mobile top header from Header component
+  // Excludes pages that have their own custom mobile header (MovieDetails)
+  const mobileHeaderPages = [
+    { path: '/dashboard', title: 'Dashboard', showBack: true },
+    { path: '/browse', title: 'Browse', showBack: true },
+    { path: '/profile', title: 'Profile', showBack: true },
+    { path: '/watchlist', title: 'Watchlist', showBack: true },
+    { path: '/search', title: 'Search', showBack: true },
+    { path: '/admin/add-movie', title: 'Add Movie', showBack: true },
+    { path: '/admin/edit-movie', title: 'Edit Movie', showBack: true },
+    { path: '/admin/browse', title: 'Browse Movies', showBack: true },
+    { path: '/admin', title: 'Admin Dashboard', showBack: true, exact: true },
+  ];
+  
+  // Pages that should hide mobile bottom nav (includes pages with their own headers)
+  const hideMobileNavPaths = [
+    '/movie/',     // MovieDetails has its own header
+    '/dashboard',
+    '/browse',
+    '/profile',
+    '/watchlist',
+    '/search',
+    '/admin',
+  ];
+  
+  // Find matching page config for mobile top header
+  const currentPageConfig = mobileHeaderPages.find(page => {
+    if (page.exact) {
+      return location.pathname === page.path;
+    }
+    return location.pathname.startsWith(page.path);
+  });
+  
+  const shouldShowMobileHeader = !!currentPageConfig;
+  const shouldHideMobileNav = hideMobileNavPaths.some(path => 
+    location.pathname.startsWith(path)
+  );
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -45,6 +83,31 @@ const Header = () => {
 
   return (
     <>
+      {/* Mobile Top Header - shows on specific pages */}
+      {shouldShowMobileHeader && (
+        <header className="sm:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50">
+          <div className="flex items-center justify-between px-4 py-3">
+            {currentPageConfig?.showBack ? (
+              <button onClick={() => navigate(-1)} className="text-gray-700 dark:text-gray-300 w-8">
+                <i className="fas fa-arrow-left text-xl"></i>
+              </button>
+            ) : (
+              <div className="w-8"></div>
+            )}
+            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+              {currentPageConfig?.title || 'Next-Scene'}
+            </h1>
+            {user ? (
+              <Link to="/profile" className="text-gray-700 dark:text-gray-300 w-8 text-right">
+                <i className="fas fa-user text-xl"></i>
+              </Link>
+            ) : (
+              <div className="w-8"></div>
+            )}
+          </div>
+        </header>
+      )}
+
       {/* Desktop Sidebar */}
       <aside
         className={`hidden sm:block fixed left-0 top-0 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 z-50 ${
@@ -248,49 +311,51 @@ const Header = () => {
         </div>
       </aside>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-50 transition-colors">
-        <div className="flex justify-around items-center py-3">
-          <Link
-            to="/"
-            className={`flex flex-col items-center gap-1 ${
-              isActive('/') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
-            }`}
-          >
-            <i className="fa-solid fa-home text-xl"></i>
-            <span className="text-xs">Home</span>
-          </Link>
-          <Link
-            to="/browse"
-            className={`flex flex-col items-center gap-1 ${
-              isActive('/browse') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
-            }`}
-          >
-            <i className="fa-solid fa-th text-xl"></i>
-            <span className="text-xs">Browse</span>
-          </Link>
-          {user && (
+      {/* Mobile Bottom Navigation - hidden on pages with custom mobile headers */}
+      {!shouldHideMobileNav && (
+        <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-50 transition-colors">
+          <div className="flex justify-around items-center py-3">
             <Link
-              to="/watchlist"
+              to="/"
               className={`flex flex-col items-center gap-1 ${
-                isActive('/watchlist') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+                isActive('/') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
               }`}
             >
-              <i className="fa-solid fa-bookmark text-xl"></i>
-              <span className="text-xs">Watchlist</span>
+              <i className="fa-solid fa-home text-xl"></i>
+              <span className="text-xs">Home</span>
             </Link>
-          )}
-          <Link
-            to={user ? '/profile' : '/signin'}
-            className={`flex flex-col items-center gap-1 ${
-              isActive('/profile') || isActive('/signin') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
-            }`}
-          >
-            <i className="fa-solid fa-user text-xl"></i>
-            <span className="text-xs">{user ? 'Profile' : 'Sign In'}</span>
-          </Link>
-        </div>
-      </nav>
+            <Link
+              to="/browse"
+              className={`flex flex-col items-center gap-1 ${
+                isActive('/browse') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+              }`}
+            >
+              <i className="fa-solid fa-border-all text-xl"></i>
+              <span className="text-xs">Browse</span>
+            </Link>
+            {user && (
+              <Link
+                to="/watchlist"
+                className={`flex flex-col items-center gap-1 ${
+                  isActive('/watchlist') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+                }`}
+              >
+                <i className="fa-solid fa-bookmark text-xl"></i>
+                <span className="text-xs">Watchlist</span>
+              </Link>
+            )}
+            <Link
+              to={user ? '/profile' : '/signin'}
+              className={`flex flex-col items-center gap-1 ${
+                isActive('/profile') || isActive('/signin') ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'
+              }`}
+            >
+              <i className="fa-solid fa-user text-xl"></i>
+              <span className="text-xs">{user ? 'Profile' : 'Sign In'}</span>
+            </Link>
+          </div>
+        </nav>
+      )}
     </>
   );
 };

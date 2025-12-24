@@ -240,7 +240,7 @@ const Dashboard = () => {
   const genreSummary = topGenres.map(([genre, count]) => `${genre}: ${count}`).join(' | ') || 'No genre data';
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-6 sm:py-8 mt-16 sm:mt-0">
+    <main className="max-w-7xl mx-auto px-4 py-6 sm:py-8 mt-14 sm:mt-0">
       {/* Stats Section */}
       <div className="mb-8">
         {/* Mobile Title */}

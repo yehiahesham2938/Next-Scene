@@ -35,7 +35,7 @@ const Search = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 mt-14 sm:mt-0">
       <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
         Search Results for "{query}"
       </h1>

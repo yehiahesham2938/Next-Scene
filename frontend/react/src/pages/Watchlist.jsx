@@ -107,16 +107,16 @@ const Watchlist = () => {
 
   return (
     <div className="bg-white dark:bg-gray-900 min-h-screen transition-colors">
-      <main className="flex-grow max-w-7xl mx-auto px-4 py-8 w-full mt-16 sm:mt-0">
+      <main className="flex-grow max-w-7xl mx-auto px-4 py-8 w-full mt-14 sm:mt-0">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 sm:mb-8 gap-3 sm:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Watchlist</h1>
-            <p className="text-gray-600 dark:text-gray-400">Keep track of movies you want to watch.</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">My Watchlist</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Keep track of movies you want to watch.</p>
           </div>
 
           {/* Filter Buttons */}
-          <div className="bg-gray-50 dark:bg-gray-800 p-1.5 rounded-lg inline-flex">
+          <div className="bg-gray-50 dark:bg-gray-800 p-1.5 rounded-lg inline-flex overflow-x-auto max-w-full">
             <ul className="flex gap-1 list-none m-0 p-0">
               {filterButtons.map((filter) => (
                 <motion.li
@@ -128,7 +128,7 @@ const Watchlist = () => {
                         ? 'rgb(255 255 255 / 1)' 
                         : 'rgb(255 255 255 / 0)',
                   }}
-                  className="relative px-4 py-2.5 rounded-md cursor-pointer select-none transition-colors"
+                  className="relative px-3 sm:px-4 py-2 sm:py-2.5 rounded-md cursor-pointer select-none transition-colors"
                   style={{
                     color: filter.id === activeFilter 
                       ? 'rgb(17 24 39)' 
@@ -136,7 +136,7 @@ const Watchlist = () => {
                   }}
                   onClick={() => setActiveFilter(filter.id)}
                 >
-                  <span className="flex items-center justify-center gap-2 font-medium text-sm whitespace-nowrap">
+                  <span className="flex items-center justify-center gap-2 font-medium text-xs sm:text-sm whitespace-nowrap">
                     <span>{filter.icon}</span>
                     <span>{filter.label}</span>
                   </span>
@@ -154,8 +154,8 @@ const Watchlist = () => {
         </div>
 
         {/* Animated Tabs */}
-        <div className="mb-8">
-          <div className="bg-gray-50 dark:bg-gray-800 p-1.5 rounded-lg inline-flex w-full max-w-md">
+        <div className="mb-6 sm:mb-8">
+          <div className="bg-gray-50 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg inline-flex w-full max-w-md">
             <ul className="flex w-full gap-1">
               {tabs.map((tab) => (
                 <motion.li
@@ -167,7 +167,7 @@ const Watchlist = () => {
                         ? 'rgb(255 255 255 / 1)' 
                         : 'rgb(255 255 255 / 0)',
                   }}
-                  className="relative flex-1 px-4 py-2.5 rounded-md cursor-pointer select-none transition-colors list-none"
+                  className="relative flex-1 px-2 sm:px-4 py-2 sm:py-2.5 rounded-md cursor-pointer select-none transition-colors list-none"
                   style={{
                     color: tab.id === selectedTab 
                       ? 'rgb(17 24 39)' 
@@ -175,7 +175,7 @@ const Watchlist = () => {
                   }}
                   onClick={() => setSelectedTab(tab.id)}
                 >
-                  <span className="flex items-center justify-center gap-2 font-medium text-sm">
+                  <span className="flex items-center justify-center gap-1 sm:gap-2 font-medium text-xs sm:text-sm">
                     <span>{tab.icon}</span>
                     <span>{tab.label}</span>
                   </span>
@@ -193,18 +193,18 @@ const Watchlist = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative max-w-md">
+        <div className="mb-6 sm:mb-8">
+          <div className="relative w-full sm:max-w-md">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by movie name or year..."
-              className="w-full px-4 py-3 pl-12 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors"
+              className="w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 text-sm sm:text-base bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
+              className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -245,7 +245,7 @@ const Watchlist = () => {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -10, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+              className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6 pb-20 sm:pb-0"
             >
             {filteredMovies.map((movie) => {
               const movieId = movie.id || movie._id;
@@ -274,13 +274,14 @@ const Watchlist = () => {
                     
                     {/* Watched Badge */}
                     {isWatched && (
-                      <span className="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                        <i className="fas fa-check"></i> Watched
+                      <span className="absolute top-2 left-2 bg-green-600 text-white text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
+                        <i className="fas fa-check text-[8px] sm:text-xs"></i>
+                        <span className="hidden sm:inline">Watched</span>
                       </span>
                     )}
 
-                    {/* Hover Overlay with Buttons */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3">
+                    {/* Hover Overlay with Buttons - Hidden on mobile */}
+                    <div className="hidden sm:flex absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center gap-3">
                       <button
                         onClick={(e) => handleMarkAsWatched(e, movieId, isWatched, movie.title)}
                         className={`${
@@ -299,15 +300,35 @@ const Watchlist = () => {
                         <i className="fas fa-trash-alt"></i> Remove
                       </button>
                     </div>
+
+                    {/* Mobile Action Buttons - Always visible on mobile */}
+                    <div className="sm:hidden absolute bottom-2 right-2 flex gap-1.5">
+                      <button
+                        onClick={(e) => handleMarkAsWatched(e, movieId, isWatched, movie.title)}
+                        className={`${
+                          isWatched 
+                            ? 'bg-yellow-600 active:bg-yellow-700' 
+                            : 'bg-green-600 active:bg-green-700'
+                        } text-white p-2 rounded-full shadow-lg`}
+                      >
+                        <i className={`fas ${isWatched ? 'fa-undo' : 'fa-check'} text-xs`}></i>
+                      </button>
+                      <button
+                        onClick={(e) => handleRemove(e, movieId, movie.title)}
+                        className="bg-red-600 text-white p-2 rounded-full active:bg-red-700 shadow-lg"
+                      >
+                        <i className="fas fa-trash-alt text-xs"></i>
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="p-4">
-                    <h3 className="font-bold text-gray-900 dark:text-white truncate mb-1 text-lg">
+                  <div className="p-2 sm:p-4">
+                    <h3 className="font-bold text-gray-900 dark:text-white truncate mb-0.5 sm:mb-1 text-sm sm:text-lg">
                       {movie.title}
                     </h3>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-500 dark:text-gray-400 text-sm">{year}</span>
-                      <span className="text-xs text-gray-400 dark:text-gray-500">
+                      <span className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">{year}</span>
+                      <span className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">
                         {movie.addedAt ? new Date(movie.addedAt).toLocaleDateString() : ''}
                       </span>
                     </div>

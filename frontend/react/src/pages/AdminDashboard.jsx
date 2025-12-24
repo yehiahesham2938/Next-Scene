@@ -345,7 +345,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="bg-white text-gray-900 min-h-screen">
+    <div className="bg-white text-gray-900 min-h-screen mt-14 md:mt-0">
       {/* ADMIN STATS SECTION */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
