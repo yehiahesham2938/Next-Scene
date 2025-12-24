@@ -116,7 +116,7 @@ const Watchlist = () => {
           </div>
 
           {/* Filter Buttons */}
-          <div className="bg-gray-50 dark:bg-gray-800 p-1.5 rounded-lg inline-flex overflow-x-auto max-w-full">
+          <div className="bg-gray-50 dark:bg-gray-800 p-1.5 rounded-lg inline-flex overflow-x-auto max-w-full" role="group" aria-label="Sort movies">
             <ul className="flex gap-1 list-none m-0 p-0">
               {filterButtons.map((filter) => (
                 <motion.li
@@ -135,6 +135,15 @@ const Watchlist = () => {
                       : 'rgb(107 114 128)',
                   }}
                   onClick={() => setActiveFilter(filter.id)}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={filter.id === activeFilter}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setActiveFilter(filter.id);
+                    }
+                  }}
                 >
                   <span className="flex items-center justify-center gap-2 font-medium text-xs sm:text-sm whitespace-nowrap">
                     <span>{filter.icon}</span>
@@ -155,7 +164,7 @@ const Watchlist = () => {
 
         {/* Animated Tabs */}
         <div className="mb-6 sm:mb-8">
-          <div className="bg-gray-50 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg inline-flex w-full max-w-md">
+          <div className="bg-gray-50 dark:bg-gray-800 p-1 sm:p-1.5 rounded-lg inline-flex w-full max-w-md" role="tablist" aria-label="Watchlist filters">
             <ul className="flex w-full gap-1">
               {tabs.map((tab) => (
                 <motion.li
@@ -174,6 +183,16 @@ const Watchlist = () => {
                       : 'rgb(107 114 128)',
                   }}
                   onClick={() => setSelectedTab(tab.id)}
+                  role="tab"
+                  tabIndex={tab.id === selectedTab ? 0 : -1}
+                  aria-selected={tab.id === selectedTab}
+                  aria-controls={`tabpanel-${tab.id}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedTab(tab.id);
+                    }
+                  }}
                 >
                   <span className="flex items-center justify-center gap-1 sm:gap-2 font-medium text-xs sm:text-sm">
                     <span>{tab.icon}</span>
@@ -201,6 +220,7 @@ const Watchlist = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by movie name or year..."
               className="w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 text-sm sm:text-base bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors"
+              aria-label="Search watchlist movies"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -209,6 +229,7 @@ const Watchlist = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth="2"
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -231,7 +252,8 @@ const Watchlist = () => {
             </p>
             <button
               onClick={() => navigate('/browse')}
-              className="bg-black dark:bg-gray-700 text-white px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors font-medium"
+              className="bg-black dark:bg-gray-700 text-white px-8 py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+              aria-label="Browse all movies"
             >
               Browse Movies
             </button>
@@ -239,13 +261,16 @@ const Watchlist = () => {
         ) : (
           /* Movie Grid */
           <AnimatePresence mode="wait">
-            <motion.div
+            <motion.section
               key={selectedTab}
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -10, opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6 pb-20 sm:pb-0"
+              role="tabpanel"
+              id={`tabpanel-${selectedTab}`}
+              aria-label="Watchlist movies"
             >
             {filteredMovies.map((movie) => {
               const movieId = movie.id || movie._id;
@@ -289,15 +314,17 @@ const Watchlist = () => {
                             ? 'bg-yellow-600 hover:bg-yellow-700' 
                             : 'bg-green-600 hover:bg-green-700'
                         } text-white px-4 py-2 rounded-full transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg`}
+                        aria-label={isWatched ? `Mark ${movie.title} as unwatched` : `Mark ${movie.title} as watched`}
                       >
-                        <i className={`fas ${isWatched ? 'fa-undo' : 'fa-check-circle'}`}></i> 
+                        <i className={`fas ${isWatched ? 'fa-undo' : 'fa-check-circle'}`} aria-hidden="true"></i> 
                         {isWatched ? 'Mark as Unwatched' : 'Mark as Watched'}
                       </button>
                       <button
                         onClick={(e) => handleRemove(e, movieId, movie.title)}
                         className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-transform transform translate-y-4 group-hover:translate-y-0 duration-300 flex items-center gap-2 shadow-lg"
+                        aria-label={`Remove ${movie.title} from watchlist`}
                       >
-                        <i className="fas fa-trash-alt"></i> Remove
+                        <i className="fas fa-trash-alt" aria-hidden="true"></i> Remove
                       </button>
                     </div>
 
@@ -310,14 +337,16 @@ const Watchlist = () => {
                             ? 'bg-yellow-600 active:bg-yellow-700' 
                             : 'bg-green-600 active:bg-green-700'
                         } text-white p-2 rounded-full shadow-lg`}
+                        aria-label={isWatched ? `Mark ${movie.title} as unwatched` : `Mark ${movie.title} as watched`}
                       >
-                        <i className={`fas ${isWatched ? 'fa-undo' : 'fa-check'} text-xs`}></i>
+                        <i className={`fas ${isWatched ? 'fa-undo' : 'fa-check'} text-xs`} aria-hidden="true"></i>
                       </button>
                       <button
                         onClick={(e) => handleRemove(e, movieId, movie.title)}
                         className="bg-red-600 text-white p-2 rounded-full active:bg-red-700 shadow-lg"
+                        aria-label={`Remove ${movie.title} from watchlist`}
                       >
-                        <i className="fas fa-trash-alt text-xs"></i>
+                        <i className="fas fa-trash-alt text-xs" aria-hidden="true"></i>
                       </button>
                     </div>
                   </div>
@@ -336,7 +365,7 @@ const Watchlist = () => {
                 </div>
               );
             })}
-          </motion.div>
+          </motion.section>
           </AnimatePresence>
         )}
       </main>

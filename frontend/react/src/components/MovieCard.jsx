@@ -2,14 +2,25 @@ import PropTypes from 'prop-types';
 import { formatRating } from '../utils/helpers';
 
 const MovieCard = ({ movie, onClick }) => {
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick && onClick(movie.id || movie._id);
+    }
+  };
+
   return (
-    <div
-      className="movie-card bg-white dark:bg-gray-800 rounded-lg overflow-hidden cursor-pointer shadow-md"
+    <article
+      role="button"
+      tabIndex={0}
+      className="movie-card bg-white dark:bg-gray-800 rounded-lg overflow-hidden cursor-pointer shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
       onClick={() => onClick && onClick(movie.id || movie._id)}
+      onKeyDown={handleKeyDown}
+      aria-label={`View details for ${movie.title}, rated ${formatRating(movie.rating)}, released ${movie.year || movie.releaseYear || 'N/A'}`}
     >
       <img
         src={movie.poster || '/placeholder-movie.jpg'}
-        alt={movie.title}
+        alt={`${movie.title} poster`}
         className="w-full h-64 object-cover"
       />
       <div className="p-4">
@@ -35,7 +46,7 @@ const MovieCard = ({ movie, onClick }) => {
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 

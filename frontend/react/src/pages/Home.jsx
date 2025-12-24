@@ -72,7 +72,8 @@ const Home = () => {
             <button
               type="button"
               onClick={handleSearch}
-              className="bg-black dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800 dark:hover:bg-gray-600 transition-all btn-hover flex items-center justify-center"
+              className="bg-black dark:bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800 dark:hover:bg-gray-600 transition-all btn-hover flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+              aria-label="Search for movies"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +92,8 @@ const Home = () => {
           {/* CTA Button */}
           <button
             onClick={handleExplore}
-            className="bg-black dark:bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-800 dark:hover:bg-gray-600 font-medium transition-all btn-hover"
+            className="bg-black dark:bg-gray-700 text-white px-8 py-3 rounded hover:bg-gray-800 dark:hover:bg-gray-600 font-medium transition-all btn-hover focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+            aria-label="Browse all movies"
           >
             Explore Movies
           </button>

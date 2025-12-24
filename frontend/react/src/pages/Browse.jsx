@@ -206,11 +206,22 @@ const Browse = () => {
     const genres = movie.genre || 'Unknown';
     const runtime = movie.runtime || 'N/A';
 
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleMovieClick(movie._id);
+      }
+    };
+
     if (isMobile) {
       return (
-        <div
+        <article
+          role="button"
+          tabIndex={0}
           onClick={() => handleMovieClick(movie._id)}
-          className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow movie-card cursor-pointer"
+          onKeyDown={handleKeyDown}
+          className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow movie-card cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+          aria-label={`View ${movie.title}, rated ${rating}, released ${year}`}
         >
           <div className="w-full aspect-[2/3] bg-gray-300 dark:bg-gray-700 overflow-hidden">
             {movie.poster ? (
@@ -232,8 +243,9 @@ const Browse = () => {
             className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center z-10 ${
               isAdmin ? 'bg-red-600' : 'bg-gray-800'
             }`}
+            aria-label={isAdmin ? `Delete ${movie.title}` : inWatchlist ? `Remove ${movie.title} from watchlist` : `Add ${movie.title} to watchlist`}
           >
-            <i className={`${isAdmin ? 'fas fa-trash' : inWatchlist ? 'fas fa-bookmark' : 'far fa-bookmark'} text-white text-xs`}></i>
+            <i className={`${isAdmin ? 'fas fa-trash' : inWatchlist ? 'fas fa-bookmark' : 'far fa-bookmark'} text-white text-xs`} aria-hidden="true"></i>
           </button>
 
           <div className="p-2">
@@ -248,15 +260,19 @@ const Browse = () => {
               </div>
             </div>
           </div>
-        </div>
+        </article>
       );
     }
 
     // Desktop card
     return (
-      <motion.div
+      <motion.article
+        role="button"
+        tabIndex={0}
         onClick={() => handleMovieClick(movie._id)}
-        className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-200 cursor-pointer group movie-card"
+        onKeyDown={handleKeyDown}
+        className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-200 cursor-pointer group movie-card focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+        aria-label={`View ${movie.title}, rated ${rating}, released ${year}`}
         initial="offscreen"
         whileInView="onscreen"
         viewport={{ once: true, amount: 0.3 }}
@@ -324,8 +340,9 @@ const Browse = () => {
           className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity ${
             isAdmin ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-800 hover:bg-gray-900'
           }`}
+          aria-label={isAdmin ? `Delete ${movie.title}` : inWatchlist ? `Remove ${movie.title} from watchlist` : `Add ${movie.title} to watchlist`}
         >
-          <i className={`${isAdmin ? 'fas fa-trash' : inWatchlist ? 'fas fa-bookmark' : 'far fa-bookmark'} text-white text-sm`}></i>
+          <i className={`${isAdmin ? 'fas fa-trash' : inWatchlist ? 'fas fa-bookmark' : 'far fa-bookmark'} text-white text-sm`} aria-hidden="true"></i>
         </button>
 
         <div className="p-3">
@@ -343,7 +360,7 @@ const Browse = () => {
             <span className="text-gray-400 dark:text-gray-500 text-xs">{runtime}</span>
           </div>
         </div>
-      </motion.div>
+      </motion.article>
     );
   };
 
@@ -366,8 +383,12 @@ const Browse = () => {
             placeholder="Search movies..."
             className="w-full px-4 py-3 pr-10 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
           />
-          <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300">
-            <i className="fas fa-search"></i>
+          <button 
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300"
+            aria-label="Search movies"
+            type="button"
+          >
+            <i className="fas fa-search" aria-hidden="true"></i>
           </button>
         </div>
       </div>
@@ -382,6 +403,7 @@ const Browse = () => {
                 ? 'bg-black dark:bg-white dark:text-black text-white'
                 : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
             }`}
+            aria-pressed={!filters.genre}
           >
             All
           </button>
@@ -394,6 +416,7 @@ const Browse = () => {
                   ? 'bg-black dark:bg-white dark:text-black text-white'
                   : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
+              aria-pressed={filters.genre === genre}
             >
               {genre}
             </button>
@@ -412,8 +435,12 @@ const Browse = () => {
               placeholder="Search movies, actors, directors..."
               className="w-full px-4 py-2.5 pr-10 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
             />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300">
-              <i className="fas fa-search"></i>
+            <button 
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-300"
+              aria-label="Search movies"
+              type="button"
+            >
+              <i className="fas fa-search" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -424,6 +451,7 @@ const Browse = () => {
               value={filters.genre}
               onChange={(e) => handleFilterChange('genre', e.target.value)}
               className="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+              aria-label="Filter by genre"
             >
               <option value="">All Genres</option>
               {allGenres.map(genre => (
@@ -435,6 +463,7 @@ const Browse = () => {
               value={filters.year}
               onChange={(e) => handleFilterChange('year', e.target.value)}
               className="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+              aria-label="Filter by year"
             >
               <option value="">All Years</option>
               {allYears.map(year => (
@@ -446,6 +475,7 @@ const Browse = () => {
               value={filters.rating}
               onChange={(e) => handleFilterChange('rating', e.target.value)}
               className="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+              aria-label="Filter by rating"
             >
               <option value="">All Ratings</option>
               <option value="9">9+ ⭐</option>
@@ -459,21 +489,23 @@ const Browse = () => {
               <button
                 onClick={clearFilters}
                 className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm transition-colors flex items-center gap-2"
+                aria-label="Clear all filters"
               >
-                <i className="fas fa-times"></i>
+                <i className="fas fa-times" aria-hidden="true"></i>
                 Clear Filters
               </button>
             )}
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
+            <span className="text-sm text-gray-600 dark:text-gray-300" role="status" aria-live="polite">
               Showing {filteredMovies.length} movie{filteredMovies.length !== 1 ? 's' : ''}
             </span>
             <select
               value={filters.sort}
               onChange={(e) => handleFilterChange('sort', e.target.value)}
               className="px-4 py-2 bg-white dark:bg-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600"
+              aria-label="Sort movies by"
             >
               <option value="popularity">Sort by: Popularity</option>
               <option value="rating">Rating: High to Low</option>
@@ -500,30 +532,30 @@ const Browse = () => {
       ) : (
         <>
           {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-4">
+          <section aria-label="Movie results" className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-4">
             {filteredMovies.length > 0 ? (
               filteredMovies.map(movie => (
                 <MovieCardComponent key={movie._id} movie={movie} />
               ))
             ) : (
-              <div className="col-span-full text-center py-12">
+              <div className="col-span-full text-center py-12" role="status" aria-live="polite">
                 <p className="text-gray-500 dark:text-gray-400">No movies found matching your filters.</p>
               </div>
             )}
-          </div>
+          </section>
 
           {/* Mobile Grid */}
-          <div className="md:hidden grid grid-cols-2 gap-4">
+          <section aria-label="Movie results" className="md:hidden grid grid-cols-2 gap-4">
             {filteredMovies.length > 0 ? (
               filteredMovies.map(movie => (
                 <MovieCardComponent key={movie._id} movie={movie} isMobile={true} />
               ))
             ) : (
-              <div className="col-span-full text-center py-12">
+              <div className="col-span-full text-center py-12" role="status" aria-live="polite">
                 <p className="text-gray-500 dark:text-gray-400">No movies found matching your filters.</p>
               </div>
             )}
-          </div>
+          </section>
         </>
       )}
     </div>

@@ -34,7 +34,7 @@ const ToastItem = ({ toast, onRemove }) => {
           bg: 'bg-white dark:bg-gray-800',
           border: 'border-green-500',
           progressBg: 'bg-green-500',
-          icon: <i className="fas fa-check-circle text-green-500 text-lg"></i>,
+          icon: <i className="fas fa-check-circle text-green-500 text-lg" aria-hidden="true"></i>,
           text: 'text-gray-900 dark:text-white',
         };
       case 'error':
@@ -42,7 +42,7 @@ const ToastItem = ({ toast, onRemove }) => {
           bg: 'bg-white dark:bg-gray-800',
           border: 'border-red-500',
           progressBg: 'bg-red-500',
-          icon: <i className="fas fa-times-circle text-red-500 text-lg"></i>,
+          icon: <i className="fas fa-times-circle text-red-500 text-lg" aria-hidden="true"></i>,
           text: 'text-gray-900 dark:text-white',
         };
       case 'warning':
@@ -50,7 +50,7 @@ const ToastItem = ({ toast, onRemove }) => {
           bg: 'bg-white dark:bg-gray-800',
           border: 'border-yellow-500',
           progressBg: 'bg-yellow-500',
-          icon: <i className="fas fa-exclamation-circle text-yellow-500 text-lg"></i>,
+          icon: <i className="fas fa-exclamation-circle text-yellow-500 text-lg" aria-hidden="true"></i>,
           text: 'text-gray-900 dark:text-white',
         };
       case 'info':
@@ -59,7 +59,7 @@ const ToastItem = ({ toast, onRemove }) => {
           bg: 'bg-white dark:bg-gray-800',
           border: 'border-blue-500',
           progressBg: 'bg-blue-500',
-          icon: <i className="fas fa-info-circle text-blue-500 text-lg"></i>,
+          icon: <i className="fas fa-info-circle text-blue-500 text-lg" aria-hidden="true"></i>,
           text: 'text-gray-900 dark:text-white',
         };
     }
@@ -81,6 +81,9 @@ const ToastItem = ({ toast, onRemove }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`relative ${styles.bg} rounded-lg shadow-lg overflow-hidden min-w-[320px] max-w-md border-l-4 ${styles.border} border border-gray-200 dark:border-gray-700`}
+      role="alert"
+      aria-live="polite"
+      aria-atomic="true"
     >
       <div className="p-4 pr-10 flex items-start gap-3">
         {/* Icon */}
@@ -97,7 +100,7 @@ const ToastItem = ({ toast, onRemove }) => {
           className="absolute top-3 right-3 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
           aria-label="Close notification"
         >
-          <i className="fas fa-times text-sm"></i>
+          <i className="fas fa-times text-sm" aria-hidden="true"></i>
         </button>
       </div>
 

@@ -138,7 +138,7 @@ const About = () => {
                 <div className="w-40 h-40 mx-auto mb-6 overflow-hidden rounded-full">
                   <img 
                     src={member.image} 
-                    alt={member.name} 
+                    alt={`${member.name}, ${member.role}`}
                     className={`w-full h-full object-cover object-top scale-200 shadow-lg border-4 ${member.borderColor} rounded-full`}
                     onError={(e) => {
                       e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23ddd"/%3E%3Ctext x="50" y="50" text-anchor="middle" dy=".3em" font-size="40" fill="%23666"%3E' + member.name.charAt(0) + '%3C/text%3E%3C/svg%3E';

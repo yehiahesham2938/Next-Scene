@@ -195,16 +195,26 @@ const SearchAutocomplete = ({
         placeholder={placeholder}
         className={className}
         autoComplete="off"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={showDropdown}
+        aria-controls="search-suggestions"
+        aria-activedescendant={selectedIndex >= 0 ? `suggestion-${selectedIndex}` : undefined}
       />
       
       {showDropdown && suggestions.length > 0 && (
-        <div
+        <ul
+          id="search-suggestions"
           ref={dropdownRef}
+          role="listbox"
           className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 max-h-[320px] overflow-y-auto"
         >
           {suggestions.map((movie, index) => (
-            <div
+            <li
               key={movie._id}
+              id={`suggestion-${index}`}
+              role="option"
+              aria-selected={index === selectedIndex}
               onClick={() => handleSelectSuggestion(movie)}
               onMouseEnter={() => setSelectedIndex(index)}
               className={`flex items-center gap-3 p-3 cursor-pointer transition-colors border-b border-gray-100 dark:border-gray-700 last:border-b-0 ${
@@ -252,9 +262,9 @@ const SearchAutocomplete = ({
                   </div>
                 )}
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
       {showDropdown && suggestions.length === 0 && value.length >= MIN_QUERY_LENGTH && (

@@ -12,6 +12,8 @@ const Input = ({
   error = null,
   ...props 
 }) => {
+  const errorId = error ? `${id}-error` : undefined;
+  
   return (
     <div className="w-full">
       {label && (
@@ -19,7 +21,7 @@ const Input = ({
           htmlFor={id} 
           className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
         >
-          {label}
+          {label}{required && <span className="text-red-600 dark:text-red-400 ml-1" aria-label="required">*</span>}
         </label>
       )}
       <input
@@ -29,11 +31,14 @@ const Input = ({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`w-full border border-gray-300 dark:border-gray-600 rounded py-2 px-3 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 ${className}`}
+        aria-required={required}
+        aria-invalid={!!error}
+        aria-describedby={errorId}
+        className={`w-full border border-gray-300 dark:border-gray-600 rounded py-2 px-3 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 ${error ? 'border-red-500 dark:border-red-400' : ''} ${className}`}
         {...props}
       />
       {error && (
-        <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>
+        <p id={errorId} className="mt-1 text-xs text-red-600 dark:text-red-400" role="alert">{error}</p>
       )}
     </div>
   );

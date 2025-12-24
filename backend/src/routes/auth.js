@@ -26,11 +26,6 @@ router.post('/signup', async (req, res) => {
 			return res.status(409).json({ message: 'User already exists' });
 		}
 
-		const pwdCheck = validatePassword(password);
-		if (!pwdCheck.valid) {
-			return res.status(400).json({ message: pwdCheck.message });
-		}
-
 		const user = await User.create({ fullName, email, password });
 		return res.status(201).json({
 			id: user._id.toString(),
@@ -143,9 +138,8 @@ router.put('/password', async (req, res) => {
 			return res.status(401).json({ message: 'Current password is incorrect' });
 		}
 
-		const pwdCheck = validatePassword(newPassword);
-		if (!pwdCheck.valid) {
-			return res.status(400).json({ message: pwdCheck.message });
+		if (newPassword.length < 6) {
+			return res.status(400).json({ message: 'New password must be at least 6 characters' });
 		}
 
 		user.password = newPassword;

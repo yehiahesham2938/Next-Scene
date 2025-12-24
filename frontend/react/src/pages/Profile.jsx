@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { authAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
-import { isValidPassword } from '../utils/helpers';
 
 const Profile = () => {
   const { user, logout, login } = useAuth();
@@ -90,9 +89,8 @@ const Profile = () => {
       return;
     }
 
-    const pwdCheck = isValidPassword(passwordData.newPassword);
-    if (!pwdCheck.valid) {
-      showToast(pwdCheck.message, 'error');
+    if (passwordData.newPassword.length < 6) {
+      showToast('Password must be at least 6 characters', 'error');
       return;
     }
 
@@ -124,10 +122,10 @@ const Profile = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 mt-14 sm:mt-0">
+    <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Profile Settings</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Profile & Settings</h1>
         <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
           Manage your account settings and preferences
         </p>
@@ -144,11 +142,11 @@ const Profile = () => {
               {profileData.profilePicture ? (
                 <img 
                   src={profileData.profilePicture} 
-                  alt="Profile" 
+                  alt={`${profileData.name}'s profile picture`}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <i className="fa-solid fa-user text-white text-3xl"></i>
+                <i className="fa-solid fa-user text-white text-3xl" aria-hidden="true"></i>
               )}
             </div>
             <label className="text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded px-3 py-1 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">

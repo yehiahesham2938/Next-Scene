@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import SearchAutocomplete from '../components/SearchAutocomplete';
@@ -12,6 +12,30 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown on ESC key or click outside
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && showMoreOptions) {
+        setShowMoreOptions(false);
+      }
+    };
+
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowMoreOptions(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMoreOptions]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -88,8 +112,12 @@ const Header = () => {
         <header className="sm:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50">
           <div className="flex items-center justify-between px-4 py-3">
             {currentPageConfig?.showBack ? (
-              <button onClick={() => navigate(-1)} className="text-gray-700 dark:text-gray-300 w-8">
-                <i className="fas fa-arrow-left text-xl"></i>
+              <button 
+                onClick={() => navigate(-1)} 
+                className="text-gray-700 dark:text-gray-300 w-8"
+                aria-label="Go back"
+              >
+                <i className="fas fa-arrow-left text-xl" aria-hidden="true"></i>
               </button>
             ) : (
               <div className="w-8"></div>
@@ -98,8 +126,12 @@ const Header = () => {
               {currentPageConfig?.title || 'Next-Scene'}
             </h1>
             {user ? (
-              <Link to="/profile" className="text-gray-700 dark:text-gray-300 w-8 text-right">
-                <i className="fas fa-user text-xl"></i>
+              <Link 
+                to="/profile" 
+                className="text-gray-700 dark:text-gray-300 w-8 text-right"
+                aria-label="View profile"
+              >
+                <i className="fas fa-user text-xl" aria-hidden="true"></i>
               </Link>
             ) : (
               <div className="w-8"></div>
@@ -150,7 +182,7 @@ const Header = () => {
           )}
 
           {/* Navigation Links */}
-          <nav className="flex-1 overflow-y-auto py-4">
+          <nav className="flex-1 overflow-y-auto py-4" aria-label="Main navigation">
             {user?.role === 'admin' ? (
               <>
                 <Link
@@ -258,9 +290,9 @@ const Header = () => {
               <button
                 onClick={toggleTheme}
                 className="flex items-center gap-4 w-full px-5 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors"
-                title="Toggle theme"
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               >
-                <i className={`fa-solid ${theme === 'dark' ? 'fa-moon' : 'fa-sun'} text-xl w-6 text-center flex-shrink-0`}></i>
+                <i className={`fa-solid ${theme === 'dark' ? 'fa-moon' : 'fa-sun'} text-xl w-6 text-center flex-shrink-0`} aria-hidden="true"></i>
                 {isSidebarOpen && <span className="whitespace-nowrap">{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</span>}
               </button>
             </div>
@@ -269,12 +301,14 @@ const Header = () => {
           {/* Profile/Sign In */}
           <div className="border-t border-gray-200 dark:border-gray-700 p-4">
             {user ? (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setShowMoreOptions(!showMoreOptions)}
                   className="flex items-center gap-4 w-full px-5 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors"
+                  aria-label="More options"
+                  aria-expanded={showMoreOptions}
                 >
-                  <i className="fa-solid fa-user text-xl w-6 text-center flex-shrink-0"></i>
+                  <i className="fa-solid fa-user text-xl w-6 text-center flex-shrink-0" aria-hidden="true"></i>
                   {isSidebarOpen && <span className="whitespace-nowrap">More Options</span>}
                 </button>
                 {showMoreOptions && isSidebarOpen && (
@@ -313,7 +347,7 @@ const Header = () => {
 
       {/* Mobile Bottom Navigation - hidden on pages with custom mobile headers */}
       {!shouldHideMobileNav && (
-        <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-50 transition-colors">
+        <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-50 transition-colors" aria-label="Mobile navigation">
           <div className="flex justify-around items-center py-3">
             <Link
               to="/"

@@ -8,8 +8,11 @@ const LoadingSpinner = ({ size = 'medium', message = 'Loading...' }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-12">
-      <div className={`${sizeClasses[size]} border-4 border-gray-300 dark:border-gray-600 border-t-gray-900 dark:border-t-white rounded-full animate-spin`}></div>
+    <div className="flex flex-col items-center justify-center py-12" role="status" aria-live="polite" aria-busy="true">
+      <div 
+        className={`${sizeClasses[size]} border-4 border-gray-300 dark:border-gray-600 border-t-gray-900 dark:border-t-white rounded-full animate-spin`}
+        aria-hidden="true"
+      ></div>
       {message && (
         <p className="mt-4 text-gray-600 dark:text-gray-400 text-sm">{message}</p>
       )}
